@@ -1,8 +1,7 @@
 import psycopg2
-import json
 import pandas as pd
 
-
+# Initialize DB connection
 conn = None
 try:
     conn = psycopg2.connect(
@@ -12,21 +11,19 @@ try:
 except:
     print("I am unable to connect to the database")
 
-
-# Get a cursor and execute select statement
+# Get a cursor and select allele frequency data from cpic_db
 cursor = conn.cursor()
-
-
 cursor.execute("""SELECT * from cpic.population_frequency_view""")
-rows = cursor.fetchall()
 
-# Print out the results
+# Fetch results and convert to dataframe
+rows = cursor.fetchall()
 colnames = [desc[0] for desc in cursor.description]
 freq_df = pd.DataFrame(rows, columns=colnames)
 
 # Close the connection when finished
 conn.close()
 
+# Use the allele frequency table to generate question-answer pairs
 with open("../test_queries/allele_freq_queries.txt", 'w') as outfile:
     lines = []
     for idx, row in freq_df.iterrows():
