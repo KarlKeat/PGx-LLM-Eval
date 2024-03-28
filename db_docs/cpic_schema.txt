@@ -1,0 +1,3367 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.15
+-- Dumped by pg_dump version 12.15
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: cpic; Type: SCHEMA; Schema: -; Owner: karlkeat
+--
+
+CREATE SCHEMA cpic;
+
+
+ALTER SCHEMA cpic OWNER TO karlkeat;
+
+--
+-- Name: increment_version(); Type: FUNCTION; Schema: cpic; Owner: karlkeat
+--
+
+CREATE FUNCTION cpic.increment_version() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  new.version := new.version + 1;
+  return new;
+END;
+$$;
+
+
+ALTER FUNCTION cpic.increment_version() OWNER TO karlkeat;
+
+--
+-- Name: pharmgkb_guideline_alleles(text); Type: FUNCTION; Schema: cpic; Owner: karlkeat
+--
+
+CREATE FUNCTION cpic.pharmgkb_guideline_alleles(pharmgkbdrugid text) RETURNS TABLE(genesymbol text, chr text, lookupmethod text, alleles text[])
+    LANGUAGE sql STABLE
+    AS $$
+select
+    a.genesymbol,
+    g.chr,
+    g.lookupmethod,
+    array_agg(distinct a.name order by a.name) as alleles
+from allele a join gene g on a.genesymbol=g.symbol
+where
+    a.clinicalfunctionalstatus is not null
+    and g.lookupmethod!='ALLELE_STATUS'
+    and a.genesymbol in (
+        select distinct jsonb_object_keys(p.lookupkey) as genes
+        from recommendation p join guideline g on p.guidelineid = g.id join drug d on p.drugid=d.drugid
+        where d.pharmgkbid=pharmgkbdrugid
+    )
+group by a.genesymbol, g.chr, g.lookupmethod
+union all
+select
+    g.symbol as genesymbol,
+    g.chr,
+    g.lookupmethod,
+    array_agg(distinct a.value order by a.value) as alleles
+from
+    recommendation r
+    join drug d on r.drugid = d.drugid,
+    jsonb_each_text(r.lookupkey) a
+    join gene g on (a.key=g.symbol)
+where
+    r.allelestatus is not null
+    and g.lookupmethod='ALLELE_STATUS'
+    and d.pharmgkbid=pharmgkbdrugid
+    and upper(a.value) != 'NO RESULT'
+group by g.symbol, g.chr, g.lookupmethod
+$$;
+
+
+ALTER FUNCTION cpic.pharmgkb_guideline_alleles(pharmgkbdrugid text) OWNER TO karlkeat;
+
+--
+-- Name: FUNCTION pharmgkb_guideline_alleles(pharmgkbdrugid text); Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON FUNCTION cpic.pharmgkb_guideline_alleles(pharmgkbdrugid text) IS 'For a given PharmGKB drug ID, list the alleles that are options for looking up recommendations';
+
+
+--
+-- Name: pharmgkb_guideline_recommendation(text, text); Type: FUNCTION; Schema: cpic; Owner: karlkeat
+--
+
+CREATE FUNCTION cpic.pharmgkb_guideline_recommendation(drugidarg text, lookupkeyarg text) RETURNS TABLE(drugname text, recommendationid integer, implications jsonb, drugrecommendation text, classification text, phenotypes jsonb, activityscore jsonb, allelestatus jsonb, population text, comments text)
+    LANGUAGE sql STABLE
+    AS $$
+select
+    d.name as drugname,
+    r.id as recommendationid,
+    r.implications,
+    r.drugrecommendation,
+    r.classification,
+    r.phenotypes,
+    r.activityscore,
+    r.allelestatus,
+    r.population,
+    r.comments
+from recommendation r join drug d on r.drugid = d.drugid join guideline g on r.guidelineid = g.id
+where lookupkey <@ (
+    select jsonb_object_agg(a.key, coalesce(d.lookupkey -> a.key, a.value)) as lookup
+    from
+        json_each(lookupkeyArg::json) a
+            left join diplotype d on (d.diplotypekey=jsonb_build_object(a.key, a.value))
+)
+  and d.pharmgkbid=drugidArg
+$$;
+
+
+ALTER FUNCTION cpic.pharmgkb_guideline_recommendation(drugidarg text, lookupkeyarg text) OWNER TO karlkeat;
+
+--
+-- Name: FUNCTION pharmgkb_guideline_recommendation(drugidarg text, lookupkeyarg text); Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON FUNCTION cpic.pharmgkb_guideline_recommendation(drugidarg text, lookupkeyarg text) IS 'For a given PharmGKB guideline and genotype lookup JSON key, give the matching recommendations';
+
+
+--
+-- Name: pharmgkb_recommendation(text); Type: FUNCTION; Schema: cpic; Owner: karlkeat
+--
+
+CREATE FUNCTION cpic.pharmgkb_recommendation(lookupkeyarg text) RETURNS TABLE(drugname text, drugid text, recommendationid integer, implications jsonb, drugrecommendation text, classification text, phenotypes jsonb, activityscore jsonb, allelestatus jsonb, population text, comments text, guidelineurl text)
+    LANGUAGE sql STABLE
+    AS $$
+select
+    d.name as drugname,
+    d.pharmgkbid as drugid,
+    r.id as recommendationid,
+    r.implications,
+    r.drugrecommendation,
+    r.classification,
+    r.phenotypes,
+    r.activityscore,
+    r.allelestatus,
+    r.population,
+    r.comments,
+    g.url as guidelineurl
+from recommendation r join drug d on r.drugid = d.drugid join guideline g on r.guidelineid = g.id
+where lookupkey <@ (
+    select jsonb_object_agg(a.key, coalesce(d.lookupkey -> a.key, a.value)) as lookup
+    from
+        json_each(lookupKeyArg::json) a
+            left join diplotype d on (d.diplotypekey=jsonb_build_object(a.key, a.value))
+)
+$$;
+
+
+ALTER FUNCTION cpic.pharmgkb_recommendation(lookupkeyarg text) OWNER TO karlkeat;
+
+--
+-- Name: FUNCTION pharmgkb_recommendation(lookupkeyarg text); Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON FUNCTION cpic.pharmgkb_recommendation(lookupkeyarg text) IS 'For a given genotype lookup JSON key, give the matching recommendations for all available drugs';
+
+
+--
+-- Name: cpic_id; Type: SEQUENCE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE SEQUENCE cpic.cpic_id
+    START WITH 110000
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE cpic.cpic_id OWNER TO karlkeat;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: drug; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.drug (
+    drugid character varying(20) NOT NULL,
+    name text NOT NULL,
+    pharmgkbid character varying(20),
+    rxnormid character varying(20),
+    drugbankid character varying(20),
+    atcid text[],
+    umlscui character varying(20),
+    flowchart text,
+    version integer DEFAULT 1,
+    guidelineid integer
+);
+
+
+ALTER TABLE cpic.drug OWNER TO karlkeat;
+
+--
+-- Name: TABLE drug; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.drug IS 'A clinically-used drug.';
+
+
+--
+-- Name: COLUMN drug.drugid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.drug.drugid IS 'A unique identifier for this drug in the form "source:id" where source is some outside knowledge resource and id is their identifier, primary key';
+
+
+--
+-- Name: COLUMN drug.name; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.drug.name IS 'The generic name for this drug, lower-cased, required';
+
+
+--
+-- Name: COLUMN drug.pharmgkbid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.drug.pharmgkbid IS 'The PharmGKB ID for this drug, optional';
+
+
+--
+-- Name: COLUMN drug.rxnormid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.drug.rxnormid IS 'The RxNorm ID for this drug, optional';
+
+
+--
+-- Name: COLUMN drug.drugbankid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.drug.drugbankid IS 'The DrugBank ID for this drug, optional';
+
+
+--
+-- Name: COLUMN drug.atcid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.drug.atcid IS 'One or more ATC IDs for this drug in an array, optional';
+
+
+--
+-- Name: COLUMN drug.umlscui; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.drug.umlscui IS 'The UMLS Concept Unique ID for this drug, optional';
+
+
+--
+-- Name: COLUMN drug.flowchart; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.drug.flowchart IS 'URL for the flow chart image of this drug';
+
+
+--
+-- Name: COLUMN drug.guidelineid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.drug.guidelineid IS 'The guideline this drug is part of a guideline, null means not a part of any guideline';
+
+
+--
+-- Name: guideline; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.guideline (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    version integer DEFAULT 1,
+    name text NOT NULL,
+    url text,
+    pharmgkbid text[],
+    genes text[],
+    notesonusage text
+);
+
+
+ALTER TABLE cpic.guideline OWNER TO karlkeat;
+
+--
+-- Name: TABLE guideline; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.guideline IS 'A guideline for a drug or group of drugs';
+
+
+--
+-- Name: COLUMN guideline.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline.id IS 'A synthetic numerical ID, primary key';
+
+
+--
+-- Name: COLUMN guideline.version; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline.version IS 'The version number, iterates on modification';
+
+
+--
+-- Name: COLUMN guideline.name; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline.name IS 'The name (title) of this guideline, required';
+
+
+--
+-- Name: COLUMN guideline.url; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline.url IS 'The URL of this guideline on the cpicpgx.org domain, optional';
+
+
+--
+-- Name: COLUMN guideline.pharmgkbid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline.pharmgkbid IS 'The IDs from PharmGKB for their annotations of this guideline, optional';
+
+
+--
+-- Name: COLUMN guideline.genes; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline.genes IS 'The subject genes of this guideline';
+
+
+--
+-- Name: COLUMN guideline.notesonusage; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline.notesonusage IS 'Notes about using a particular guideline within this system. This may include. You may find information here when data for a guideline seems missing or incomplete.';
+
+
+--
+-- Name: recommendation; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.recommendation (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    guidelineid integer,
+    drugid character varying(20),
+    implications jsonb,
+    drugrecommendation text,
+    classification character varying(20),
+    phenotypes jsonb,
+    activityscore jsonb,
+    allelestatus jsonb,
+    lookupkey jsonb,
+    population text,
+    comments text,
+    version integer DEFAULT 1,
+    dosinginformation boolean DEFAULT false,
+    alternatedrugavailable boolean DEFAULT false,
+    otherprescribingguidance boolean DEFAULT false
+);
+
+
+ALTER TABLE cpic.recommendation OWNER TO karlkeat;
+
+--
+-- Name: TABLE recommendation; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.recommendation IS 'Recommendations for a gene result pulled from a guideline';
+
+
+--
+-- Name: COLUMN recommendation.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN recommendation.guidelineid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.guidelineid IS 'The guideline this recommendation appears in';
+
+
+--
+-- Name: COLUMN recommendation.drugid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.drugid IS 'The drug this recommendation is for';
+
+
+--
+-- Name: COLUMN recommendation.implications; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.implications IS 'Implications for phenotypic measures, this is a JSON mapping of gene to implication';
+
+
+--
+-- Name: COLUMN recommendation.drugrecommendation; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.drugrecommendation IS 'Dosing or therapeutic recommendations, depending on particular drug';
+
+
+--
+-- Name: COLUMN recommendation.classification; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.classification IS 'Classification of recommendations, described in supplementary meterial';
+
+
+--
+-- Name: COLUMN recommendation.phenotypes; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.phenotypes IS 'Phenotypes that this recommendation applies to, this is a JSON mapping of gene to phenotype';
+
+
+--
+-- Name: COLUMN recommendation.activityscore; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.activityscore IS 'Activity score that this recommendation applies to, this is a JSON mapping of gene to score value';
+
+
+--
+-- Name: COLUMN recommendation.allelestatus; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.allelestatus IS 'Whether or not an allele is present, used mainly for HLA genes, and used for recommendation lookups. This is a JSON mapping of gene to allele status (positive/negative)';
+
+
+--
+-- Name: COLUMN recommendation.lookupkey; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.lookupkey IS 'A key to use for finding a specific recommendation. Made of a JSON object of gene symbol to key value. The key value can be one of phenotype, activity score, or allele status depending on the gene.';
+
+
+--
+-- Name: COLUMN recommendation.population; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.population IS 'The population this recommendation is applicable to';
+
+
+--
+-- Name: COLUMN recommendation.comments; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.comments IS 'Optional comments about the recommendation';
+
+
+--
+-- Name: COLUMN recommendation.dosinginformation; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.dosinginformation IS 'The guideline recommends a dose adjustment based on genetic variants or phenotypes (e.g. "poor metabolizers") as a primary course of action. However, the guideline may also describe extenuating circumstances where this action is not appropriate.';
+
+
+--
+-- Name: COLUMN recommendation.alternatedrugavailable; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.alternatedrugavailable IS 'The guideline recommends that an alternate drug be selected for patients based on genetic variants or phenotypes (e.g. "poor metabolizers") as a primary course of action. However, the guideline may also describe extenuating circumstances where this action is not appropriate.';
+
+
+--
+-- Name: COLUMN recommendation.otherprescribingguidance; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.recommendation.otherprescribingguidance IS 'The guideline and other prescribing guidance not described as either dose adjustment or alternate drug.';
+
+
+--
+-- Name: recommendation_view; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.recommendation_view AS
+ SELECT r.id AS recommendationid,
+    r.lookupkey,
+    d.name AS drugname,
+    g.name AS guidelinename,
+    g.url AS guidelineurl,
+    r.implications,
+    r.drugrecommendation,
+    r.classification,
+    r.phenotypes,
+    r.activityscore,
+    r.population,
+    r.comments
+   FROM ((cpic.recommendation r
+     JOIN cpic.drug d ON (((r.drugid)::text = (d.drugid)::text)))
+     JOIN cpic.guideline g ON ((r.guidelineid = g.id)));
+
+
+ALTER TABLE cpic.recommendation_view OWNER TO karlkeat;
+
+--
+-- Name: VIEW recommendation_view; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON VIEW cpic.recommendation_view IS 'A view to help find recommendation data when querying by the lookupKey';
+
+
+--
+-- Name: recommendation_lookup(text); Type: FUNCTION; Schema: cpic; Owner: karlkeat
+--
+
+CREATE FUNCTION cpic.recommendation_lookup(diplotypelookup text) RETURNS SETOF cpic.recommendation_view
+    LANGUAGE sql STABLE SECURITY DEFINER
+    AS $$
+select * from cpic.recommendation_view where lookupkey <@ (
+    select jsonb_object_agg(key, value) as lookupkey
+    from (select lookupkey from cpic.diplotype where diplotypekey <@ diplotypelookup::jsonb) x,
+        json_each(x.lookupkey)
+)
+$$;
+
+
+ALTER FUNCTION cpic.recommendation_lookup(diplotypelookup text) OWNER TO karlkeat;
+
+--
+-- Name: FUNCTION recommendation_lookup(diplotypelookup text); Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON FUNCTION cpic.recommendation_lookup(diplotypelookup text) IS 'This function helps translate diplotypes into recommendation data. This relies on the recommendation_view to gather and filter relevant information. The diplotypelookup parameter is a JSON object of gene symbol to JSON allele representation.';
+
+
+--
+-- Name: test_alert; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.test_alert (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    population text,
+    cdscontext text NOT NULL,
+    genes text[],
+    phenotype jsonb,
+    activityscore jsonb,
+    allelestatus jsonb,
+    lookupkey jsonb,
+    drugid character varying(20),
+    alerttext text[] NOT NULL,
+    version integer DEFAULT 1
+);
+
+
+ALTER TABLE cpic.test_alert OWNER TO karlkeat;
+
+--
+-- Name: TABLE test_alert; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.test_alert IS 'Example CDS test alert language';
+
+
+--
+-- Name: COLUMN test_alert.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.id IS 'A synthetic numerical ID, primary key';
+
+
+--
+-- Name: COLUMN test_alert.population; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.population IS 'The population this test alert is applicable to: general, adult, pediatrics, unspecified';
+
+
+--
+-- Name: COLUMN test_alert.cdscontext; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.cdscontext IS 'This should be either "Pre-test", "Post-test" or "No CDS". This field is non-null';
+
+
+--
+-- Name: COLUMN test_alert.genes; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.genes IS 'One or more genes this test alert uses for trigger conditions';
+
+
+--
+-- Name: COLUMN test_alert.phenotype; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.phenotype IS 'A JSON object of gene symbol keys to phenotype description';
+
+
+--
+-- Name: COLUMN test_alert.activityscore; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.activityscore IS 'A JSON object of gene symbol keys to gene activity score';
+
+
+--
+-- Name: COLUMN test_alert.allelestatus; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.allelestatus IS 'Whether or not an allele is present, used mainly for HLA genes. This is a JSON mapping of gene to allele status (positive/negative)';
+
+
+--
+-- Name: COLUMN test_alert.lookupkey; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.lookupkey IS 'A key to use for finding a specific test alert. Made of a JSON object of gene symbol to key value. The key value can be one of phenotype, activity score, or allele status depending on the gene.';
+
+
+--
+-- Name: COLUMN test_alert.drugid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.drugid IS 'The ID of a drug this alert text is for';
+
+
+--
+-- Name: COLUMN test_alert.alerttext; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.test_alert.alerttext IS 'An array of one or more pieces of alert text';
+
+
+--
+-- Name: test_alert_view; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.test_alert_view AS
+ SELECT t.id AS testalertid,
+    t.lookupkey,
+    d.name AS drugname,
+    t.population,
+    t.alerttext,
+    t.cdscontext
+   FROM (cpic.test_alert t
+     JOIN cpic.drug d ON (((t.drugid)::text = (d.drugid)::text)));
+
+
+ALTER TABLE cpic.test_alert_view OWNER TO karlkeat;
+
+--
+-- Name: VIEW test_alert_view; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON VIEW cpic.test_alert_view IS 'A view to help find test alert data when querying by the lookupKey';
+
+
+--
+-- Name: test_alert_lookup(text); Type: FUNCTION; Schema: cpic; Owner: karlkeat
+--
+
+CREATE FUNCTION cpic.test_alert_lookup(lookup text) RETURNS SETOF cpic.test_alert_view
+    LANGUAGE sql STABLE SECURITY DEFINER
+    AS $$
+select * from cpic.test_alert_view where lookupkey <@ (
+    select jsonb_object_agg(key, value) as lookupkey
+    from (select lookupkey from cpic.diplotype where diplotypekey <@ lookup::jsonb) x,
+        json_each(x.lookupkey)
+)
+$$;
+
+
+ALTER FUNCTION cpic.test_alert_lookup(lookup text) OWNER TO karlkeat;
+
+--
+-- Name: FUNCTION test_alert_lookup(lookup text); Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON FUNCTION cpic.test_alert_lookup(lookup text) IS 'This function helps translate diplotypes into test alert data. This relies on the test_alert_view to gather and filter relevant information. The lookup parameter is a JSON object of gene symbol to JSON allele representation.';
+
+
+--
+-- Name: allele; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.allele (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    version integer DEFAULT 1,
+    genesymbol character varying(50) NOT NULL,
+    name text NOT NULL,
+    functionalstatus text,
+    clinicalfunctionalstatus text,
+    clinicalfunctionalsubstrate text,
+    activityvalue character varying(50),
+    definitionid integer NOT NULL,
+    citations text[],
+    strength text,
+    functioncomments text,
+    findings text,
+    frequency jsonb,
+    inferredfrequency boolean DEFAULT false
+);
+
+
+ALTER TABLE cpic.allele OWNER TO karlkeat;
+
+--
+-- Name: TABLE allele; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.allele IS 'An allele of a gene';
+
+
+--
+-- Name: COLUMN allele.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN allele.version; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.version IS 'The version number, iterates on modification';
+
+
+--
+-- Name: COLUMN allele.genesymbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.genesymbol IS 'The HGNC symbol of the gene the allele is for, required';
+
+
+--
+-- Name: COLUMN allele.name; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.name IS 'The name of this allele, required';
+
+
+--
+-- Name: COLUMN allele.functionalstatus; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.functionalstatus IS 'The functional phenotype of this allele';
+
+
+--
+-- Name: COLUMN allele.clinicalfunctionalstatus; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.clinicalfunctionalstatus IS 'The functional phenotype of this allele used for clinical systems';
+
+
+--
+-- Name: COLUMN allele.clinicalfunctionalsubstrate; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.clinicalfunctionalsubstrate IS 'Allele clinical function substrate specificity, optional';
+
+
+--
+-- Name: COLUMN allele.activityvalue; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.activityvalue IS 'Descriptor of activity score, optional';
+
+
+--
+-- Name: COLUMN allele.definitionid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.definitionid IS 'The reference to the definition for this allele';
+
+
+--
+-- Name: COLUMN allele.citations; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.citations IS 'An array of PubMed IDs use as citations for this functional assignment';
+
+
+--
+-- Name: COLUMN allele.strength; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.strength IS 'The strength of evidence';
+
+
+--
+-- Name: COLUMN allele.functioncomments; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.functioncomments IS 'Comments this functional assignment of this allele';
+
+
+--
+-- Name: COLUMN allele.inferredfrequency; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele.inferredfrequency IS 'Indicates (with "true") that the frequencies for this allele have been inferred by an algorithm that aggregates the frequencies for other alleles of this gene and is not based on direct data, defaults to false, should only be 1 per gene';
+
+
+--
+-- Name: allele_definition; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.allele_definition (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    version integer DEFAULT 1,
+    genesymbol character varying(50) NOT NULL,
+    name text NOT NULL,
+    pharmvarid character varying(50),
+    matchesreferencesequence boolean DEFAULT false,
+    structuralvariation boolean DEFAULT false
+);
+
+
+ALTER TABLE cpic.allele_definition OWNER TO karlkeat;
+
+--
+-- Name: TABLE allele_definition; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.allele_definition IS 'The definition for an allele of a gene';
+
+
+--
+-- Name: COLUMN allele_definition.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_definition.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN allele_definition.genesymbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_definition.genesymbol IS 'The HGNC symbol of the gene the allele is for, required';
+
+
+--
+-- Name: COLUMN allele_definition.name; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_definition.name IS 'The name of this allele, required';
+
+
+--
+-- Name: COLUMN allele_definition.pharmvarid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_definition.pharmvarid IS 'The PharmVar core allele ID for this allele';
+
+
+--
+-- Name: COLUMN allele_definition.matchesreferencesequence; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_definition.matchesreferencesequence IS 'Indicates (with "true") the variants that define the named allele will match the reference sequence for the gene, defaults to false, should only be 1 per gene';
+
+
+--
+-- Name: COLUMN allele_definition.structuralvariation; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_definition.structuralvariation IS 'Indicates whether this allele definition is a structural variant, default is false. If true, look in the pharmvarid field for the PharmVar ID that defines the structural variation.';
+
+
+--
+-- Name: allele_frequency; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.allele_frequency (
+    alleleid integer NOT NULL,
+    population integer NOT NULL,
+    frequency numeric,
+    label text,
+    version integer DEFAULT 1
+);
+
+
+ALTER TABLE cpic.allele_frequency OWNER TO karlkeat;
+
+--
+-- Name: TABLE allele_frequency; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.allele_frequency IS 'A frequency observation for a particular allele in a particular population';
+
+
+--
+-- Name: COLUMN allele_frequency.alleleid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_frequency.alleleid IS 'The ID of the allele for this observation';
+
+
+--
+-- Name: COLUMN allele_frequency.population; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_frequency.population IS 'The ID of the population for this observation';
+
+
+--
+-- Name: COLUMN allele_frequency.frequency; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_frequency.frequency IS 'The numeric representation of this frequency';
+
+
+--
+-- Name: COLUMN allele_frequency.label; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_frequency.label IS 'The textual label for this frequency, "-" means no observation made';
+
+
+--
+-- Name: COLUMN allele_frequency.version; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_frequency.version IS 'The version number, iterates on modification';
+
+
+--
+-- Name: pair; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.pair (
+    pairid integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    genesymbol character varying(20),
+    drugid character varying(20),
+    guidelineid integer,
+    usedforrecommendation boolean DEFAULT false,
+    version integer DEFAULT 1,
+    cpiclevel character varying(5) NOT NULL,
+    pgkbcalevel character varying(5),
+    pgxtesting text,
+    citations text[],
+    removed boolean DEFAULT false,
+    removeddate date,
+    removedreason text,
+    CONSTRAINT valid_cpiclevel_check CHECK (((cpiclevel)::text = ANY (ARRAY[('A'::character varying)::text, ('A/B'::character varying)::text, ('B'::character varying)::text, ('B/C'::character varying)::text, ('C'::character varying)::text, ('C/D'::character varying)::text, ('D'::character varying)::text]))),
+    CONSTRAINT valid_pgkblevel_check CHECK (((pgkbcalevel)::text = ANY (ARRAY[('1A'::character varying)::text, ('1B'::character varying)::text, ('2A'::character varying)::text, ('2B'::character varying)::text, ('3'::character varying)::text, ('4'::character varying)::text]))),
+    CONSTRAINT valid_pmids CHECK ((array_to_string(citations, ''::text) ~ '\d+'::text)),
+    CONSTRAINT valid_used_check CHECK (((NOT usedforrecommendation) OR (guidelineid IS NOT NULL)))
+);
+
+
+ALTER TABLE cpic.pair OWNER TO karlkeat;
+
+--
+-- Name: TABLE pair; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.pair IS 'A pair of a gene and a drug that is notable to CPIC';
+
+
+--
+-- Name: COLUMN pair.pairid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.pairid IS 'A synthetic numerical id, automatically assigned, primary key';
+
+
+--
+-- Name: COLUMN pair.genesymbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.genesymbol IS 'The HGNC symbol of the gene in this pair, required';
+
+
+--
+-- Name: COLUMN pair.drugid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.drugid IS 'The ID of the drug in this pair, required';
+
+
+--
+-- Name: COLUMN pair.guidelineid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.guidelineid IS 'The ID of a guideline this pair is described in, optional';
+
+
+--
+-- Name: COLUMN pair.usedforrecommendation; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.usedforrecommendation IS 'Whether the gene is used for recommendation lookup for the drug if this pair is part of a guideline, default false';
+
+
+--
+-- Name: COLUMN pair.version; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.version IS 'The version number, iterates on modification';
+
+
+--
+-- Name: COLUMN pair.cpiclevel; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.cpiclevel IS 'The CPIC level of this pair, required';
+
+
+--
+-- Name: COLUMN pair.pgkbcalevel; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.pgkbcalevel IS 'The top level of PharmGKB Clinical Annotation for this pair, optional';
+
+
+--
+-- Name: COLUMN pair.pgxtesting; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.pgxtesting IS 'The top level of PGx testing recommendation from PharmGKB label annotations, optional';
+
+
+--
+-- Name: COLUMN pair.citations; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.citations IS 'The PMID citations in an array for this pair, optional';
+
+
+--
+-- Name: COLUMN pair.removed; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.removed IS 'Has this pair been "removed", eg is no longer a valid pair, default false';
+
+
+--
+-- Name: COLUMN pair.removeddate; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.removeddate IS 'If removed, when was this pair "removed"';
+
+
+--
+-- Name: COLUMN pair.removedreason; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair.removedreason IS 'If removed, why was this pair "removed"';
+
+
+--
+-- Name: allele_guideline_view; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.allele_guideline_view AS
+ SELECT DISTINCT a.genesymbol,
+    a.name AS allele_name,
+    g.name AS guideline_name,
+    g.url AS guideline_url
+   FROM ((cpic.allele a
+     JOIN cpic.pair p ON (((a.genesymbol)::text = (p.genesymbol)::text)))
+     JOIN cpic.guideline g ON ((g.id = p.guidelineid)))
+  WHERE (a.clinicalfunctionalstatus IS NOT NULL);
+
+
+ALTER TABLE cpic.allele_guideline_view OWNER TO karlkeat;
+
+--
+-- Name: VIEW allele_guideline_view; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON VIEW cpic.allele_guideline_view IS 'A combination of alleles and the guidelines they appear in';
+
+
+--
+-- Name: COLUMN allele_guideline_view.genesymbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_guideline_view.genesymbol IS 'The HGNC symbol of the gene';
+
+
+--
+-- Name: COLUMN allele_guideline_view.allele_name; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_guideline_view.allele_name IS 'The name of the allele';
+
+
+--
+-- Name: COLUMN allele_guideline_view.guideline_name; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_guideline_view.guideline_name IS 'The name of the guideline this allele appears in';
+
+
+--
+-- Name: COLUMN allele_guideline_view.guideline_url; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_guideline_view.guideline_url IS 'The URL to the guideline';
+
+
+--
+-- Name: allele_location_value; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.allele_location_value (
+    alleledefinitionid integer NOT NULL,
+    locationid integer NOT NULL,
+    variantallele text NOT NULL,
+    version integer DEFAULT 1
+);
+
+
+ALTER TABLE cpic.allele_location_value OWNER TO karlkeat;
+
+--
+-- Name: TABLE allele_location_value; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.allele_location_value IS 'The change at a specific location for a specific allele';
+
+
+--
+-- Name: COLUMN allele_location_value.alleledefinitionid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_location_value.alleledefinitionid IS 'The reference to the allele this variant is on';
+
+
+--
+-- Name: COLUMN allele_location_value.locationid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_location_value.locationid IS 'The reference to the location this variant is for';
+
+
+--
+-- Name: COLUMN allele_location_value.variantallele; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_location_value.variantallele IS 'The allele of this location for the allele';
+
+
+--
+-- Name: COLUMN allele_location_value.version; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.allele_location_value.version IS 'The version number, iterates on modification';
+
+
+--
+-- Name: change_log; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.change_log (
+    date date NOT NULL,
+    type text NOT NULL,
+    entityid text,
+    note text NOT NULL,
+    version integer DEFAULT 1
+);
+
+
+ALTER TABLE cpic.change_log OWNER TO karlkeat;
+
+--
+-- Name: TABLE change_log; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.change_log IS 'A dated freeform text description of a change made to a type of information and optionally for a specific entity';
+
+
+--
+-- Name: COLUMN change_log.date; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.change_log.date IS 'The date the log note is applicable';
+
+
+--
+-- Name: COLUMN change_log.type; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.change_log.type IS 'The type of data this log message is about';
+
+
+--
+-- Name: COLUMN change_log.entityid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.change_log.entityid IS 'Optional, the specific entity this note is about. For example, could be a gene symbol or drug ID';
+
+
+--
+-- Name: COLUMN change_log.note; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.change_log.note IS 'The freeform text note about what the change was';
+
+
+--
+-- Name: COLUMN change_log.version; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.change_log.version IS 'The version number, iterates on modification';
+
+
+--
+-- Name: gene; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.gene (
+    symbol character varying(20) NOT NULL,
+    chr character varying(20),
+    genesequenceid text,
+    proteinsequenceid text,
+    chromosequenceid text,
+    mrnasequenceid text,
+    hgncid text,
+    ncbiid text,
+    ensemblid text,
+    pharmgkbid text,
+    frequencymethods text,
+    lookupmethod text DEFAULT 'PHENOTYPE'::text,
+    version integer DEFAULT 1,
+    notesondiplotype text,
+    url text,
+    functionmethods text,
+    notesonallelenaming text,
+    includephenotypefrequencies boolean DEFAULT true NOT NULL,
+    includediplotypefrequencies boolean DEFAULT true NOT NULL,
+    CONSTRAINT gene_chr_check CHECK (((chr)::text ~ '^chr\S+$'::text)),
+    CONSTRAINT gene_chromosequenceid_check CHECK ((chromosequenceid ~ '^(NC_\S+)?$'::text)),
+    CONSTRAINT gene_ensemblid_check CHECK ((ensemblid ~ '^(ENSG\d+)?$'::text)),
+    CONSTRAINT gene_genesequenceid_check CHECK ((genesequenceid ~ '^(NG_\S+)?$'::text)),
+    CONSTRAINT gene_hgncid_check CHECK ((hgncid ~ '^(HGNC:\d+)?$'::text)),
+    CONSTRAINT gene_mrnasequenceid_check CHECK ((mrnasequenceid ~ '^(NM_\S+)?$'::text)),
+    CONSTRAINT gene_pharmgkbid_check CHECK ((pharmgkbid ~ '^(PA\d+)?$'::text)),
+    CONSTRAINT gene_proteinsequenceid_check CHECK ((proteinsequenceid ~ '^(NP_\S+)?$'::text))
+);
+
+
+ALTER TABLE cpic.gene OWNER TO karlkeat;
+
+--
+-- Name: TABLE gene; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.gene IS 'Gene information with a primary key of the approved HGNC symbol for the gene. This means any gene used in the table must be approved by HGNC.';
+
+
+--
+-- Name: COLUMN gene.symbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.symbol IS 'Approved HGNC symbol, primary key.';
+
+
+--
+-- Name: COLUMN gene.chr; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.chr IS 'Chromosome symbol. In the form chr##, where ## is the number or X/Y.';
+
+
+--
+-- Name: COLUMN gene.genesequenceid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.genesequenceid IS 'The RefSeq ID for the sequence that represents this gene, starts with "NG_". No version suffix.';
+
+
+--
+-- Name: COLUMN gene.proteinsequenceid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.proteinsequenceid IS 'The RefSeq ID for the sequence that represents the protein product of this gene, starts with "NP_". No version suffix.';
+
+
+--
+-- Name: COLUMN gene.chromosequenceid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.chromosequenceid IS 'The RefSeq ID for the sequence that represents the chromosome this gene is on, starts with "NC_". No version suffix.';
+
+
+--
+-- Name: COLUMN gene.mrnasequenceid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.mrnasequenceid IS 'The RefSeq ID for the sequence that represents the translation of this gene, starts with "NM_". No version suffix.';
+
+
+--
+-- Name: COLUMN gene.hgncid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.hgncid IS 'The HGNC numerical ID number for this gene prefixed by "HGNC:"';
+
+
+--
+-- Name: COLUMN gene.ncbiid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.ncbiid IS 'The NCBI Gene (Entrez) ID number for this gene';
+
+
+--
+-- Name: COLUMN gene.ensemblid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.ensemblid IS 'The Ensembl ID for this gene';
+
+
+--
+-- Name: COLUMN gene.pharmgkbid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.pharmgkbid IS 'The ID for this gene in PharmGKB.';
+
+
+--
+-- Name: COLUMN gene.frequencymethods; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.frequencymethods IS 'Text documentation of the methods and caveats for allele frequency data';
+
+
+--
+-- Name: COLUMN gene.lookupmethod; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.lookupmethod IS 'The way to lookup information about diplotypes of this gene, should use ACTIVITY_SCORE, PHENOTYPE, or ALLELE_STATUS';
+
+
+--
+-- Name: COLUMN gene.notesondiplotype; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.notesondiplotype IS 'Optional notes about the diplotypes of the gene';
+
+
+--
+-- Name: COLUMN gene.includephenotypefrequencies; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.includephenotypefrequencies IS 'if allele frequencies exist for this gene, whether to calculate and display phenotype-level frequencies. a true value does not imply existence frequency data';
+
+
+--
+-- Name: COLUMN gene.includediplotypefrequencies; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene.includediplotypefrequencies IS 'if allele frequencies exist for this gene, whether to calculate and display diplotype-level frequencies. a true value does not imply existence frequency data';
+
+
+--
+-- Name: change_log_view; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.change_log_view AS
+ WITH x AS (
+         SELECT gene.symbol AS entityid,
+            gene.symbol AS entityname
+           FROM cpic.gene
+        UNION ALL
+         SELECT drug.drugid AS entityid,
+            drug.name AS entityname
+           FROM cpic.drug
+        )
+ SELECT l.date,
+    l.type,
+    l.entityid,
+    x.entityname,
+    l.note,
+    l.version
+   FROM (cpic.change_log l
+     LEFT JOIN x ON ((l.entityid = (x.entityid)::text)));
+
+
+ALTER TABLE cpic.change_log_view OWNER TO karlkeat;
+
+--
+-- Name: VIEW change_log_view; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON VIEW cpic.change_log_view IS 'This view of the change_log table add the entity name to make it more readable';
+
+
+--
+-- Name: gene_result; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.gene_result (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    genesymbol character varying(50) NOT NULL,
+    result text NOT NULL,
+    activityscore text,
+    ehrpriority text,
+    consultationtext text,
+    version integer DEFAULT 1,
+    frequency jsonb
+);
+
+
+ALTER TABLE cpic.gene_result OWNER TO karlkeat;
+
+--
+-- Name: TABLE gene_result; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.gene_result IS 'Possible phenotype values for a gene. The gene + phenotype + activity score should be unique.';
+
+
+--
+-- Name: COLUMN gene_result.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN gene_result.genesymbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result.genesymbol IS 'The HGNC symbol of the gene in this pair, required';
+
+
+--
+-- Name: COLUMN gene_result.result; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result.result IS 'The result for a gene, can either be a phenotype or "allele status" depending on the lookup method for the gene (see lookupMethod in gene table), required';
+
+
+--
+-- Name: COLUMN gene_result.activityscore; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result.activityscore IS 'Activity score, optional';
+
+
+--
+-- Name: COLUMN gene_result.ehrpriority; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result.ehrpriority IS 'EHR Priority Result, optional';
+
+
+--
+-- Name: COLUMN gene_result.consultationtext; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result.consultationtext IS 'Consultation (Interpretation) Text Provided with Test Result';
+
+
+--
+-- Name: COLUMN gene_result.frequency; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result.frequency IS 'JSON map of frequencies for this gene result with keys being biogeographical groups';
+
+
+--
+-- Name: gene_result_diplotype; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.gene_result_diplotype (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    functionphenotypeid integer NOT NULL,
+    diplotype text NOT NULL,
+    diplotypekey jsonb NOT NULL,
+    frequency jsonb
+);
+
+
+ALTER TABLE cpic.gene_result_diplotype OWNER TO karlkeat;
+
+--
+-- Name: TABLE gene_result_diplotype; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.gene_result_diplotype IS 'Specific diplotypes that are associated with a gene result. This table is a child of gene_result_lookup and distantly of gene_result';
+
+
+--
+-- Name: COLUMN gene_result_diplotype.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_diplotype.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN gene_result_diplotype.functionphenotypeid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_diplotype.functionphenotypeid IS 'An ID referencing a gene_result_lookup record, required';
+
+
+--
+-- Name: COLUMN gene_result_diplotype.diplotype; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_diplotype.diplotype IS 'A diplotype for the gene in the form Allele1/Allele2, required';
+
+
+--
+-- Name: COLUMN gene_result_diplotype.diplotypekey; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_diplotype.diplotypekey IS 'A normalized JSON version of the diplotype for use in lookups. Should be an object with the allele names as properties and the counts as the values. Required';
+
+
+--
+-- Name: gene_result_lookup; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.gene_result_lookup (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    phenotypeid integer NOT NULL,
+    lookupkey jsonb NOT NULL,
+    function1 text,
+    function2 text,
+    activityvalue1 text,
+    activityvalue2 text,
+    totalactivityscore text,
+    description text
+);
+
+
+ALTER TABLE cpic.gene_result_lookup OWNER TO karlkeat;
+
+--
+-- Name: TABLE gene_result_lookup; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.gene_result_lookup IS 'Gene descriptions that, when combined, link to a gene result. This table is a child of gene_result.';
+
+
+--
+-- Name: COLUMN gene_result_lookup.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_lookup.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN gene_result_lookup.phenotypeid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_lookup.phenotypeid IS 'An ID referencing the gene_result this is associated with, required';
+
+
+--
+-- Name: COLUMN gene_result_lookup.lookupkey; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_lookup.lookupkey IS 'A normalized JSON format of the data used to lookup a diplotype. The keys of this field are either the functions, activity scores, or allele statuses depending on what the gene requires. Required.';
+
+
+--
+-- Name: COLUMN gene_result_lookup.function1; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_lookup.function1 IS 'The first allele function';
+
+
+--
+-- Name: COLUMN gene_result_lookup.function2; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_lookup.function2 IS 'The second allele function';
+
+
+--
+-- Name: COLUMN gene_result_lookup.activityvalue1; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_lookup.activityvalue1 IS 'The activity score for the first allele function';
+
+
+--
+-- Name: COLUMN gene_result_lookup.activityvalue2; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_lookup.activityvalue2 IS 'The activity score for the second allele function';
+
+
+--
+-- Name: COLUMN gene_result_lookup.totalactivityscore; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_lookup.totalactivityscore IS 'The sum activity score for the functions';
+
+
+--
+-- Name: COLUMN gene_result_lookup.description; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.gene_result_lookup.description IS 'A description of the diplotypes associated with this phenotype';
+
+
+--
+-- Name: diplotype; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.diplotype AS
+ SELECT gp.genesymbol,
+    d.diplotype,
+    pf.function1,
+    pf.function2,
+    pf.activityvalue1,
+    pf.activityvalue2,
+    pf.totalactivityscore,
+    pf.description,
+    d.diplotypekey,
+    gp.result AS generesult,
+    gp.ehrpriority,
+    gp.consultationtext,
+    json_build_object(gp.genesymbol,
+        CASE
+            WHEN (g.lookupmethod = 'ACTIVITY_SCORE'::text) THEN pf.totalactivityscore
+            ELSE gp.result
+        END) AS lookupkey
+   FROM (((cpic.gene_result_diplotype d
+     JOIN cpic.gene_result_lookup pf ON ((d.functionphenotypeid = pf.id)))
+     JOIN cpic.gene_result gp ON ((pf.phenotypeid = gp.id)))
+     JOIN cpic.gene g ON (((gp.genesymbol)::text = (g.symbol)::text)));
+
+
+ALTER TABLE cpic.diplotype OWNER TO karlkeat;
+
+--
+-- Name: VIEW diplotype; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON VIEW cpic.diplotype IS 'A combination of gene_result and gene_result_diplotype that allows you to easily query by diplotype and see the phenotype-related data for it';
+
+
+--
+-- Name: COLUMN diplotype.genesymbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.genesymbol IS 'The HGNC symbol of the gene in this pair, required';
+
+
+--
+-- Name: COLUMN diplotype.diplotype; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.diplotype IS 'A diplotype for the gene in the form Allele1/Allele2, required';
+
+
+--
+-- Name: COLUMN diplotype.function1; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.function1 IS 'A functional assignment of one of the alleles, optional';
+
+
+--
+-- Name: COLUMN diplotype.function2; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.function2 IS 'A functional assignment of one of the alleles, optional';
+
+
+--
+-- Name: COLUMN diplotype.activityvalue1; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.activityvalue1 IS 'An activity value assignment of one of the alleles, optional';
+
+
+--
+-- Name: COLUMN diplotype.activityvalue2; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.activityvalue2 IS 'An activity value assignment of one of the alleles, optional';
+
+
+--
+-- Name: COLUMN diplotype.totalactivityscore; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.totalactivityscore IS 'The total Activity Score number, optional';
+
+
+--
+-- Name: COLUMN diplotype.description; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.description IS 'The long-form description of the diplotype';
+
+
+--
+-- Name: COLUMN diplotype.diplotypekey; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.diplotypekey IS 'A normalized version of the diplotype that can be used for DB lookups';
+
+
+--
+-- Name: COLUMN diplotype.generesult; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.generesult IS 'The result for a gene, can either be a phenotype or "allele status" depending on the lookup method for the gene (see lookupMethod in gene table), required';
+
+
+--
+-- Name: COLUMN diplotype.lookupkey; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.diplotype.lookupkey IS 'A normalized version of the gene phenotype that can be used for recommendation or test alert lookup';
+
+
+--
+-- Name: data_progress; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.data_progress AS
+ SELECT 'Gene'::text AS object_class,
+    'Allele Definition Data'::text AS data_type,
+    allele_definition.genesymbol AS object_name,
+    count(*) AS n
+   FROM cpic.allele_definition
+  GROUP BY allele_definition.genesymbol
+UNION ALL
+ SELECT 'Gene'::text AS object_class,
+    'Allele Functionality Data'::text AS data_type,
+    a.genesymbol AS object_name,
+    count(*) AS n
+   FROM cpic.allele a
+  WHERE (a.clinicalfunctionalstatus IS NOT NULL)
+  GROUP BY a.genesymbol
+UNION ALL
+ SELECT 'Gene'::text AS object_class,
+    'Diplotype to Phenotype Data'::text AS data_type,
+    diplotype.genesymbol AS object_name,
+    count(*) AS n
+   FROM cpic.diplotype
+  GROUP BY diplotype.genesymbol
+UNION ALL
+ SELECT 'Gene'::text AS object_class,
+    'Frequency Data'::text AS data_type,
+    a.genesymbol AS object_name,
+    count(*) AS n
+   FROM (cpic.allele_frequency f
+     JOIN cpic.allele a ON ((f.alleleid = a.id)))
+  GROUP BY a.genesymbol
+UNION ALL
+ SELECT 'Gene'::text AS object_class,
+    'Gene CDS Data'::text AS data_type,
+    gene_result.genesymbol AS object_name,
+    count(*) AS n
+   FROM cpic.gene_result
+  WHERE (gene_result.consultationtext IS NOT NULL)
+  GROUP BY gene_result.genesymbol
+UNION ALL
+ SELECT 'Gene'::text AS object_class,
+    'Gene Phenotype Data'::text AS data_type,
+    g.genesymbol AS object_name,
+    count(*) AS n
+   FROM (cpic.gene_result g
+     JOIN cpic.gene_result_lookup pf ON ((g.id = pf.phenotypeid)))
+  GROUP BY g.genesymbol
+UNION ALL
+ SELECT 'Gene'::text AS object_class,
+    'PharmVar Allele IDs'::text AS data_type,
+    a.genesymbol AS object_name,
+    count(*) AS n
+   FROM cpic.allele_definition a
+  WHERE (a.pharmvarid IS NOT NULL)
+  GROUP BY a.genesymbol
+UNION ALL
+ SELECT 'Drug'::text AS object_class,
+    'Flowcharts'::text AS data_type,
+    drug.name AS object_name,
+    count(*) AS n
+   FROM cpic.drug
+  WHERE (drug.flowchart IS NOT NULL)
+  GROUP BY drug.name
+UNION ALL
+ SELECT 'Drug'::text AS object_class,
+    'Table 2 Recommendations'::text AS data_type,
+    d.name AS object_name,
+    count(DISTINCT r.id) AS n
+   FROM (cpic.recommendation r
+     JOIN cpic.drug d ON (((r.drugid)::text = (d.drugid)::text)))
+  GROUP BY d.name
+UNION ALL
+ SELECT 'Drug'::text AS object_class,
+    'Drug Test Alerts'::text AS data_type,
+    d.name AS object_name,
+    count(DISTINCT t.id) AS n
+   FROM (cpic.test_alert t
+     JOIN cpic.drug d ON (((t.drugid)::text = (d.drugid)::text)))
+  GROUP BY d.name
+UNION ALL
+ SELECT 'Drug'::text AS object_class,
+    'Guideline'::text AS data_type,
+    d.name AS object_name,
+    count(DISTINCT g.id) AS n
+   FROM ((cpic.guideline g
+     JOIN cpic.pair p ON ((g.id = p.guidelineid)))
+     JOIN cpic.drug d ON (((p.drugid)::text = (d.drugid)::text)))
+  GROUP BY d.name;
+
+
+ALTER TABLE cpic.data_progress OWNER TO karlkeat;
+
+--
+-- Name: file_artifact; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.file_artifact (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    entityids text[],
+    type text NOT NULL,
+    filename text NOT NULL,
+    url text
+);
+
+
+ALTER TABLE cpic.file_artifact OWNER TO karlkeat;
+
+--
+-- Name: TABLE file_artifact; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.file_artifact IS 'File artifact information. Each entry is a different file artifact generated by the system';
+
+
+--
+-- Name: COLUMN file_artifact.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN file_artifact.entityids; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact.entityids IS 'The IDs of the entities the file is for, required';
+
+
+--
+-- Name: COLUMN file_artifact.type; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact.type IS 'The type of file';
+
+
+--
+-- Name: COLUMN file_artifact.filename; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact.filename IS 'The name of the file (no path)';
+
+
+--
+-- Name: COLUMN file_artifact.url; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact.url IS 'The permanent URL of the current version of this file';
+
+
+--
+-- Name: file_artifact_history; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.file_artifact_history (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    fileid integer NOT NULL,
+    source text NOT NULL,
+    changedate timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    changemessage text
+);
+
+
+ALTER TABLE cpic.file_artifact_history OWNER TO karlkeat;
+
+--
+-- Name: TABLE file_artifact_history; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.file_artifact_history IS 'History information for a related file artifact';
+
+
+--
+-- Name: COLUMN file_artifact_history.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact_history.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN file_artifact_history.fileid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact_history.fileid IS 'The ID of the related File Artifact';
+
+
+--
+-- Name: COLUMN file_artifact_history.source; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact_history.source IS 'Where this history message originated from';
+
+
+--
+-- Name: COLUMN file_artifact_history.changedate; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact_history.changedate IS 'The date the change was applied';
+
+
+--
+-- Name: COLUMN file_artifact_history.changemessage; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_artifact_history.changemessage IS 'A message describing the change that occurred';
+
+
+--
+-- Name: file_note; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.file_note (
+    type text NOT NULL,
+    entityid text,
+    note text NOT NULL,
+    ordinal integer NOT NULL,
+    version integer DEFAULT 1
+);
+
+
+ALTER TABLE cpic.file_note OWNER TO karlkeat;
+
+--
+-- Name: TABLE file_note; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.file_note IS 'An ordered note that should appear with the type of information specified';
+
+
+--
+-- Name: COLUMN file_note.type; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_note.type IS 'The type of information this note is about';
+
+
+--
+-- Name: COLUMN file_note.entityid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_note.entityid IS 'Optional, the specific entity this note is about. For example, could be a gene symbol or drug ID';
+
+
+--
+-- Name: COLUMN file_note.note; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_note.note IS 'The freeform text note about the type/entity';
+
+
+--
+-- Name: COLUMN file_note.ordinal; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_note.ordinal IS 'The index number for ordering notes of a given type/entity';
+
+
+--
+-- Name: COLUMN file_note.version; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.file_note.version IS 'The version number, iterates on modification';
+
+
+--
+-- Name: file_status; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.file_status AS
+ SELECT a.id,
+    a.entityids,
+    a.type,
+    a.filename,
+    a.url,
+    history.latest_change
+   FROM (cpic.file_artifact a
+     LEFT JOIN ( SELECT h.fileid,
+            max(h.changedate) AS latest_change
+           FROM cpic.file_artifact_history h
+          GROUP BY h.fileid) history ON ((a.id = history.fileid)))
+  ORDER BY a.type, a.filename;
+
+
+ALTER TABLE cpic.file_status OWNER TO karlkeat;
+
+--
+-- Name: flyway_schema_history; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.flyway_schema_history (
+    installed_rank integer NOT NULL,
+    version character varying(50),
+    description character varying(200) NOT NULL,
+    type character varying(20) NOT NULL,
+    script character varying(1000) NOT NULL,
+    checksum integer,
+    installed_by character varying(100) NOT NULL,
+    installed_on timestamp without time zone DEFAULT now() NOT NULL,
+    execution_time integer NOT NULL,
+    success boolean NOT NULL
+);
+
+
+ALTER TABLE cpic.flyway_schema_history OWNER TO karlkeat;
+
+--
+-- Name: guideline_summary_view; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.guideline_summary_view AS
+ SELECT g.name AS guideline_name,
+    g.url AS guideline_url,
+    array_agg(DISTINCT d.name) AS drugs,
+    jsonb_agg(DISTINCT jsonb_build_object('symbol', e.symbol, 'url', e.url)) AS genes
+   FROM (cpic.guideline g
+     JOIN cpic.drug d ON ((d.guidelineid = g.id))),
+    (LATERAL unnest(g.genes) gn(gn)
+     JOIN cpic.gene e ON (((e.symbol)::text = gn.gn)))
+  GROUP BY g.name, g.url;
+
+
+ALTER TABLE cpic.guideline_summary_view OWNER TO karlkeat;
+
+--
+-- Name: VIEW guideline_summary_view; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON VIEW cpic.guideline_summary_view IS 'This view lists guidelines and the genes and drugs that are associated with them';
+
+
+--
+-- Name: COLUMN guideline_summary_view.guideline_name; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline_summary_view.guideline_name IS 'The title of the guideline';
+
+
+--
+-- Name: COLUMN guideline_summary_view.guideline_url; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline_summary_view.guideline_url IS 'The URL of the guideline on the CPIC website';
+
+
+--
+-- Name: COLUMN guideline_summary_view.drugs; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline_summary_view.drugs IS 'An array of drug names associated with this guideline';
+
+
+--
+-- Name: COLUMN guideline_summary_view.genes; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.guideline_summary_view.genes IS 'An array of gene data associated with this guideline, each object will have a symbol and a URL for the gene on the CPIC website';
+
+
+--
+-- Name: pair_view; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.pair_view AS
+ SELECT p.pairid,
+    p.drugid,
+    d.name AS drugname,
+    p.genesymbol,
+    g.name AS guidelinename,
+    g.url AS guidelineurl,
+    p.cpiclevel,
+    p.pgkbcalevel,
+    p.pgxtesting,
+    p.citations AS pmids,
+        CASE
+            WHEN (p.usedforrecommendation AND (p.guidelineid IS NOT NULL)) THEN 'Yes'::text
+            WHEN ((NOT p.usedforrecommendation) AND (p.guidelineid IS NOT NULL)) THEN 'No'::text
+            ELSE 'n/a'::text
+        END AS usedforrecommendation,
+        CASE
+            WHEN (p.guidelineid IS NULL) THEN true
+            ELSE false
+        END AS provisional
+   FROM ((cpic.pair p
+     JOIN cpic.drug d ON (((p.drugid)::text = (d.drugid)::text)))
+     LEFT JOIN cpic.guideline g ON ((p.guidelineid = g.id)))
+  WHERE (p.removed IS FALSE);
+
+
+ALTER TABLE cpic.pair_view OWNER TO karlkeat;
+
+--
+-- Name: VIEW pair_view; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON VIEW cpic.pair_view IS 'This pairs view combines information from the pair, drug, and guideline tables to make a more readable view of pair data. This also limits result to pairs which have NOT been removed.';
+
+
+--
+-- Name: COLUMN pair_view.pairid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.pairid IS 'The primary key ID of this pair';
+
+
+--
+-- Name: COLUMN pair_view.drugid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.drugid IS 'The ID of the drug in the pair';
+
+
+--
+-- Name: COLUMN pair_view.drugname; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.drugname IS 'The name of the drug in the pair';
+
+
+--
+-- Name: COLUMN pair_view.genesymbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.genesymbol IS 'The symbol of the drug in the pair';
+
+
+--
+-- Name: COLUMN pair_view.guidelinename; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.guidelinename IS 'The name for the guideline of this pair';
+
+
+--
+-- Name: COLUMN pair_view.guidelineurl; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.guidelineurl IS 'The URL for the guideline of this pair';
+
+
+--
+-- Name: COLUMN pair_view.cpiclevel; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.cpiclevel IS 'The CPIC-assigned level of the pair';
+
+
+--
+-- Name: COLUMN pair_view.pgkbcalevel; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.pgkbcalevel IS 'The top level of PharmGKB Clinical Annotation of the pair';
+
+
+--
+-- Name: COLUMN pair_view.pgxtesting; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.pgxtesting IS 'The testing level of the label annotation from PharmGKB for this pair';
+
+
+--
+-- Name: COLUMN pair_view.pmids; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.pmids IS 'The PMIDs for guideline publications of this pair';
+
+
+--
+-- Name: COLUMN pair_view.provisional; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.pair_view.provisional IS 'The CPIC level assigned to this pair is provisional, true if this pair is not part of a guideline';
+
+
+--
+-- Name: population; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.population (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    publicationid integer,
+    ethnicity text NOT NULL,
+    population text,
+    populationinfo text,
+    subjecttype text,
+    subjectcount integer DEFAULT 0,
+    version integer DEFAULT 1
+);
+
+
+ALTER TABLE cpic.population OWNER TO karlkeat;
+
+--
+-- Name: TABLE population; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.population IS 'A population description of a group of subjects';
+
+
+--
+-- Name: COLUMN population.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population.id IS 'A synthetic primary key ID';
+
+
+--
+-- Name: COLUMN population.publicationid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population.publicationid IS 'A reference to a publication';
+
+
+--
+-- Name: COLUMN population.ethnicity; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population.ethnicity IS 'The major ethnicity grouping of this population';
+
+
+--
+-- Name: COLUMN population.population; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population.population IS 'The descriptive name of this population, optional';
+
+
+--
+-- Name: COLUMN population.populationinfo; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population.populationinfo IS 'Further information about this population, optional';
+
+
+--
+-- Name: COLUMN population.subjecttype; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population.subjecttype IS 'Information about the types of subjects in this population';
+
+
+--
+-- Name: COLUMN population.subjectcount; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population.subjectcount IS 'The total number of subjects in this population';
+
+
+--
+-- Name: COLUMN population.version; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population.version IS 'The version number, iterates on modification';
+
+
+--
+-- Name: population_frequency_view; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.population_frequency_view AS
+ SELECT a.genesymbol,
+    a.name,
+    p.ethnicity AS population_group,
+    sum(p.subjectcount) AS subjectcount,
+        CASE
+            WHEN (sum(p.subjectcount) > 0) THEN ((sum((((p.subjectcount)::numeric * af.frequency) / (100)::numeric)) / (sum(p.subjectcount))::numeric) * (100)::numeric)
+            ELSE (0)::numeric
+        END AS freq_weighted_avg,
+    avg(af.frequency) AS freq_avg,
+    max(af.frequency) AS freq_max,
+    min(af.frequency) AS freq_min
+   FROM ((cpic.population p
+     JOIN cpic.allele_frequency af ON ((p.id = af.population)))
+     JOIN cpic.allele a ON ((af.alleleid = a.id)))
+  WHERE (af.frequency IS NOT NULL)
+  GROUP BY a.genesymbol, a.name, p.ethnicity;
+
+
+ALTER TABLE cpic.population_frequency_view OWNER TO karlkeat;
+
+--
+-- Name: VIEW population_frequency_view; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON VIEW cpic.population_frequency_view IS 'A summary of frequency data by allele and major population group';
+
+
+--
+-- Name: COLUMN population_frequency_view.genesymbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population_frequency_view.genesymbol IS 'The HGNC symbol of the gene';
+
+
+--
+-- Name: COLUMN population_frequency_view.name; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population_frequency_view.name IS 'The allele name';
+
+
+--
+-- Name: COLUMN population_frequency_view.population_group; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population_frequency_view.population_group IS 'The major grouping of population';
+
+
+--
+-- Name: COLUMN population_frequency_view.subjectcount; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population_frequency_view.subjectcount IS 'The count of subjects assigned the population group for the given allele';
+
+
+--
+-- Name: COLUMN population_frequency_view.freq_weighted_avg; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population_frequency_view.freq_weighted_avg IS 'The average frequency weighted by total subjects';
+
+
+--
+-- Name: COLUMN population_frequency_view.freq_avg; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population_frequency_view.freq_avg IS 'The unweighted average frequency (use with caution)';
+
+
+--
+-- Name: COLUMN population_frequency_view.freq_max; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population_frequency_view.freq_max IS 'The maximum frequency observed';
+
+
+--
+-- Name: COLUMN population_frequency_view.freq_min; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.population_frequency_view.freq_min IS 'The minimum frequency observed';
+
+
+--
+-- Name: publication; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.publication (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    guidelineid integer,
+    title text,
+    authors text[],
+    journal text,
+    month integer,
+    page character varying(50),
+    volume character varying(50),
+    year integer,
+    pmid text,
+    pmcid text,
+    doi text,
+    url text,
+    version integer DEFAULT 1,
+    highlightedonsite boolean DEFAULT false,
+    fulltextfile text
+);
+
+
+ALTER TABLE cpic.publication OWNER TO karlkeat;
+
+--
+-- Name: TABLE publication; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.publication IS 'Documents published to an external resource';
+
+
+--
+-- Name: COLUMN publication.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN publication.guidelineid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication.guidelineid IS 'The ID for the guideline this publication is about, optional';
+
+
+--
+-- Name: COLUMN publication.pmid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication.pmid IS 'The PubMed identifier for this publication';
+
+
+--
+-- Name: COLUMN publication.pmcid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication.pmcid IS 'The PubMed Central identifier for this publication';
+
+
+--
+-- Name: COLUMN publication.doi; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication.doi IS 'The Document Object Identifier (DOI) for this publication';
+
+
+--
+-- Name: COLUMN publication.url; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication.url IS 'The URL for this publication';
+
+
+--
+-- Name: COLUMN publication.highlightedonsite; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication.highlightedonsite IS 'true means this publication will show in the CPIC site Publications page, defaults to false';
+
+
+--
+-- Name: COLUMN publication.fulltextfile; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication.fulltextfile IS 'publicly-accessible URL to full text of publication';
+
+
+--
+-- Name: publication_supplement; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.publication_supplement (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    publicationid integer NOT NULL,
+    description text,
+    url text NOT NULL,
+    version integer DEFAULT 1
+);
+
+
+ALTER TABLE cpic.publication_supplement OWNER TO karlkeat;
+
+--
+-- Name: TABLE publication_supplement; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.publication_supplement IS 'A table to hold optional supplemental files for publications';
+
+
+--
+-- Name: COLUMN publication_supplement.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication_supplement.id IS 'A synthetic numerical ID, primary key';
+
+
+--
+-- Name: COLUMN publication_supplement.publicationid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication_supplement.publicationid IS 'A foreign-key reference to the publication this is a supplement for';
+
+
+--
+-- Name: COLUMN publication_supplement.description; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication_supplement.description IS 'An optional free text description of the supplemental file';
+
+
+--
+-- Name: COLUMN publication_supplement.url; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication_supplement.url IS 'The publicly-accessible URL to the supplemental file';
+
+
+--
+-- Name: COLUMN publication_supplement.version; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.publication_supplement.version IS 'The version number, iterates on modification';
+
+
+--
+-- Name: recommendation_alleles_view; Type: VIEW; Schema: cpic; Owner: karlkeat
+--
+
+CREATE VIEW cpic.recommendation_alleles_view AS
+ SELECT a.genesymbol,
+    g.chr,
+    g.lookupmethod,
+    array_agg(DISTINCT a.name ORDER BY a.name) AS alleles,
+    count(DISTINCT a.name) AS allele_count
+   FROM (cpic.allele a
+     JOIN cpic.gene g ON (((a.genesymbol)::text = (g.symbol)::text)))
+  WHERE ((a.clinicalfunctionalstatus IS NOT NULL) AND (g.lookupmethod <> 'ALLELE_STATUS'::text))
+  GROUP BY a.genesymbol, g.chr, g.lookupmethod
+UNION
+ SELECT g.symbol AS genesymbol,
+    g.chr,
+    g.lookupmethod,
+    array_agg(DISTINCT a.value ORDER BY a.value) AS alleles,
+    count(DISTINCT a.value) AS allele_count
+   FROM (cpic.recommendation r
+     JOIN cpic.drug d ON (((r.drugid)::text = (d.drugid)::text))),
+    (LATERAL jsonb_each_text(r.lookupkey) a(key, value)
+     JOIN cpic.gene g ON ((a.key = (g.symbol)::text)))
+  WHERE ((r.allelestatus IS NOT NULL) AND (g.lookupmethod = 'ALLELE_STATUS'::text) AND (upper(a.value) !~~ '%NO%RESULT%'::text))
+  GROUP BY g.symbol, g.chr, g.lookupmethod;
+
+
+ALTER TABLE cpic.recommendation_alleles_view OWNER TO karlkeat;
+
+--
+-- Name: VIEW recommendation_alleles_view; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON VIEW cpic.recommendation_alleles_view IS 'A list of genes that are used for recommendation lookup and the alleles to use for those lookups';
+
+
+--
+-- Name: sequence_location; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.sequence_location (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    version integer DEFAULT 1,
+    name text,
+    chromosomelocation text,
+    genelocation text,
+    proteinlocation text,
+    genesymbol character varying(50) NOT NULL,
+    dbsnpid text,
+    "position" integer,
+    CONSTRAINT chromosomelocation_nn CHECK ((chromosomelocation IS NOT NULL)),
+    CONSTRAINT position_nn CHECK (("position" IS NOT NULL))
+);
+
+
+ALTER TABLE cpic.sequence_location OWNER TO karlkeat;
+
+--
+-- Name: TABLE sequence_location; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.sequence_location IS 'A location on a sequence';
+
+
+--
+-- Name: COLUMN sequence_location.name; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.sequence_location.name IS 'The short name of this sequence location, arbitrary but often the gene location and nucleotide change';
+
+
+--
+-- Name: COLUMN sequence_location.chromosomelocation; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.sequence_location.chromosomelocation IS 'The partial HGVS representation of the location on the chromosomal sequence';
+
+
+--
+-- Name: COLUMN sequence_location.genelocation; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.sequence_location.genelocation IS 'The partial HGVS representation of the location on the gene sequence';
+
+
+--
+-- Name: COLUMN sequence_location.proteinlocation; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.sequence_location.proteinlocation IS 'The partial HGVS representation of the location on the protein sequence';
+
+
+--
+-- Name: COLUMN sequence_location.genesymbol; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.sequence_location.genesymbol IS 'The HGNC symbol fo the gene this squence location falls in';
+
+
+--
+-- Name: COLUMN sequence_location.dbsnpid; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.sequence_location.dbsnpid IS 'The DBSNP identifier (rs#) for this location, optional';
+
+
+--
+-- Name: COLUMN sequence_location."position"; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.sequence_location."position" IS 'The position, or starting position, of this variation on the chromosomal/mitochondrial sequence';
+
+
+--
+-- Name: statistic; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.statistic (
+    createdon timestamp without time zone NOT NULL,
+    stattype text NOT NULL,
+    statvalue numeric NOT NULL
+);
+
+
+ALTER TABLE cpic.statistic OWNER TO karlkeat;
+
+--
+-- Name: TABLE statistic; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.statistic IS 'A collection of numerical statistics with metadata about this database and other CPIC data';
+
+
+--
+-- Name: term; Type: TABLE; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TABLE cpic.term (
+    id integer DEFAULT nextval('cpic.cpic_id'::regclass) NOT NULL,
+    category text NOT NULL,
+    term text NOT NULL,
+    functionaldef text,
+    geneticdef text,
+    loinc text,
+    version integer DEFAULT 1
+);
+
+
+ALTER TABLE cpic.term OWNER TO karlkeat;
+
+--
+-- Name: TABLE term; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON TABLE cpic.term IS 'Standardized terms for clinical PGx test results';
+
+
+--
+-- Name: COLUMN term.id; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.term.id IS 'A synthetic numerical ID, auto-assigned, primary key';
+
+
+--
+-- Name: COLUMN term.category; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.term.category IS 'Category group this term falls into';
+
+
+--
+-- Name: COLUMN term.term; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.term.term IS 'The term name';
+
+
+--
+-- Name: COLUMN term.functionaldef; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.term.functionaldef IS 'The functional definition of the term';
+
+
+--
+-- Name: COLUMN term.geneticdef; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.term.geneticdef IS 'The genetic definition of the term';
+
+
+--
+-- Name: COLUMN term.loinc; Type: COMMENT; Schema: cpic; Owner: karlkeat
+--
+
+COMMENT ON COLUMN cpic.term.loinc IS 'The LOINC identifier for the term';
+
+
+--
+-- Name: allele_definition allele_definition_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele_definition
+    ADD CONSTRAINT allele_definition_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: allele_definition allele_definition_unique; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele_definition
+    ADD CONSTRAINT allele_definition_unique UNIQUE (genesymbol, name);
+
+
+--
+-- Name: allele_frequency allele_frequency_alleleid_population_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele_frequency
+    ADD CONSTRAINT allele_frequency_alleleid_population_key UNIQUE (alleleid, population);
+
+
+--
+-- Name: allele allele_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele
+    ADD CONSTRAINT allele_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: allele allele_unique; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele
+    ADD CONSTRAINT allele_unique UNIQUE (genesymbol, name);
+
+
+--
+-- Name: sequence_location chromosomelocation_unique; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.sequence_location
+    ADD CONSTRAINT chromosomelocation_unique UNIQUE (chromosomelocation);
+
+
+--
+-- Name: drug drug_name_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.drug
+    ADD CONSTRAINT drug_name_key UNIQUE (name);
+
+
+--
+-- Name: drug drug_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.drug
+    ADD CONSTRAINT drug_pkey PRIMARY KEY (drugid);
+
+
+--
+-- Name: file_artifact file_artifact_filename_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.file_artifact
+    ADD CONSTRAINT file_artifact_filename_key UNIQUE (filename);
+
+
+--
+-- Name: file_artifact_history file_artifact_history_fileid_changedate_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.file_artifact_history
+    ADD CONSTRAINT file_artifact_history_fileid_changedate_key UNIQUE (fileid, changedate);
+
+
+--
+-- Name: file_artifact_history file_artifact_history_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.file_artifact_history
+    ADD CONSTRAINT file_artifact_history_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: file_artifact file_artifact_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.file_artifact
+    ADD CONSTRAINT file_artifact_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: flyway_schema_history flyway_schema_history_pk; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.flyway_schema_history
+    ADD CONSTRAINT flyway_schema_history_pk PRIMARY KEY (installed_rank);
+
+
+--
+-- Name: gene gene_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.gene
+    ADD CONSTRAINT gene_pkey PRIMARY KEY (symbol);
+
+
+--
+-- Name: gene_result_diplotype gene_result_diplotype_functionphenotypeid_diplotypekey_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.gene_result_diplotype
+    ADD CONSTRAINT gene_result_diplotype_functionphenotypeid_diplotypekey_key UNIQUE (functionphenotypeid, diplotypekey);
+
+
+--
+-- Name: gene_result_diplotype gene_result_diplotype_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.gene_result_diplotype
+    ADD CONSTRAINT gene_result_diplotype_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: gene_result gene_result_genesymbol_result_activityscore_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.gene_result
+    ADD CONSTRAINT gene_result_genesymbol_result_activityscore_key UNIQUE (genesymbol, result, activityscore);
+
+
+--
+-- Name: gene_result_lookup gene_result_lookup_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.gene_result_lookup
+    ADD CONSTRAINT gene_result_lookup_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: gene_result gene_result_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.gene_result
+    ADD CONSTRAINT gene_result_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: guideline guideline_name_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.guideline
+    ADD CONSTRAINT guideline_name_key UNIQUE (name);
+
+
+--
+-- Name: guideline guideline_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.guideline
+    ADD CONSTRAINT guideline_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: guideline guideline_url_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.guideline
+    ADD CONSTRAINT guideline_url_key UNIQUE (url);
+
+
+--
+-- Name: pair pair_genesymbol_drugid_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.pair
+    ADD CONSTRAINT pair_genesymbol_drugid_key UNIQUE (genesymbol, drugid);
+
+
+--
+-- Name: pair pair_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.pair
+    ADD CONSTRAINT pair_pkey PRIMARY KEY (pairid);
+
+
+--
+-- Name: population population_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.population
+    ADD CONSTRAINT population_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: publication publication_doi; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.publication
+    ADD CONSTRAINT publication_doi UNIQUE (doi);
+
+
+--
+-- Name: publication publication_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.publication
+    ADD CONSTRAINT publication_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: publication publication_pmcid; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.publication
+    ADD CONSTRAINT publication_pmcid UNIQUE (pmcid);
+
+
+--
+-- Name: publication publication_pmid; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.publication
+    ADD CONSTRAINT publication_pmid UNIQUE (pmid);
+
+
+--
+-- Name: publication_supplement publication_supplement_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.publication_supplement
+    ADD CONSTRAINT publication_supplement_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: publication_supplement publication_supplement_publicationid_url_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.publication_supplement
+    ADD CONSTRAINT publication_supplement_publicationid_url_key UNIQUE (publicationid, url);
+
+
+--
+-- Name: publication publication_title_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.publication
+    ADD CONSTRAINT publication_title_key UNIQUE (title);
+
+
+--
+-- Name: recommendation recommendation_guidelineid_drugid_population_lookupkey_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.recommendation
+    ADD CONSTRAINT recommendation_guidelineid_drugid_population_lookupkey_key UNIQUE (guidelineid, drugid, population, lookupkey);
+
+
+--
+-- Name: recommendation recommendation_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.recommendation
+    ADD CONSTRAINT recommendation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sequence_location sequence_location_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.sequence_location
+    ADD CONSTRAINT sequence_location_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: statistic statistic_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.statistic
+    ADD CONSTRAINT statistic_pkey PRIMARY KEY (createdon, stattype);
+
+
+--
+-- Name: term term_category_term_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.term
+    ADD CONSTRAINT term_category_term_key UNIQUE (category, term);
+
+
+--
+-- Name: term term_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.term
+    ADD CONSTRAINT term_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: test_alert test_alert_drugid_population_lookupkey_key; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.test_alert
+    ADD CONSTRAINT test_alert_drugid_population_lookupkey_key UNIQUE (drugid, population, lookupkey);
+
+
+--
+-- Name: test_alert test_alert_pkey; Type: CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.test_alert
+    ADD CONSTRAINT test_alert_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: flyway_schema_history_s_idx; Type: INDEX; Schema: cpic; Owner: karlkeat
+--
+
+CREATE INDEX flyway_schema_history_s_idx ON cpic.flyway_schema_history USING btree (success);
+
+
+--
+-- Name: publication_guidelineid_idx; Type: INDEX; Schema: cpic; Owner: karlkeat
+--
+
+CREATE INDEX publication_guidelineid_idx ON cpic.publication USING btree (guidelineid);
+
+
+--
+-- Name: publication_guidelineid_idx1; Type: INDEX; Schema: cpic; Owner: karlkeat
+--
+
+CREATE INDEX publication_guidelineid_idx1 ON cpic.publication USING btree (guidelineid);
+
+
+--
+-- Name: allele version_allele; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_allele BEFORE UPDATE ON cpic.allele FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: allele_definition version_allele_definition; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_allele_definition BEFORE UPDATE ON cpic.allele_definition FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: allele_frequency version_allele_frequency; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_allele_frequency BEFORE UPDATE ON cpic.allele_frequency FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: allele_location_value version_allele_location_value; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_allele_location_value BEFORE UPDATE ON cpic.allele_location_value FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: change_log version_change_log; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_change_log BEFORE UPDATE ON cpic.change_log FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: drug version_drug; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_drug BEFORE UPDATE ON cpic.drug FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: file_note version_file_note; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_file_note BEFORE UPDATE ON cpic.file_note FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: gene version_gene; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_gene BEFORE UPDATE ON cpic.gene FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: gene_result version_gene_result; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_gene_result BEFORE UPDATE ON cpic.gene_result FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: guideline version_guideline; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_guideline BEFORE UPDATE ON cpic.guideline FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: pair version_pair; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_pair BEFORE UPDATE ON cpic.pair FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: population version_population; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_population BEFORE UPDATE ON cpic.population FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: publication version_publication; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_publication BEFORE UPDATE ON cpic.publication FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: publication_supplement version_publication_supplement; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_publication_supplement BEFORE UPDATE ON cpic.publication_supplement FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: recommendation version_recommendation; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_recommendation BEFORE UPDATE ON cpic.recommendation FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: sequence_location version_sequence_location; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_sequence_location BEFORE UPDATE ON cpic.sequence_location FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: term version_term; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_term BEFORE UPDATE ON cpic.term FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: test_alert version_test_alert; Type: TRIGGER; Schema: cpic; Owner: karlkeat
+--
+
+CREATE TRIGGER version_test_alert BEFORE UPDATE ON cpic.test_alert FOR EACH ROW EXECUTE FUNCTION cpic.increment_version();
+
+
+--
+-- Name: allele allele_definitionid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele
+    ADD CONSTRAINT allele_definitionid_fkey FOREIGN KEY (definitionid) REFERENCES cpic.allele_definition(id);
+
+
+--
+-- Name: allele_definition allele_definitions_for_gene; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele_definition
+    ADD CONSTRAINT allele_definitions_for_gene FOREIGN KEY (genesymbol) REFERENCES cpic.gene(symbol);
+
+
+--
+-- Name: allele_frequency allele_frequency_alleleid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele_frequency
+    ADD CONSTRAINT allele_frequency_alleleid_fkey FOREIGN KEY (alleleid) REFERENCES cpic.allele(id);
+
+
+--
+-- Name: allele_frequency allele_frequency_population_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele_frequency
+    ADD CONSTRAINT allele_frequency_population_fkey FOREIGN KEY (population) REFERENCES cpic.population(id);
+
+
+--
+-- Name: allele allele_genesymbol_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele
+    ADD CONSTRAINT allele_genesymbol_fkey FOREIGN KEY (genesymbol) REFERENCES cpic.gene(symbol);
+
+
+--
+-- Name: allele_location_value allele_location_value_alleledefinitionid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele_location_value
+    ADD CONSTRAINT allele_location_value_alleledefinitionid_fkey FOREIGN KEY (alleledefinitionid) REFERENCES cpic.allele_definition(id);
+
+
+--
+-- Name: allele_location_value allele_location_value_locationid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.allele_location_value
+    ADD CONSTRAINT allele_location_value_locationid_fkey FOREIGN KEY (locationid) REFERENCES cpic.sequence_location(id);
+
+
+--
+-- Name: file_artifact_history file_artifact_history_fileid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.file_artifact_history
+    ADD CONSTRAINT file_artifact_history_fileid_fkey FOREIGN KEY (fileid) REFERENCES cpic.file_artifact(id);
+
+
+--
+-- Name: gene_result_diplotype gene_result_diplotype_functionphenotypeid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.gene_result_diplotype
+    ADD CONSTRAINT gene_result_diplotype_functionphenotypeid_fkey FOREIGN KEY (functionphenotypeid) REFERENCES cpic.gene_result_lookup(id);
+
+
+--
+-- Name: gene_result gene_result_genesymbol_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.gene_result
+    ADD CONSTRAINT gene_result_genesymbol_fkey FOREIGN KEY (genesymbol) REFERENCES cpic.gene(symbol);
+
+
+--
+-- Name: gene_result_lookup gene_result_lookup_phenotypeid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.gene_result_lookup
+    ADD CONSTRAINT gene_result_lookup_phenotypeid_fkey FOREIGN KEY (phenotypeid) REFERENCES cpic.gene_result(id);
+
+
+--
+-- Name: drug guideline_for_drug; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.drug
+    ADD CONSTRAINT guideline_for_drug FOREIGN KEY (guidelineid) REFERENCES cpic.guideline(id);
+
+
+--
+-- Name: pair pair_drugid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.pair
+    ADD CONSTRAINT pair_drugid_fkey FOREIGN KEY (drugid) REFERENCES cpic.drug(drugid);
+
+
+--
+-- Name: pair pair_genesymbol_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.pair
+    ADD CONSTRAINT pair_genesymbol_fkey FOREIGN KEY (genesymbol) REFERENCES cpic.gene(symbol);
+
+
+--
+-- Name: pair pair_guidelineid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.pair
+    ADD CONSTRAINT pair_guidelineid_fkey FOREIGN KEY (guidelineid) REFERENCES cpic.guideline(id);
+
+
+--
+-- Name: population population_publicationid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.population
+    ADD CONSTRAINT population_publicationid_fkey FOREIGN KEY (publicationid) REFERENCES cpic.publication(id);
+
+
+--
+-- Name: publication publication_guidelineid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.publication
+    ADD CONSTRAINT publication_guidelineid_fkey FOREIGN KEY (guidelineid) REFERENCES cpic.guideline(id);
+
+
+--
+-- Name: publication_supplement publication_supplement_publicationid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.publication_supplement
+    ADD CONSTRAINT publication_supplement_publicationid_fkey FOREIGN KEY (publicationid) REFERENCES cpic.publication(id);
+
+
+--
+-- Name: recommendation recommendation_drugid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.recommendation
+    ADD CONSTRAINT recommendation_drugid_fkey FOREIGN KEY (drugid) REFERENCES cpic.drug(drugid);
+
+
+--
+-- Name: recommendation recommendation_guidelineid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.recommendation
+    ADD CONSTRAINT recommendation_guidelineid_fkey FOREIGN KEY (guidelineid) REFERENCES cpic.guideline(id);
+
+
+--
+-- Name: sequence_location sequence_location_genesymbol_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.sequence_location
+    ADD CONSTRAINT sequence_location_genesymbol_fkey FOREIGN KEY (genesymbol) REFERENCES cpic.gene(symbol);
+
+
+--
+-- Name: test_alert test_alert_drugid_fkey; Type: FK CONSTRAINT; Schema: cpic; Owner: karlkeat
+--
+
+ALTER TABLE ONLY cpic.test_alert
+    ADD CONSTRAINT test_alert_drugid_fkey FOREIGN KEY (drugid) REFERENCES cpic.drug(drugid);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
