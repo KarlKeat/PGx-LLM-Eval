@@ -1,0 +1,11 @@
+gene	allele	pop_group	question	answer	llm_answer	score
+CYP2D6	*99	American	What is the average allele frequency of CYP2D6 *99 in the American population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.0	IDK	0.25
+CYP2D6	*8	Near Eastern	What is the average allele frequency of CYP2D6 *8 in the Near Eastern population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.0	0.0397	0.0397
+CYP2B6	*11	East Asian	What is the average allele frequency of CYP2B6 *11 in the East Asian population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.0	0.0211	0.0211
+CYP2C9	*44	Central/South Asian	What is the average allele frequency of CYP2C9 *44 in the Central/South Asian population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.0	0.0131	0.0131
+CYP2D6	*108	Central/South Asian	What is the average allele frequency of CYP2D6 *108 in the Central/South Asian population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.0	0.0057	0.0057
+CYP2D6	*106	African American/Afro-Caribbean	What is the average allele frequency of CYP2D6 *106 in the African American/Afro-Caribbean population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.0	0.0022	0.0022
+DPYD	c.1475C>T	Latino	What is the average allele frequency of DPYD c.1475C>T in the Latino population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.0	0.0494	0.0494
+CYP2C19	*17	African American/Afro-Caribbean	What is the average allele frequency of CYP2C19 *17 in the African American/Afro-Caribbean population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.2072	0.1357	0.07150000000000001
+DPYD	c.703C>T (*8)	Central/South Asian	What is the average allele frequency of DPYD c.703C>T (*8) in the Central/South Asian population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.0002	0.0407	0.0405
+CYP2D6	*111	East Asian	What is the average allele frequency of CYP2D6 *111 in the East Asian population? Respond with just a number, rounded to 4 decimal places, with no additional text.	0.0	0.0313	0.0313

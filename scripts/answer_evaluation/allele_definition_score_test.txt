@@ -1,0 +1,456 @@
+gene	allele	question	answer	llm_answer	precision	recall
+CYP2C19	*19	What SNPs are in the allele definition for CYP2C19 *19? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3758581;rs1564657013	"The CYP2C19 *19 allele definition includes the following SNPs:
+
+1. rs4986893 (g.-806C>T)
+2. rs4244285 (g.-3402C>T)
+3. rs4986909 (g.1A>G)
+
+These SNPs contribute to the variability in CYP2C19 enzyme activity and are associated with the CYP2C19 *19 allele."	0.0	0.0
+CYP2C19	*39	What SNPs are in the allele definition for CYP2C19 *39? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3758581;rs17885179;rs17882687	"CYP2C19*39 is associated with the following SNPs:
+
+- rs12248560 (G681A)
+- rs4244285 (T636G)
+
+These are the commonly reported SNPs for the CYP2C19*39 allele."	0.0	0.0
+CYP2D6	*143	What SNPs are in the allele definition for CYP2D6 *143? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs769258;rs766391487	The allele definition for CYP2D6 *143 is not typically described by specific SNPs. Instead, it is defined by a duplication of the whole gene. In general, CYP2D6 gene duplications can lead to ultra-rapid metabolizer phenotypes. If there are specific SNPs associated with this allele in the literature, I unfortunately do not have that information at this time.	0.0	0.0
+CYP2D6	*146	What SNPs are in the allele definition for CYP2D6 *146? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs28371696;rs16947	"The allele definition for CYP2D6*146 includes the following SNPs:
+
+1. rs72549363 (c.4334C>T)
+2. rs28371706 (c.886T>C)
+3. rs200915705 (c.2989G>A)
+
+These SNPs are associated with reduced function of the CYP2D6 enzyme."	0.0	0.0
+CFTR	P67L	What SNPs are in the allele definition for CFTR P67L? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs368505753	The CFTR P67L variant is associated with the SNP rs1800099.	0.0	0.0
+DPYD	c.1314T>G	What SNPs are in the allele definition for DPYD c.1314T>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs186169810	The DPYD c.1314T>G variant is associated with several SNPs in the allele definition. Some of the common SNPs for this variant are rs75017182 and rs3918290. These SNPs can result in reduced DPYD enzyme activity and increased risk of severe toxicity to fluoropyrimidine-based chemotherapy.	0.0	0.0
+RYR1	c.6757C>T	What SNPs are in the allele definition for RYR1 c.6757C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs917523269	The allele definition for RYR1 c.6757C>T involves a single nucleotide polymorphism (SNP) at position 6757 in the RYR1 gene where a cytosine (C) is replaced by a thymine (T). This specific variant is also known as rs34715550 in the dbSNP database.	0.0	0.0
+CYP2C19	*9	What SNPs are in the allele definition for CYP2C19 *9? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3758581;rs17884712	"The allele definition for CYP2C19*9 includes the following SNPs:
+- rs17885098 (c.1-806C>T)
+- rs4244285 (c.1-392C>T)
+- rs28399504 (c.1-376G>A)
+
+These SNPs are associated with the CYP2C19*9 decreased function allele."	0.0	0.0
+CYP2C9	*21	What SNPs are in the allele definition for CYP2C9 *21? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs142240658	CYP2C9*21 refers to a specific allele of the CYP2C9 gene that has a SNP at position 430. The specific SNP associated with CYP2C9*21 is rs1799853.	0.0	0.0
+CYP2D6	*23	What SNPs are in the allele definition for CYP2D6 *23? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs267608310	"The allele definition for CYP2D6 *23 includes the following SNPs:
+
+1. rs28371706 (G>A) - This SNP results in a non-synonymous change Gly306Arg in the CYP2D6 protein.
+
+However, it is important to note that the CYP2D6 *23 allele varies in different populations, and additional SNPs may also be involved in defining this allele."	0.0	0.0
+CYP2D6	*18	What SNPs are in the allele definition for CYP2D6 *18? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs765776661	"The allele definition for CYP2D6 *18 includes the following SNPs:
+
+1. rs28371706 (100C>T)
+2. rs16947 (2850C>T)
+3. rs5030865 (2988G>A)
+
+These SNPs contribute to the reduced function allele CYP2D6 *18."	0.0	0.0
+G6PD	Coimbra Shunde	What SNPs are in the allele definition for G6PD Coimbra Shunde? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs137852330	"The G6PD Coimbra Shunde allele is defined by the following SNPs:
+
+1. rs5030868 (Asn126Asp)
+2. rs2230037 (Gly137Val)
+3. rs7637 (Val291Met)
+
+These SNPs are associated with the G6PD Coimbra Shunde variant."	0.0	0.0
+DPYD	c.2623A>C	What SNPs are in the allele definition for DPYD c.2623A>C? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs201035051	The SNP in the allele definition for DPYD c.2623A>C is rs67376798.	0.0	0.0
+CYP3A5	*8	What SNPs are in the allele definition for CYP3A5 *8? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs55817950	The CYP3A5*8 allele is defined by the presence of two SNPs: rs776746 (A>G) and rs15524 (G>A).	0.0	0.0
+CYP2D6	*147	What SNPs are in the allele definition for CYP2D6 *147? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs1065852;rs72549356	"CYP2D6*147 is defined by the following SNPs:
+
+- 1846G>A (rs1135840)
+- 2549delA (rs72549354)
+- 2613A>C (rs56337013)
+
+These SNPs contribute to the reduced function of the CYP2D6 enzyme."	0.3333333333333333	0.25
+DPYD	c.1475C>T	What SNPs are in the allele definition for DPYD c.1475C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs72549304	The SNP in the allele definition for DPYD c.1475C>T is rs3918290. This SNP is also known as DPYD*2A and is associated with reduced enzyme activity of dihydropyrimidine dehydrogenase (DPD) which can lead to severe adverse reactions to fluoropyrimidine chemotherapy drugs like 5-fluorouracil (5-FU) and capecitabine.	0.0	0.0
+TPMT	*7	What SNPs are in the allele definition for TPMT *7? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs72552736	"The allele definition for TPMT *7 includes the following SNPs:
+
+1. rs79901429 (G460A)
+2. rs1800462 (G238C)
+
+These SNPs are associated with decreased TPMT activity and may impact the metabolism of thiopurine drugs."	0.0	0.0
+DPYD	c.1003G>T (*11)	What SNPs are in the allele definition for DPYD c.1003G>T (*11)? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs72549306	"The allele definition for DPYD c.1003G>T (*11) refers to a pharmacogenomic variant in the DPYD gene. This variant is associated with decreased function of the DPYD enzyme, which may lead to an increased risk of severe 5-fluorouracil (5-FU) toxicity.
+
+The specific SNPs in the allele definition for DPYD c.1003G>T (*11) are as follows:
+
+- rs1801160 (also known as c.1905+1G>A)
+- rs56038477 (also known as c.1679T>G)
+- rs75017182 (also known as c.1129-5923C>G)
+- Other SNPs may also be included in this allele definition.
+
+These variants contribute to the decreased DPYD enzyme function associated with DPYD c.1003G>T (*11) and impact an individual's response to certain medications, particularly fluoropyrimidines like 5-FU.
+
+It's important to consult the latest literature or genetic testing reports for the most up-to-date information on pharmacogenomic variants like DPYD c.1003G>T (*11) and their potential clinical implications."	0.0	0.0
+G6PD	Tomah	What SNPs are in the allele definition for G6PD Tomah? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs137852322	"The G6PD Tomah allele is associated with the following SNPs:
+
+- rs76723693 (G202A)
+- rs5030868 (C563T)
+
+These SNPs are commonly found in individuals with the G6PD Tomah variant."	0.0	0.0
+G6PD	A- 202A_376G	What SNPs are in the allele definition for G6PD A- 202A_376G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1050828;rs1050829	The G6PD A- 202A_376G allele refers to a combination of two SNPs in the glucose-6-phosphate dehydrogenase (G6PD) gene. The SNPs involved are rs1050828 (202A) and rs1050829 (376G).	1.0	1.0
+CYP2C19	*33	What SNPs are in the allele definition for CYP2C19 *33? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3758581;rs370803989	"The allele definition for CYP2C19 *33 includes the following SNPs:
+
+- rs72552267 (CYP2C19*33)
+- rs12248560
+- rs28399504
+
+These SNPs contribute to the reduced function of the CYP2C19 enzyme."	0.0	0.0
+DPYD	c.1543G>A	What SNPs are in the allele definition for DPYD c.1543G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs148994843	The SNP in the allele definition for DPYD c.1543G>A is rs3918290. This SNP is associated with decreased enzymatic activity of the DPYD gene, leading to an increased risk of severe toxicity to certain chemotherapy drugs like 5-fluorouracil (5-FU) and capecitabine.	0.0	0.0
+DPYD	c.2657G>A (*9B)	What SNPs are in the allele definition for DPYD c.2657G>A (*9B)? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1801267	"The allele definition for DPYD c.2657G>A (*9B) includes the following SNPs:
+
+1. rs1801159
+
+These SNPs are associated with the DPYD c.2657G>A variant."	0.0	0.0
+CYP2D6	*111	What SNPs are in the allele definition for CYP2D6 *111? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs535642512;rs16947	"The allele definition for CYP2D6 *111 includes the following SNPs:
+
+- rs28371725 (G>A) 
+- rs72549316 (C>T)
+
+These SNPs are associated with reduced function of the CYP2D6 enzyme."	0.0	0.0
+CYP2B6	*48	What SNPs are in the allele definition for CYP2B6 *48? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs200238771	The CYP2B6 *48 allele is defined by the presence of two SNPs: rs3745274 (T516G) and rs2279343 (A785G).	0.0	0.0
+CYP2C9	*33	What SNPs are in the allele definition for CYP2C9 *33? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs200183364	"The allele definition for CYP2C9*33 includes the following SNPs:
+
+- rs72558189 (CYP2C9*33 allele)
+
+This specific SNP is associated with reduced enzyme activity in the CYP2C9 gene. It is important to note that the CYP2C9*33 allele is a rare variant and its clinical significance may vary depending on the individual's genetic background and medication regimen."	0.0	0.0
+CYP2D6	*113	What SNPs are in the allele definition for CYP2D6 *113? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs569439709	"CYP2D6 *113 allele is associated with the following SNPs:
+
+- c.1294A>G (rs72552267)
+- c.1347G>A
+- c.1378G>A
+- c.1386C>A
+
+These SNPs contribute to the CYP2D6 *113 allele definition."	0.0	0.0
+RYR1	c.14510delA	What SNPs are in the allele definition for RYR1 c.14510delA? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922877	The variant RYR1 c.14510delA is associated with the SNP rs121918625. This particular SNP results in a deletion of an adenine (A) base at position 14510 in the RYR1 gene.	0.0	0.0
+CYP2C19	*13	What SNPs are in the allele definition for CYP2C19 *13? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3758581;rs17879685	CYP2C19\*13 allele is associated with several SNPs, including rs72552267, rs72558186, rs12708965, rs17883961, rs3758581, and rs4986893. Please note that the presence of these SNPs can determine the activity level of the CYP2C19 enzyme, impacting drug metabolism and response.	0.16666666666666666	0.5
+DPYD	c.1615G>A	What SNPs are in the allele definition for DPYD c.1615G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs142619737	The SNP in the allele definition for DPYD c.1615G>A is rs55886062.	0.0	0.0
+DPYD	c.3067C>A	What SNPs are in the allele definition for DPYD c.3067C>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs114096998	The allele definition for DPYD c.3067C>A involves the SNP rs1801159.	0.0	0.0
+RYR1	c.1654C>T	What SNPs are in the allele definition for RYR1 c.1654C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922770	The SNP in the allele definition for RYR1 c.1654C>T is rs61732286.	0.0	0.0
+RYR1	c.625G>A	What SNPs are in the allele definition for RYR1 c.625G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs771058055	The RYR1 gene variant c.625G>A corresponds to rs121918600. This nucleotide change alters the amino acid sequence of the ryanodine receptor.	0.0	0.0
+CYP2D6	*40	What SNPs are in the allele definition for CYP2D6 *40? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1058164;rs28371706;rs1135840;rs16947;rs72549356	"The allele definition for CYP2D6 *40 includes the following SNPs:
+
+1. rs1065852 (c.100C>T)
+2. rs1135840 (c.2850C>T)
+
+These SNPs are associated with reduced CYP2D6 enzyme activity."	0.5	0.2
+RYR1	c.9356G>A	What SNPs are in the allele definition for RYR1 c.9356G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922833	The SNP in the allele definition for RYR1 c.9356G>A is rs45549533.	0.0	0.0
+G6PD	Minnesota, Marion, Gastonia, LeJeune	What SNPs are in the allele definition for G6PD Minnesota, Marion, Gastonia, LeJeune? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs137852326	The G6PD (Glucose-6-Phosphate Dehydrogenase) variants you mentioned - Minnesota (rs72554665), Marion (rs35749812), Gastonia (rs34627147), and LeJeune (rs864622925) - are associated with specific single nucleotide polymorphisms (SNPs) that cause enzyme deficiencies leading to G6PD deficiency. These SNPs have been assigned particular rsIDs in the dbSNP database.	0.0	0.0
+MT-RNR1	m.951G>A	What SNPs are in the allele definition for MT-RNR1 m.951G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs200887992	The SNP m.951G>A in the MT-RNR1 gene is typically referred to as the rs28383479 variant. It is important in the context of aminoglycoside-induced deafness.	0.0	0.0
+RYR1	c.7097C>G	What SNPs are in the allele definition for RYR1 c.7097C>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922806	The SNP in the allele definition for RYR1 c.7097C>G is rs193922047. It is also known as p.Arg2366Gly. This SNP is associated with malignant hyperthermia susceptibility.	0.0	0.0
+CFTR	3272-26A->G	What SNPs are in the allele definition for CFTR 3272-26A->G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs76151804	The CFTR 3272-26A->G allele corresponds to the rsID rs3027945. This SNP is located in the cystic fibrosis transmembrane conductance regulator (CFTR) gene.	0.0	0.0
+CYP2D6	*152	What SNPs are in the allele definition for CYP2D6 *152? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs140900383	CYP2D6*152 is a pharmacogenetic allele associated with a combination of the following SNPs: rs28371725 (1846G>A), rs72549342 (100C>T), and rs202131129 (971C>T). These SNPs together define the CYP2D6*152 allele.	0.0	0.0
+RYR1	c.677T>A	What SNPs are in the allele definition for RYR1 c.677T>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs112596687	The SNP in the allele definition for RYR1 c.677T>A is rs397516064. This variant is a single nucleotide polymorphism (SNP) in the RYR1 gene and results in the nucleotide change from T (Thymine) to A (Adenine) at position 677.	0.0	0.0
+CYP2D6	*124	What SNPs are in the allele definition for CYP2D6 *124? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs150163869;rs757396767	"The CYP2D6*124 allele is defined by the following SNPs:
+
+1. c.100C>T (rs1065852)
+2. c.3860G>A (rs28371725)
+3. c.5290C>T (rs56337013)
+
+These three SNPs make up the CYP2D6*124 allele definition."	0.0	0.0
+G6PD	Aveiro	What SNPs are in the allele definition for G6PD Aveiro? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs137852346	The SNP associated with the G6PD Aveiro variant is rs72554665. This SNP is also known as c.95A>G (p.Glu32Gly) in the G6PD gene.	0.0	0.0
+RYR1	c.7282G>A	What SNPs are in the allele definition for RYR1 c.7282G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922809	The RYR1 c.7282G>A variant is also known by its rsID, which is rs121434490. This specific variant involves a change from a guanine (G) to an adenine (A) at position 7282 in the RYR1 gene. The presence of this variant can impact individual responses to certain medications and anesthesia due to its role in encoding the ryanodine receptor protein.	0.0	0.0
+G6PD	A- 680T_376G	What SNPs are in the allele definition for G6PD A- 680T_376G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1050829;rs137852328	The allele definition for G6PD A- 680T_376G refers to two single nucleotide polymorphisms (SNPs) within the G6PD gene: rs1050828 (A376G) and rs1050829 (G680T). These SNPs are commonly associated with G6PD deficiency.	0.5	0.5
+RYR1	c.14545G>A	What SNPs are in the allele definition for RYR1 c.14545G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs118192168	The SNP in the allele definition for RYR1 c.14545G>A is rs61737657.	0.0	0.0
+CYP2D6	*162	What SNPs are in the allele definition for CYP2D6 *162? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs16947;rs769157652	There is no specific information available on a CYP2D6 *162 allele or the SNPs associated with it in current pharmacogenomics databases. This could be due to variations in the nomenclature system or the allele not being well-characterized in the literature. If you have another question or need information on a different allele, feel free to ask!	0.0	0.0
+RYR1	c.2654G>A	What SNPs are in the allele definition for RYR1 c.2654G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs370634440	The allele definition for RYR1 c.2654G>A refers to a specific change in the nucleotide sequence of the RYR1 gene. The specific SNP associated with this change is rs121918462.	0.0	0.0
+CYP2B6	*37	What SNPs are in the allele definition for CYP2B6 *37? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3745274;rs2279343;rs373489637	"The allele definition for CYP2B6 *37 includes the following SNPs:
+
+1. 516G>T (rs3745274)
+2. 785A>G
+
+These SNPs result in decreased CYP2B6 enzyme activity."	1.0	0.3333333333333333
+CYP2D6	*119	What SNPs are in the allele definition for CYP2D6 *119? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs28371725	CYP2D6 *119 refers to a decreased function allele due to the presence of multiple SNPs. The specific SNPs included in the allele definition can vary depending on the source. Typically, CYP2D6 *119 includes the SNPs rs72549356, rs28371706, and rs72549357. These SNPs result in reduced CYP2D6 enzyme activity.	0.0	0.0
+CYP2D6	*74	What SNPs are in the allele definition for CYP2D6 *74? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs28371703	The allele definition for CYP2D6 *74 includes the following SNPs: rs28371725 (c.580_583delTTAA), rs72549374 (c.667_670insA), and rs72549375 (c.1006C>T).	0.0	0.0
+CYP3A5	*7	What SNPs are in the allele definition for CYP3A5 *7? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs41303343	The allele definition for CYP3A5 *7 is a SNP in the CYP3A5 gene known as rs776746. This SNP creates a premature stop codon in the gene, leading to a non-functional CYP3A5 enzyme.	0.0	0.0
+RYR1	c.1834G>C	What SNPs are in the allele definition for RYR1 c.1834G>C? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs118204423	The SNP c.1834G>C in the RYR1 gene does not have a specific dbSNP ID (rsID) associated with it. This SNP is a substitution of a guanine (G) nucleotide to a cytosine (C) nucleotide at position 1834 in the RYR1 gene. It is considered a variant in the RYR1 gene associated with sensitivity to malignant hyperthermia.	0.0	0.0
+CFTR	G1244E	What SNPs are in the allele definition for CFTR G1244E? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs267606723	The CFTR G1244E allele is associated with the SNP rs1800090. This SNP is a missense mutation that results in the amino acid change Glycine to Glutamic acid at position 1244 in the CFTR gene.	0.0	0.0
+CYP2C9	*39	What SNPs are in the allele definition for CYP2C9 *39? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs762239445	"The CYP2C9*39 allele definition is associated with the following SNPs:
+1. **rs717620**: This is the primary variant linked with the CYP2C9*39 allele.
+
+If you have any more questions or need further clarification, feel free to ask!"	0.0	0.0
+CYP2D6	*42	What SNPs are in the allele definition for CYP2D6 *42? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs16947;rs72549346	"The allele definition for CYP2D6 *42 includes the following SNPs:
+
+1. rs28371725 (100C>T)
+2. rs28371706 (124G>A)
+3. rs72552763 (261C>T)
+4. rs72554665 (348C>G)
+
+These SNPs are associated with the CYP2D6 *42 allele."	0.0	0.0
+RYR1	c.418G>A	What SNPs are in the allele definition for RYR1 c.418G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs142474192	The SNP c.418G>A in the RYR1 gene corresponds to the variant rs138500669. This SNP is associated with a rare form of malignant hyperthermia susceptibility.	0.0	0.0
+CYP2D6	*158	What SNPs are in the allele definition for CYP2D6 *158? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1058164;rs141824015;rs1135840;rs16947;rs28371725	The allele definition for CYP2D6 *158 includes the SNP rs28371706, which is a T to G substitution at nucleotide position 2935 in exon 9 of the CYP2D6 gene. This SNP leads to a missense mutation where phenylalanine is replaced with cysteine at amino acid position 489.	0.0	0.0
+RYR1	c.13673G>A	What SNPs are in the allele definition for RYR1 c.13673G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs118192130	The SNP c.13673G>A in the RYR1 gene corresponds to rs61732956.	0.0	0.0
+CYP2C9	*61	What SNPs are in the allele definition for CYP2C9 *61? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1799853;rs202201137	"CYP2C9*61 is not a commonly known or documented allele designation in the literature or pharmacogenomics databases. The most well-known and clinically relevant CYP2C9 alleles include
+ CYP2C9*2, CYP2C9*3, and CYP2C9*5, among others. If you have any other questions or need information on known CYP2C9 alleles, please feel free to ask."	0.0	0.0
+SLCO1B1	*33	What SNPs are in the allele definition for SLCO1B1 *33? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs11045853;rs139257324;rs11045852;rs2306283	"The allele definition for SLCO1B1 *33 includes the following SNPs:
+
+- rs4149056
+- rs2306283
+
+These SNPs are associated with the SLCO1B1 *33 allele."	0.5	0.25
+SLCO1B1	*2	What SNPs are in the allele definition for SLCO1B1 *2? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs56101265	The allele definition for SLCO1B1 *2 includes the SNP rs4149056, also known as c.521T>C.	0.0	0.0
+CYP4F2	*8	What SNPs are in the allele definition for CYP4F2 *8? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs115517770	"The allele definition for CYP4F2 *8 includes the following SNPs:
+1. rs3093105
+2. rs3093135
+
+These SNPs are associated with the CYP4F2*8 allele."	0.0	0.0
+RYR1	c.103T>C	What SNPs are in the allele definition for RYR1 c.103T>C? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922747	The SNP in the allele definition for RYR1 c.103T>C is rs727503257. This specific SNP impacts the RYR1 gene, which is involved in encoding a protein involved in muscle contraction. The c.103T>C variant is associated with malignant hyperthermia susceptibility, which is a pharmacogenomic concern related to response to specific anesthesia drugs.	0.0	0.0
+DPYD	c.61C>T	What SNPs are in the allele definition for DPYD c.61C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs72549310	The allele definition for DPYD c.61C>T includes the SNP rs3918290.	0.0	0.0
+RYR1	c.6640G>A	What SNPs are in the allele definition for RYR1 c.6640G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922795	The SNP in the allele definition for RYR1 c.6640G>A is rs193922872. This SNP results in a change from a guanine (G) to an adenine (A) at position 6640 in the RYR1 gene.	0.0	0.0
+RYR1	c.2797G>A	What SNPs are in the allele definition for RYR1 c.2797G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs148623597	The SNP in the allele definition for RYR1 c.2797G>A is rs121918365.	0.0	0.0
+CYP2D6	*160	What SNPs are in the allele definition for CYP2D6 *160? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1058164;rs28371704;rs28371703;rs1135840;rs16947	IDK	0.0	0.0
+RYR1	c.8290G>A	What SNPs are in the allele definition for RYR1 c.8290G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922829	The SNP c.8290G>A in the RYR1 gene corresponds to the genetic variant rs193922756. This specific SNP results in a change from a guanine (G) to an adenine (A) at position 8290 in the gene sequence.	0.0	0.0
+CYP2B6	*49	What SNPs are in the allele definition for CYP2B6 *49? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs764288403	"The allele definition for CYP2B6 *49 includes the following SNPs:
+
+- rs3745274 (c.516G>T)
+- rs2279343 (c.785A>G)
+
+These SNPs contribute to the CYP2B6 *49 allele, which is known to affect drug metabolism."	0.0	0.0
+G6PD	Guadalajara	What SNPs are in the allele definition for G6PD Guadalajara? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs137852334	The G6PD Guadalajara allele is associated with the following SNP: rs5030868. This SNP causes a C>T substitution at position 1376 in the G6PD gene, resulting in the amino acid change p.Ala459Val.	0.0	0.0
+RYR1	c.1615T>G	What SNPs are in the allele definition for RYR1 c.1615T>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922769	The variant RYR1 c.1615T>G corresponds to the rs1805288 SNP. This SNP is associated with the ryanodine receptor gene (RYR1), which is involved in the regulation of calcium release in skeletal muscle. The c.1615T>G variant is also known as the RYR1 c.6159T>G variant and is associated with malignant hyperthermia susceptibility.	0.0	0.0
+CYP2D6	*102	What SNPs are in the allele definition for CYP2D6 *102? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs267608309;rs1058164;rs16947	The CYP2D6*102 allele is a reduced function allele associated with a few SNPs. One of the SNPs included in the allele definition for CYP2D6*102 is rs28371725, which involves a C>T change at nucleotide position 2850 in the CYP2D6 gene.	0.0	0.0
+RYR1	c.7358T>C	What SNPs are in the allele definition for RYR1 c.7358T>C? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs118192123	The allele definition for RYR1 c.7358T>C corresponds to the SNP rs121918514 in the dbSNP database. This specific SNP indicates the change of a T to a C at position 7358 in the RYR1 gene.	0.0	0.0
+RYR1	c.12242C>T	What SNPs are in the allele definition for RYR1 c.12242C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs373406011	The RYR1 c.12242C>T variant is associated with the rs61734810 SNP.	0.0	0.0
+RYR1	c.8360C>G	What SNPs are in the allele definition for RYR1 c.8360C>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs35180584	The allele definition for RYR1 c.8360C>G includes the rs3579 SNP.	0.0	0.0
+DPYD	c.2978T>G	What SNPs are in the allele definition for DPYD c.2978T>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs139459586	The SNP in the allele definition for DPYD c.2978T>G is rs3918290.	0.0	0.0
+CYP2C9	*10	What SNPs are in the allele definition for CYP2C9 *10? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs9332130	The allele definition for CYP2C9 *10 involves the SNP rs1057910.	0.0	0.0
+RYR1	c.3095G>A	What SNPs are in the allele definition for RYR1 c.3095G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs141942845	The SNP in the allele definition for RYR1 c.3095G>A is rs61732374.	0.0	0.0
+RYR1	c.6388G>A	What SNPs are in the allele definition for RYR1 c.6388G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922789	The SNP in the allele definition for RYR1 c.6388G>A is rs121918431. This specific SNP represents the change from a guanine (G) to an adenine (A) at position 6388 in the RYR1 gene.	0.0	0.0
+G6PD	Ube Konan	What SNPs are in the allele definition for G6PD Ube Konan? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs138687036	"The G6PD Ube Konan allele is associated with the following SNPs:
+
+1. rs5030868 (G --> A)
+2. rs782669 (C --> T)
+3. rs72554665 (G --> A)
+
+These SNPs are associated with the G6PD Ube Konan variant."	0.0	0.0
+RYR1	c.11748T>G	What SNPs are in the allele definition for RYR1 c.11748T>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922840	The RYR1 c.11748T>G variant has the dbSNP ID rs1214342687. This SNP is associated with a specific allele definition in the RYR1 gene.	0.0	0.0
+CYP2D6	*104	What SNPs are in the allele definition for CYP2D6 *104? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs267608302;rs16947	"The allele definition for CYP2D6 *104 includes the following SNPs:
+1. rs1065852 (1846 G>A)
+2. rs5030867 (2558 delA)
+
+These SNPs are associated with the CYP2D6 *104 allele."	0.0	0.0
+CYP2D6	*51	What SNPs are in the allele definition for CYP2D6 *51? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs72549348;rs16947	"The allele definition for CYP2D6 *51 includes the following SNPs:
+
+1. rs28371706 (A to G substitution in intron 5)
+2. rs769258 (G to A substitution in intron 9)
+
+These SNPs are associated with the CYP2D6 *51 allele."	0.0	0.0
+G6PD	Sao Borja	What SNPs are in the allele definition for G6PD Sao Borja? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs5030870	The G6PD Sao Borja allele is associated with the rs2228199 SNP.	0.0	0.0
+RYR1	c.51_53del	What SNPs are in the allele definition for RYR1 c.51_53del? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922745	The allele definition for RYR1 c.51_53del indicates a deletion from nucleotide positions 51 to 53 in the RYR1 gene. This specific deletion does not correspond to a single nucleotide polymorphism (SNP) with a rsID in the dbSNP database, as it involves the deletion of multiple nucleotides rather than a single base change at a specific position.	0.0	0.0
+G6PD	Montalbano	What SNPs are in the allele definition for G6PD Montalbano? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs74575103	"The G6PD Montalbano allele is associated with the following single nucleotide polymorphisms (SNPs):
+
+1. c.563C>T (rs5030868)
+2. c.844G>C (rs5030867)
+
+These SNPs are located in the G6PD gene and are important for determining the Montalbano variant."	0.0	0.0
+RYR1	c.6612C>G	What SNPs are in the allele definition for RYR1 c.6612C>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs141646642	The allele definition for RYR1 c.6612C>G indicates a change at position 6612 in the RYR1 gene where a cytosine (C) is replaced by a guanine (G). To determine the specific SNPs involved, you would need to analyze the genomic region around this position in the RYR1 gene. If there are known SNPs at this location, one potential source to find the rsID would be the dbSNP database maintained by the National Center for Biotechnology Information (NCBI). Would you like guidance on how to look up this specific SNP in the dbSNP database?	0.0	0.0
+SLCO1B1	*29	What SNPs are in the allele definition for SLCO1B1 *29? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs140790673;rs2306283	"The allele definition for SLCO1B1 *29 includes the following SNPs:
+
+1. rs4149056
+
+This SNP is associated with the SLCO1B1 *29 allele."	0.0	0.0
+TPMT	*12	What SNPs are in the allele definition for TPMT *12? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs200220210	"The allele definition for TPMT *12 contains the following SNPs:
+
+1. rs1142345 - G238C
+2. rs1800462 - A719G
+
+These two SNPs define the TPMT *12 allele."	0.0	0.0
+G6PD	Harilaou	What SNPs are in the allele definition for G6PD Harilaou? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs137852319	IDK	0.0	0.0
+CYP2D6	*20	What SNPs are in the allele definition for CYP2D6 *20? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs72549354;rs1058164;rs150163869;rs199535154;rs16947	"The allele definition for CYP2D6*20 includes the following SNPs: 
+
+1. rs5758550 (SNP in the intron 2)
+2. rs5758556 (SNP in the intron 1)
+
+These SNPs contribute to the reduced function of the CYP2D6 enzyme in individuals with the CYP2D6*20 allele."	0.0	0.0
+DPYD	c.1905+1G>A (*2A)	What SNPs are in the allele definition for DPYD c.1905+1G>A (*2A)? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3918290	The allele definition for DPYD c.1905+1G>A (*2A) contains the SNP rs3918290. This specific SNP is associated with the DPYD gene variant that leads to reduced DPD enzyme activity.	1.0	1.0
+UGT1A1	*80+*28	What SNPs are in the allele definition for UGT1A1 *80+*28? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs887829;rs3064744	The allele definition for UGT1A1 *80+*28 comprises SNPs rs8175347 and rs887829. These two SNPs are associated with reduced UGT1A1 enzyme activity.	0.5	0.5
+RYR1	c.38T>G	What SNPs are in the allele definition for RYR1 c.38T>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922744	The SNP in the allele definition for RYR1 c.38T>G is rs397515886.	0.0	0.0
+G6PD	Canton, Taiwan-Hakka, Gifu-like, Agrigento-like	What SNPs are in the allele definition for G6PD Canton, Taiwan-Hakka, Gifu-like, Agrigento-like? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs72554665	"The allele definition for G6PD Canton, Taiwan-Hakka, Gifu-like, and Agrigento-like includes several SNPs. Here are some of the key SNPs associated with these variants along with their rsIDs:
+
+1. G6PD Canton: rs1050828
+2. G6PD Taiwan-Hakka: rs72554664
+3. G6PD Gifu: rs5030868
+4. G6PD Agrigento: rs72554665
+
+These SNPs are known to be associated with different G6PD variants, impacting enzyme activity and leading to varying clinical manifestations."	0.25	1.0
+CYP2B6	*18	What SNPs are in the allele definition for CYP2B6 *18? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs2279343;rs28399499	The allele definition for CYP2B6 *18 includes the following SNPs: rs4803419 and rs3745274. The rsID for the SNP rs4803419 is available.	0.0	0.0
+CYP2D6	*41	What SNPs are in the allele definition for CYP2D6 *41? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs16947;rs28371725	"The allele definition for CYP2D6 *41 includes the following SNPs:
+
+1. rs28371706 (100C>T)
+2. rs28371725 (4180G>C)
+3. rs1065852 (2850C>T)
+
+These SNPs combined create the allele known as CYP2D6 *41, which is associated with reduced enzyme activity."	0.3333333333333333	0.25
+CYP2B6	*38	What SNPs are in the allele definition for CYP2B6 *38? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3745274;rs2279343;rs281864907	"The CYP2B6*38 allele is defined by the presence of the following SNPs:
+
+1. rs8103142 (G>A)
+2. rs2279345 (A>G)
+
+These SNPs are associated with decreased CYP2B6 enzyme activity."	0.0	0.0
+RYR1	c.3127C>T	What SNPs are in the allele definition for RYR1 c.3127C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs111272095	The SNP c.3127C>T in the RYR1 gene corresponds to the rs104894175 variant. This specific mutation is associated with a susceptibility to malignant hyperthermia, a potentially life-threatening condition triggered by certain anesthetics. It is important, from a pharmacogenomics perspective, to be aware of this variant in patients who may undergo anesthesia to prevent adverse events.	0.0	0.0
+RYR1	c.1615T>C	What SNPs are in the allele definition for RYR1 c.1615T>C? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922769	The c.1615T>C variant in the RYR1 gene does not correspond to a specific rsID in the dbSNP database. The c.1615T>C variant affects the amino acid sequence of the protein encoded by the RYR1 gene, leading to a change from a threonine to an alanine at position 539. This variant is associated with malignant hyperthermia susceptibility. If you need information about specific SNPs in a gene, I recommend referring to databases like dbSNP or ClinVar for more detailed information.	0.0	0.0
+CYP2C19	*26	What SNPs are in the allele definition for CYP2C19 *26? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3758581;rs375781227	"The allele definition for CYP2C19*26 includes the following SNPs:
+- rs12248560, also known as CYP2C19*14
+- rs4244285, also known as CYP2C19*17 
+- rs4986893, also known as CYP2C19 *2
+- rs4244285, also known as CYP2C19 *18
+
+These SNPs are associated with different CYP2C19 genotypes that can impact the enzyme's activity and drug metabolism."	0.0	0.0
+CFTR	S549R(A>C)	What SNPs are in the allele definition for CFTR S549R(A>C)? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs121908757	The SNP for CFTR S549R(A>C) is rs2239705.	0.0	0.0
+CYP2B6	*10	What SNPs are in the allele definition for CYP2B6 *10? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs34883432;rs8192709	"The allele definition for CYP2B6 *10 includes the following SNPs:
+
+1. 516G>T (rs3745274)
+2. 785A>G (rs2279345)
+
+These SNPs are associated with reduced CYP2B6 enzyme activity and may impact the metabolism of certain drugs."	0.0	0.0
+G6PD	Japan, Shinagawa	What SNPs are in the allele definition for G6PD Japan, Shinagawa? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs137852336	"The allele definition for G6PD Japan, Shinagawa includes the following SNPs:
+
+1. 376A
+2. 392T
+
+Unfortunately, there are no dbSNP IDs associated with these specific SNPs."	0.0	0.0
+RYR1	c.11132C>T	What SNPs are in the allele definition for RYR1 c.11132C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs375915752	The RYR1 gene variant c.11132C>T corresponds to the SNP rs1805126.	0.0	0.0
+RYR1	c.7007G>A	What SNPs are in the allele definition for RYR1 c.7007G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs112563513	The allele definition for RYR1 c.7007G>A indicates a change from a guanine (G) to an adenine (A) nucleotide at position 7007 in the RYR1 gene. This specific variation is often referred to by its dbSNP ID, which is rs137854998.	0.0	0.0
+UGT1A1	*1	What SNPs are in the allele definition for UGT1A1 *1? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs4148323;rs887829;rs3064744;rs35350960	The allele definition for UGT1A1 *1 refers to the wild-type allele. There are no specific SNPs associated with this allele as it represents the normal, fully functional gene variant. The UGT1A1 gene is highly polymorphic, and variations in other alleles such as UGT1A1 *28 (rs8175347) and UGT1A1 *6 (rs4148323) are associated with altered enzyme activity.	0.5	0.25
+RYR1	c.13505A>G	What SNPs are in the allele definition for RYR1 c.13505A>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs139647387	The SNP in the allele definition for RYR1 c.13505A>G is rs61731624.	0.0	0.0
+CYP2B6	*21	What SNPs are in the allele definition for CYP2B6 *21? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs35010098	"The allele definition for CYP2B6 *21 involves the following SNPs:
+
+1. rs3745274 (c.516G>T)
+2. rs2279343 (c.785A>G)
+3. rs28399499 (c.1459C>T)
+
+These SNPs are important in determining the CYP2B6 *21 allele."	0.0	0.0
+DPYD	c.46C>G	What SNPs are in the allele definition for DPYD c.46C>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs150036960	The allele definition for DPYD c.46C>G indicates a single nucleotide polymorphism (SNP) at position 46 in the DPYD gene where a cytosine (C) is replaced by a guanine (G). Specifically, this SNP is known as rs1801159.	0.0	0.0
+RYR1	c.7373G>T	What SNPs are in the allele definition for RYR1 c.7373G>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs121918594	The SNP in the allele definition for RYR1 c.7373G>T is rs223666326.	0.0	0.0
+CYP2D6	*64	What SNPs are in the allele definition for CYP2D6 *64? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs1065852;rs28371706	"The allele definition for CYP2D6 *64 includes the following SNPs:
+
+1. rs56354593 (CYP2D6:246_247insT)
+2. rs3892097 (CYP2D6*4)
+
+These SNPs contribute to the reduced function phenotype associated with the CYP2D6 *64 allele."	0.0	0.0
+RYR1	c.8026C>T	What SNPs are in the allele definition for RYR1 c.8026C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922826	The RYR1 c.8026C>T variant is reported as rs121918586 in the dbSNP database. This SNP results in a change from a cytosine (C) to a thymine (T) at position 8026 in the RYR1 gene.	0.0	0.0
+CYP2D6	*30	What SNPs are in the allele definition for CYP2D6 *30? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs16947;rs72549356	"The allele definition for CYP2D6 *30 includes the following SNPs:
+
+1. rs3892097 (also known as 1847G>A)
+2. rs5758550 (also known as 100C>T)
+3. rs59421388
+
+These SNPs contribute to the reduced or null function of the CYP2D6 enzyme associated with the CYP2D6 *30 allele."	0.0	0.0
+RYR1	c.12848A>T	What SNPs are in the allele definition for RYR1 c.12848A>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922853	The SNP in the allele definition for RYR1 c.12848A>T is likely rs281864525. This SNP is associated with a change from adenine (A) to thymine (T) at position 12848 in the RYR1 gene.	0.0	0.0
+TPMT	*3A	What SNPs are in the allele definition for TPMT *3A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1142345;rs1800460	The TPMT *3A allele is associated with a few specific single nucleotide polymorphisms (SNPs). The primary SNP for the TPMT *3A allele is rs776746, which causes a G460A change in the TPMT gene. Additionally, there are other SNPs associated with the TPMT *3A allele, but rs776746 (G460A) is the most well-known and widely studied SNP for this allele.	0.0	0.0
+CYP2D6	*73	What SNPs are in the allele definition for CYP2D6 *73? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs267608308;rs1058164;rs16947	The allele definition for CYP2D6 *73 includes the following SNPs: rs72552267 (c.1054T>C) and rs28371725 (c.2850C>T).	0.0	0.0
+CYP2C9	*67	What SNPs are in the allele definition for CYP2C9 *67? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs776908257	IDK	0.0	0.0
+RYR1	c.5183C>T	What SNPs are in the allele definition for RYR1 c.5183C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922781	The RYR1 c.5183C>T variant corresponds to the rs376885321 SNP. This variant is associated with malignant hyperthermia susceptibility type 1 and has an allele definition of C/T, indicating that the normal allele is C and the variant allele is T at position 5183 in the RYR1 gene.	0.0	0.0
+CYP2C19	*10	What SNPs are in the allele definition for CYP2C19 *10? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3758581;rs6413438	"The allele definition for CYP2C19 *10 includes the following SNPs:
+- rs12248560 (681G>A)
+- rs4244285 (636G>A)
+
+These SNPs contribute to the CYP2C19 *10 allele, which is associated with reduced enzyme activity compared to the wild-type allele."	0.0	0.0
+CYP2D6	*39	What SNPs are in the allele definition for CYP2D6 *39? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164	"The allele definition for CYP2D6*39 involves the following SNPs:
+
+1. rs3892097 - CYP2D6*39 is associated with the SNP rs3892097 (G>A) in the promoter region.
+
+This SNP is commonly used to identify the CYP2D6*39 allele."	0.0	0.0
+UGT1A1	*80+*37	What SNPs are in the allele definition for UGT1A1 *80+*37? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs887829;rs3064744	The allele definition for UGT1A1 *80+*37 refers to a combination of SNPs, which are rs887829 and rs41291556. The rs887829 variant is associated with reduced UGT1A1 enzyme activity, while rs41291556 is linked to Gilbert syndrome.	0.5	0.5
+DPYD	c.2846A>T	What SNPs are in the allele definition for DPYD c.2846A>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs67376798	The SNP rs75017182 is associated with the allele definition for DPYD c.2846A>T.	0.0	0.0
+CYP2D6	*94	What SNPs are in the allele definition for CYP2D6 *94? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs748712690;rs1065852	"The allele definition for CYP2D6 *94 includes the following SNPs:
+
+- 2935A>C (rs16947)
+- 4268C>G (rs28371725)
+- 100C>T (rs72552267)
+
+These SNPs contribute to the reduced function of the CYP2D6 enzyme associated with the CYP2D6 *94 allele."	0.0	0.0
+CYP2D6	*169	What SNPs are in the allele definition for CYP2D6 *169? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1602566413	CYP2D6 *169 is an allele that is defined by the SNP rs72552267. This SNP leads to a missense mutation in the CYP2D6 gene, resulting in a change from alanine to threonine at position 294.	0.0	0.0
+DPYD	c.343A>G	What SNPs are in the allele definition for DPYD c.343A>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs141462178	"The allele definition for DPYD c.343A>G includes the following SNPs:
+
+- rs1801265 (also known as DPYD*2A)
+- rs1801266 (also known as DPYD*13 or c.496A>G)
+
+These SNPs are associated with reduced DPYD enzyme activity and increased risk of toxicity with certain medications."	0.0	0.0
+TPMT	*44	What SNPs are in the allele definition for TPMT *44? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs201695576	"The allele definition for TPMT *44 includes the following SNPs:
+
+1. rs41291556
+2. rs79974852
+
+These SNPs are associated with decreased TPMT activity."	0.0	0.0
+CYP2C19	*6	What SNPs are in the allele definition for CYP2C19 *6? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs3758581;rs72552267	"The allele definition for CYP2C19 *6 includes the following SNPs:
+
+1. 681G>A (rs72552267)
+2. 636G>A (rs41303343)
+
+These SNPs are associated with decreased CYP2C19 enzyme activity."	0.5	0.5
+RYR1	c.10616G>A	What SNPs are in the allele definition for RYR1 c.10616G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs143987857	The SNP in the allele definition for RYR1 c.10616G>A is rs193922111.	0.0	0.0
+RYR1	c.7304G>A	What SNPs are in the allele definition for RYR1 c.7304G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs28933396	The SNP in the allele definition for RYR1 c.7304G>A is rs121917955. It represents a single nucleotide change from a guanine (G) to an adenine (A) at position 7304 in the RYR1 gene.	0.0	0.0
+TPMT	*11	What SNPs are in the allele definition for TPMT *11? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs72552738	The allele TPMT *11 is associated with the SNP rs28371725. This SNP results in a missense mutation in the TPMT gene leading to decreased enzyme activity.	0.0	0.0
+RYR1	c.3418C>T	What SNPs are in the allele definition for RYR1 c.3418C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922776	The SNP in the allele definition for RYR1 c.3418C>T is rs61731838.	0.0	0.0
+CYP2D6	*2	What SNPs are in the allele definition for CYP2D6 *2? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs16947	"The allele definition for CYP2D6 *2 includes the following SNPs:
+- 2850C>T (rs16947)
+- 4180G>C (rs1135840)
+
+These SNPs are associated with the CYP2D6 *2 allele."	1.0	0.6666666666666666
+CYP2D6	*166	What SNPs are in the allele definition for CYP2D6 *166? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs777691989;rs16947	"The CYP2D6 *166 allele is defined by the presence of the following SNPs: 
+
+1. c.100C>T (rs72554665)
+2. c.293_295delAAG (rs1065852)
+3. c.1023C>A
+4. c.1376A>G
+5. c.1584G>A
+
+Please note that not all SNPs may have a dbSNP ID associated with them."	0.0	0.0
+CYP2D6	*32	What SNPs are in the allele definition for CYP2D6 *32? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1058164;rs769157652;rs1135840;rs16947;rs28371725	"The allele definition for CYP2D6 *32 includes the following SNPs:
+- 28534923 (rs769258)
+- 246248825 (rs28371725)
+
+These SNPs are associated with reduced activity of the CYP2D6 enzyme."	0.5	0.2
+DPYD	c.1577C>G	What SNPs are in the allele definition for DPYD c.1577C>G? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs190951787	The allele definition for DPYD c.1577C>G refers to a single nucleotide polymorphism (SNP) located at position 1577 in the DPYD gene where a cytosine (C) is changed to a guanine (G). This specific SNP is often referred to as DPYD*2A. The rsID for this SNP is rs3918290.	0.0	0.0
+CYP2D6	*117	What SNPs are in the allele definition for CYP2D6 *117? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs78209835;rs1058164;rs16947	"The allele definition for CYP2D6 *117 includes the following SNPs:
+
+1. rs5758550 (c.1707 T > A)
+2. rs3892097 (c.2950 A > G)
+3. rs5030867 (c.885G > A)
+4. rs28371725 (c.137_138 InsT)
+
+These SNPs contribute to the CYP2D6 *117 allele."	0.0	0.0
+RYR1	c.652G>A	What SNPs are in the allele definition for RYR1 c.652G>A? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs193922759	The variant RYR1 c.652G>A corresponds to the SNP rs121918442.	0.0	0.0
+CYP2D6	*127	What SNPs are in the allele definition for CYP2D6 *127? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs202102799;rs1058172	"The allele definition for CYP2D6 *127 includes the following SNPs:
+
+1. c.1006C>T (rs28371706)
+2. c.2850C>T (rs61736569)
+
+These SNPs are associated with the CYP2D6*127 allele."	0.0	0.0
+G6PD	Andalus	What SNPs are in the allele definition for G6PD Andalus? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs137852324	"The allele definition for G6PD Andalus involves several SNPs, including:
+
+1. rs5030868 (also known as G6PD A-)
+2. rs1050828 (also known as G6PD Mediterranean)
+
+These SNPs are commonly associated with G6PD Andalus. Please note that the specific SNPs associated with G6PD Andalus may vary depending on the population studied."	0.0	0.0
+CYP2D6	*45	What SNPs are in the allele definition for CYP2D6 *45? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135840;rs1058164;rs28371710;rs16947	"The allele definition for CYP2D6*45 includes the following SNPs:
+
+1. rs16947 (CYP2D6*2A)
+2. rs1135840 (CYP2D6*35)
+
+These SNPs are associated with reduced CYP2D6 enzyme activity."	1.0	0.5
+G6PD	Split	What SNPs are in the allele definition for G6PD Split? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs137852348	The G6PD Split gene variant is associated with a variety of single nucleotide polymorphisms (SNPs) that can cause reduced enzyme activity. One of the common SNPs associated with this variant is rs1050828. This SNP is found in the 3' untranslated region of the G6PD gene.	0.0	0.0
+TPMT	*14	What SNPs are in the allele definition for TPMT *14? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs9333569	One of the SNPs in the allele definition for TPMT *14 is rs1800462. This SNP is associated with decreased TPMT enzyme activity, leading to potential toxicity from thiopurine medications like azathioprine and mercaptopurine.	0.0	0.0
+G6PD	Kaiping, Anant, Dhon, Sapporo-like, Wosera	What SNPs are in the allele definition for G6PD Kaiping, Anant, Dhon, Sapporo-like, Wosera? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs72554664	The G6PD Kaiping, Anant, Dhon, Sapporo-like, and Wosera variants are all associated with the same genetic variant, which is the G6PD variant rs72554665. This variant is a T to C substitution at position 1388 in the G6PD gene.	0.0	0.0
+TPMT	*38	What SNPs are in the allele definition for TPMT *38? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs772832951	"The allele definition for TPMT *38 involves the following SNPs:
+- rs1142345 (G238C)
+- rs1800462 (G460A)
+- rs1800460 (A719G)
+
+These SNPs are associated with variations in the TPMT gene that can affect an individual's response to certain medications."	0.0	0.0
+CYP2D6	*53	What SNPs are in the allele definition for CYP2D6 *53? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs1135822;rs1135823	"The CYP2D6 *53 allele is defined by the presence of the following SNPs:
+
+1. 166A>C (rs28371706)
+2. 2850C>T (rs16947)
+  
+These SNPs are associated with decreased enzyme activity of the CYP2D6 enzyme."	0.0	0.0
+SLCO1B1	*46	What SNPs are in the allele definition for SLCO1B1 *46? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs71581941;rs4149056;rs2306283	"The allele definition for SLCO1B1 *46 includes the following SNPs:
+
+1. rs4149056
+2. rs4149015
+3. rs11045879
+
+These SNPs are associated with the SLCO1B1 *46 allele."	0.3333333333333333	0.3333333333333333
+RYR1	c.5360C>T	What SNPs are in the allele definition for RYR1 c.5360C>T? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs34934920	The SNP in the allele definition for RYR1 c.5360C>T is rs193922870.	0.0	0.0
+TPMT	*33	What SNPs are in the allele definition for TPMT *33? Provide a dbSNP ID (also known as an rsID, starting with rs) when available.	rs112339338	"The TPMT *33 allele is defined by the presence of the following SNPs:
+
+1. rs1142345 (G>A)
+2. rs1800460 (G>A)
+
+These two SNPs together define the TPMT *33 variant."	0.0	0.0
