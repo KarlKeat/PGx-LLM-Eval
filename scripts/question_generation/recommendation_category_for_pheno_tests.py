@@ -53,13 +53,18 @@ def generate_question(row):
     drug = row["name"]
     phenos = row["actionable_indication"]
     pheno_string = " and ".join([f"{phenos[gene]} for {gene}" for gene in phenos])
-    return f"What would be the clinical guidance for someone who is {pheno_string} with regards to taking {drug}?"
+    return f"What would be the clinical guidance for someone who is {pheno_string} with regards to taking {drug}? Please respond with just 'Avoid' if the guidance is to avoid the drug or take an alternate drug, 'Alter dose' if the guideline is to raise, lower, or start with a specific dose, or 'Unchanged', if there are no clinical recommendations or there is no deviation from standard care for this phenotype and drug."
+
+with open("rec_to_category.txt",'r') as infile:
+    rec_to_category = dict([(line.split("\t")[0], line.split("\t")[1].strip()) for line in infile.readlines()])
 
 df["actionable_indication"] = df.apply(get_actionable, axis=1)
 df["guideline"] = df.apply(assemble_guideline, axis=1)
 df["genes"] = df["actionable_indication"].apply(lambda x: ";".join(x.keys()))
 df["question"] = df.apply(generate_question, axis=1)
-df["answer"] = df["drugrecommendation"].apply(lambda x: x.replace("\n", "").replace("\"", ""))
+df["answer"] = df["drugrecommendation"].apply(lambda x: rec_to_category[x.replace("\n", "").replace("\"", "")])
 df["drug"] = df["name"]
+
+
 df = df[["drug", "genes", "question", "answer"]]
-df.to_csv("../../test_queries/drug_guidelines_for_pheno_queries.txt", index=False, sep="\t")
+df.to_csv("../../test_queries/recommendation_category_for_pheno_queries.txt", index=False, sep="\t")
