@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import re
 
-client = openai.OpenAI(
+gpt_client = openai.OpenAI(
     organization=os.environ.get("KIMLAB_OAI_ID"),
     api_key=os.environ.get("OPENAI_API_KEY"),
     base_url="http://oai.hconeai.com/v1",
@@ -13,16 +13,27 @@ client = openai.OpenAI(
     },
 )
 
+llama_client = openai.OpenAI(
+    api_key='EMPTY',
+    base_url="http://localhost:8000/v1",
+)
 
-def query_llm(llm_prompt):
+def query_llm(llm_prompt, model="gpt-3.5-turbo"):
+    if "llama" in model:
+        client = llama_client
+    elif "gpt" in model:
+        client = gpt_client
+    else:
+        raise ValueError(f"Unsupported model: {model}")
+    
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model=model,
         messages=[
             {"role": "system", "content": "You are an AI assistant that provides evidence-based responses to pharmacogenomics questions. Please respond to the following query."},
             {"role": "user", "content": llm_prompt}
         ]
     )
-    return response.choices[0].message.content
+    return response.choices[0].message.content.replace("\n","  ")
 
 def score_response(llm_answer, ref_answer):
     search_result = re.search(r'[0-9]\.[0-9]{4}', llm_answer)
