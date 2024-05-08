@@ -28,6 +28,7 @@ conn.close()
 df["gene"] = df["genesymbol"]
 df["allele"] = df["name"]
 df["answer"] = df["clinicalfunctionalstatus"]
+df = df.dropna(subset=["answer"],axis=0)
 
 answer_options = {}
 for idx, row in df.iterrows():
