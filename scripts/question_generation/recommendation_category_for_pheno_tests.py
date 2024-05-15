@@ -64,7 +64,8 @@ df["genes"] = df["actionable_indication"].apply(lambda x: ";".join(x.keys()))
 df["question"] = df.apply(generate_question, axis=1)
 df["answer"] = df["drugrecommendation"].apply(lambda x: rec_to_category[x.replace("\n", "").replace("\"", "")])
 df["drug"] = df["name"]
+df["long_answer"] = df["drugrecommendation"]
 
 
-df = df[["drug", "genes", "question", "answer"]]
+df = df[["drug", "genes", "question", "long_answer", "answer"]]
 df.to_csv("../../test_queries/recommendation_category_for_pheno_queries.txt", index=False, sep="\t")

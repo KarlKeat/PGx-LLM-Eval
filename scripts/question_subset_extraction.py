@@ -93,7 +93,7 @@ df.to_csv("../test_queries/subsets/drug_to_genes_subset.txt", index=False, sep="
 shutil.copyfile("../test_queries/gene_to_drugs_queries.txt", "../test_queries/subsets/gene_to_drugs_subset.txt")
 
 # Recommmendation category 
-df = pd.read_csv("../test_queries/recommendation_category_for_pheno_queries.txt", sep="\t", header=0)
+df = pd.read_csv("../test_queries/recommendation_category_for_pheno_queries.txt", sep="\t", header=0, keep_default_na=False)
 drug_options = set(df["drug"])
 subsets = []
 for drug in sorted(list(drug_options)):
@@ -109,3 +109,19 @@ for drug in sorted(list(drug_options)):
 
 df = pd.concat(subsets)
 df.to_csv("../test_queries/subsets/recommendation_category_for_pheno_subset.txt", index=False, sep="\t")
+
+# Pheno to guideline 
+df = pd.read_csv("../test_queries/drug_guidelines_for_pheno_queries.txt", sep="\t", header=0, keep_default_na=False)
+
+drug_options = set(df["drug"])
+subsets = []
+for drug in sorted(list(drug_options)):
+    subset = df[df["drug"] == drug]
+    sample_size = 4
+    if sample_size > len(subset):
+        sample_size = len(subset)
+    subset = subset.sample(n=sample_size, random_state=RANDOM_SEED)
+    subsets.append(subset)
+
+df = pd.concat(subsets)
+df.to_csv("../test_queries/subsets/drug_guidelines_for_pheno_subset.txt", index=False, sep="\t")

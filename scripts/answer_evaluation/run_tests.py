@@ -30,10 +30,11 @@ input_paths = {
     'DiplotypeToPhenotype': f"{input_dir}/diplotype_to_phenotype_subset.txt", 
     'DrugToGenes': f"{input_dir}/drug_to_genes_subset.txt",
     'GeneToDrugs': f"{input_dir}/gene_to_drugs_subset.txt",
-    'RecToCategory': f"{input_dir}/recommendation_category_for_pheno_subset.txt"
+    'PhenoToCategory': f"{input_dir}/recommendation_category_for_pheno_subset.txt",
+    'PhenoToGuideline': f"{input_dir}/drug_guidelines_for_pheno_subset.txt"
 }
 
-test_runners = TestRunner.__subclasses__()
+test_runners = [TestRunner.__subclasses__()[-1]]
 
 def run_tests(model_name, client):
     print(f"# {model_name}\n")
@@ -47,5 +48,6 @@ def run_tests(model_name, client):
         for score_category in result:
             print(f"{score_category}: {result[score_category]}\n")
 
-run_tests("gpt-3.5-turbo", gpt_client)
-run_tests("gpt-4-turbo", gpt_client)
+#run_tests("gpt-3.5-turbo", gpt_client)
+#run_tests("gpt-4-turbo", gpt_client)
+run_tests("gpt-4o", gpt_client)

@@ -16,3 +16,4 @@ dependencies:
     - openai==1.16.1
     - psycopg2-binary==2.9.9
     - sqlalchemy==2.0.29
+    - sentence_transformers=2.7.0
