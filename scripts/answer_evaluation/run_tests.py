@@ -34,7 +34,7 @@ input_paths = {
     'PhenoToGuideline': f"{input_dir}/drug_guidelines_for_pheno_subset.txt"
 }
 
-test_runners = [TestRunner.__subclasses__()[-1]]
+test_runners = [TestRunner.__subclasses__()[4]]
 
 def run_tests(model_name, client):
     print(f"# {model_name}\n")
@@ -48,6 +48,6 @@ def run_tests(model_name, client):
         for score_category in result:
             print(f"{score_category}: {result[score_category]}\n")
 
-#run_tests("gpt-3.5-turbo", gpt_client)
-#run_tests("gpt-4-turbo", gpt_client)
+run_tests("gpt-3.5-turbo", gpt_client)
+run_tests("gpt-4-turbo", gpt_client)
 run_tests("gpt-4o", gpt_client)

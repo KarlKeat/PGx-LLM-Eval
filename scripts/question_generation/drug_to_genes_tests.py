@@ -54,5 +54,7 @@ df = pd.concat([df,df2], ignore_index=True)
 df["question"] = df.apply(generate_question, axis=1)
 df["answer"] = df["genes"]
 
+df = df.drop_duplicates(subset=["drug", "genes", "mode"])
+
 df = df[["drug", "genes", "mode", "question", "answer"]]
 df.to_csv("../../test_queries/drug_to_genes_queries.txt", index=False, sep="\t")
