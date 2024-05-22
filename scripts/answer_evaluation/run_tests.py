@@ -34,7 +34,7 @@ input_paths = {
     'PhenoToGuideline': f"{input_dir}/drug_guidelines_for_pheno_subset.txt"
 }
 
-test_runners = [TestRunner.__subclasses__()[4]]
+test_runners = [TestRunner.__subclasses__()[-1]]
 
 def run_tests(model_name, client):
     print(f"# {model_name}\n")
