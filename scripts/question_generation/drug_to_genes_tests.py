@@ -18,10 +18,7 @@ except:
 # Get a cursor and execute select statement
 cursor = conn.cursor()
 
-query = """
-SELECT dr.name,rec.implications from cpic.drug dr 
-join cpic.recommendation rec on dr.guidelineid = rec.guidelineid;
-"""
+query = """select * from cpic.pair_view p where cpiclevel='A';"""
 
 cursor.execute(query)
 colnames = [desc[0] for desc in cursor.description]
@@ -29,6 +26,27 @@ rows = cursor.fetchall()
 conn.close()
 
 df = pd.DataFrame(rows, columns=colnames)
+drug_to_genes = {}
+for idx, row in df.iterrows():
+    drug = row["drugname"]
+    gene = row["genesymbol"]
+    if drug not in drug_to_genes:
+        drug_to_genes[drug] = set()
+    drug_to_genes[drug].add(gene)
+
+for drug in drug_to_genes:
+    drug_to_genes[drug] = ";".join(list(drug_to_genes[drug]))
+
+df = pd.DataFrame.from_dict({
+    "drug": [drug for drug in sorted(drug_to_genes.keys())],
+    "genes": [drug_to_genes[drug] for drug in sorted(drug_to_genes.keys())]
+                             })
+
+df2 = copy.deepcopy(df)
+df["mode"] = ["clinician"]*len(df)
+df2["mode"] = ["researcher"]*len(df2)
+
+df = pd.concat([df,df2], ignore_index=True)
 
 def generate_question(row):
     mode=row["mode"]
@@ -40,16 +58,6 @@ def generate_question(row):
     
     question += " Please respond with nothing but a list of gene symbols delimited by ';'."
     return question
-
-    
-df["drug"] = df["name"]
-df["genes"] = df["implications"].apply(lambda x: ";".join(x.keys()))
-
-df2 = copy.deepcopy(df)
-df["mode"] = ["clinician"]*len(df)
-df2["mode"] = ["researcher"]*len(df2)
-
-df = pd.concat([df,df2], ignore_index=True)
 
 df["question"] = df.apply(generate_question, axis=1)
 df["answer"] = df["genes"]

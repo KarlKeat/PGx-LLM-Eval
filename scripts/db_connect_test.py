@@ -15,10 +15,13 @@ except:
 # Get a cursor and execute select statement
 cursor = conn.cursor()
 
-cursor.execute("""SELECT * from cpic.gene where symbol='CYP2C19'""")
+cursor.execute("""select * from cpic.pair_view p where cpiclevel='A';""")
 rows = cursor.fetchall()
 
+colnames = [desc[0] for desc in cursor.description]
+
 # Print out the results
+print(colnames)
 for row in rows:
     print(row)
 

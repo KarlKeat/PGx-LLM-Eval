@@ -18,10 +18,7 @@ except:
 # Get a cursor and execute select statement
 cursor = conn.cursor()
 
-query = """
-SELECT dr.name,rec.implications from cpic.drug dr 
-join cpic.recommendation rec on dr.guidelineid = rec.guidelineid;
-"""
+query = """select * from cpic.pair_view p where cpiclevel='A';"""
 
 cursor.execute(query)
 colnames = [desc[0] for desc in cursor.description]
@@ -31,12 +28,11 @@ conn.close()
 df = pd.DataFrame(rows, columns=colnames)
 gene_to_drugs = {}
 for idx, row in df.iterrows():
-    drug = row["name"]
-    genes = row["implications"].keys()
-    for gene in genes:
-        if gene not in gene_to_drugs:
-            gene_to_drugs[gene] = set()
-        gene_to_drugs[gene].add(drug)
+    drug = row["drugname"]
+    gene = row["genesymbol"]
+    if gene not in gene_to_drugs:
+        gene_to_drugs[gene] = set()
+    gene_to_drugs[gene].add(drug)
 
 for gene in gene_to_drugs:
     gene_to_drugs[gene] = ";".join(list(gene_to_drugs[gene]))
