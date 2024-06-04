@@ -45,7 +45,7 @@ def oai_embedding(sentences, model="text-embedding-3-small"):
         client = openai.OpenAI(
             organization=os.environ.get("KIMLAB_OAI_ID"),
             api_key=os.environ.get("OPENAI_API_KEY"),
-            base_url="http://oai.hconeai.com/v1",
+            base_url="https://oai.hconeai.com/v1",
             default_headers={
                 "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
                 "Helicone-Cache-Enabled": "true",
