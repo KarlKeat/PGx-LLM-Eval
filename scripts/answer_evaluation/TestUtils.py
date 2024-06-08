@@ -6,6 +6,7 @@ import itertools
 from numpy import dot, mean
 from numpy.linalg import norm
 from text_embeddings import *
+from gemini_client import GeminiClient
 
 # Superclass (All test runner classes are subclasses of this)
 class TestRunner:
@@ -17,14 +18,29 @@ class TestRunner:
 
     # Class method inherited by all test runners. Takes the provided llm client and queries it with a specified prompt.
     def query_llm(self, llm_prompt):
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": self.sys_prompt},
-                {"role": "user", "content": llm_prompt}
-            ]
-        )
-        return response.choices[0].message.content.replace("\n","  ")
+        if type(self.client) == GeminiClient:
+            response = self.client.send_query(self.model, self.sys_prompt, llm_prompt)
+            result = response.json()["candidates"][0]["finishReason"]
+
+            retries = 3
+            while retries > 0 and result == "SAFETY":
+                retries = retries - 1
+                response = self.client.send_query(self.model, self.sys_prompt, llm_prompt)
+                result = response.json()["candidates"][0]["finishReason"]
+            if result == "SAFETY":
+                answer = "No response (safety)"
+            else:
+                answer = response.json()["candidates"][0]["content"]["parts"][0]["text"].replace("\n","  ")
+            return answer
+        else:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": self.sys_prompt},
+                    {"role": "user", "content": llm_prompt}
+                ]
+            )
+            return response.choices[0].message.content.replace("\n","  ")
     
     # An empty method to be overloaded by subclasses. in_path is a path to a .txt file containing the tests, and out_path is a path to a .txt file containing the answers and scores
     def run_tests(self, in_path, out_path): # Returns a dictionary with summary metrics {"metric_name": value}
