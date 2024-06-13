@@ -34,13 +34,16 @@ for row in rows:
     allele_dict[allele_key].append(row[2])
 
 # Print out the results
-print("gene\tallele\tquestion\tanswer")
+answer_str = ["gene\tallele\tquestion\tanswer"]
 for key in allele_dict:
     if None not in allele_dict[key]:
         gene_allele = key.replace('\t', ' ')
         question = f"What SNPs are in the allele definition for {gene_allele}? Provide a dbSNP ID (also known as an rsID, starting with rs) when available."
         answer = ";".join(list(set(allele_dict[key])))
-        print(f"{key}\t{question}\t{answer}")
+        answer_str.append(f"{key}\t{question}\t{answer}")
+
+with open("../../test_queries/allele_def_queries.txt", "w") as outfile:
+    outfile.write("\n".join(answer_str))
 
 # Close the connection when finished
 conn.close()

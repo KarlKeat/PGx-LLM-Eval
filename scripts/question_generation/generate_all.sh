@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+python3 allele_definition_tests.py
+python3 alternative_therapy_tests.py
+python3 diplotype_to_phenotype_tests.py
+python3 gene_to_drugs_tests.py
+python3 recommendation_category_for_pheno_tests.py
+python3 allele_freq_tests.py
+python3 drug_guidelines_for_pheno_tests.py
+python3 allele_function_tests.py
+python3 drug_to_genes_tests.py

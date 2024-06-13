@@ -37,13 +37,16 @@ for row in rows:
     allele_dict[allele_key] = phenotype
 
 # Print out the results
-print("gene\tallele\tquestion\tanswer")
+answer_str = ["gene\tallele\tquestion\tanswer"]
 for key in allele_dict:
     gene_allele = key.replace('\t', ' ')
     answer_choices = gene_dict[key.split('\t')[0]]
     question = f"What is the pharmacogenetic phenotype for {gene_allele}? Please select the answer from the following choices: {answer_choices}, and respond with only your selection."
     answer = allele_dict[key]
-    print(f"{key}\t{question}\t{answer}")
+    answer_str.append(f"{key}\t{question}\t{answer}")
+
+with open("../../test_queries/diplotype_to_phenotype_queries.txt", "w") as outfile:
+    outfile.write("\n".join(answer_str))
 
 # Close the connection when finished
 conn.close()

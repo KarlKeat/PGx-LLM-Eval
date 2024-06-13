@@ -24,11 +24,14 @@ freq_df = pd.DataFrame(rows, columns=colnames)
 conn.close()
 
 # Use the allele frequency table to generate question-answer pairs
-print("gene\tallele\tpop_group\tquestion\tanswer")
+answer_str = ["gene\tallele\tpop_group\tquestion\tanswer"]
 
 for idx, row in freq_df.iterrows():
     gene = row["genesymbol"]
     variant = row["name"]
     pop_group = row["population_group"]
     frequency = round(row["freq_weighted_avg"],4)
-    print(f"{gene}\t{variant}\t{pop_group}\t\"What is the average allele frequency of {gene} {variant} in the {pop_group} population? Respond with just a number, rounded to 4 decimal places, with no additional text.\"\t{frequency}")
+    answer_str.append(f"{gene}\t{variant}\t{pop_group}\t\"What is the average allele frequency of {gene} {variant} in the {pop_group} population? Respond with just a number, rounded to 4 decimal places, with no additional text.\"\t{frequency}")
+
+with open("../../test_queries/allele_freq_queries.txt", "w") as outfile:
+    outfile.write("\n".join(answer_str))

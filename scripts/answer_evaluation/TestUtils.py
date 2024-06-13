@@ -21,14 +21,8 @@ class TestRunner:
         if type(self.client) == GeminiClient:
             response = self.client.send_query(self.model, self.sys_prompt, llm_prompt)
             result = response.json()["candidates"][0]["finishReason"]
-
-            retries = 3
-            while retries > 0 and result == "SAFETY":
-                retries = retries - 1
-                response = self.client.send_query(self.model, self.sys_prompt, llm_prompt)
-                result = response.json()["candidates"][0]["finishReason"]
             if result == "SAFETY":
-                answer = "No response (safety)"
+                answer = "No response (safety filter)"
             else:
                 answer = response.json()["candidates"][0]["content"]["parts"][0]["text"].replace("\n","  ")
             return answer

@@ -24,7 +24,7 @@ gene_options = set(df["gene"])
 pop_group_options = set(df["pop_group"])
 subsets = []
 for gene in sorted(list(gene_options)):
-    for pop_group in pop_group_options:
+    for pop_group in sorted(list(pop_group_options)):
         subset = df[df.apply(lambda x: x["gene"] == gene and x["pop_group"] == pop_group, axis=1)]
         sample_size = 5
         if sample_size > len(subset):
@@ -42,7 +42,7 @@ subsets = []
 for gene in sorted(list(gene_options)):
     gene_subset = df[df["gene"] == gene]
     phenotypes = set(gene_subset["answer"])
-    for phenotype in phenotypes:
+    for phenotype in sorted(list(phenotypes)):
         subset = gene_subset[gene_subset["answer"] == phenotype]
         sample_size = 3
         if sample_size > len(subset):
@@ -60,7 +60,7 @@ subsets = []
 for gene in sorted(list(gene_options)):
     gene_subset = df[df["gene"] == gene]
     phenotypes = set(gene_subset["answer"])
-    for phenotype in phenotypes:
+    for phenotype in sorted(list(phenotypes)):
         subset = gene_subset[gene_subset["answer"] == phenotype]
         sample_size = 3
         if sample_size > len(subset):
@@ -99,7 +99,7 @@ subsets = []
 for drug in sorted(list(drug_options)):
     drug_subset = df[df["drug"] == drug]
     phenotypes = set(drug_subset["answer"])
-    for phenotype in phenotypes:
+    for phenotype in sorted(list(phenotypes)):
         subset = drug_subset[drug_subset["answer"] == phenotype]
         sample_size = 3
         if sample_size > len(subset):
