@@ -286,6 +286,21 @@ class PhenoToGuidelineTestRunner(TestRunner):
 
         return mean(comparisons)
 
+    # Returns the mean similarity between a string and a set of other strings
+    def max_similarity_score(self, ref_answer, comparison_answers, embedding_func):
+        comparisons = []
+        for answer in comparison_answers:
+            comparisons.append(self.embedding_similarity(ref_answer, answer, embedding_func))
+
+        return max(comparisons)
+
+    def max_bert_scores(self, ref_answers, comparison_answers):
+        out = []
+        for ref, comparisons in zip(ref_answers, comparison_answers):
+            P, R, F1 = self.bert_scorer.score([ref for _ in comparisons], comparisons)
+            out.append((max(P), max(R), max(F1)))
+        return out
+
     # Similarity metric based on LLM prompting
     def oai_llm_similarity(self, sentence1, sentence2, model="gpt-4o"):
         gpt_client = openai.OpenAI(
@@ -327,28 +342,46 @@ class PhenoToGuidelineTestRunner(TestRunner):
         self.precompute_embeddings(tests["concurring_recommendation"])
         self.precompute_embeddings(itertools.chain.from_iterable(tests["incorrect_recommendations"]))
 
-        # Compute BERTScore precision, recall, and F1
-        P, R, F1 = self.bert_scorer.score(tests['llm_answer'], tests['answer'])
-
         out_dict = {} # store output in a dictionary
-        tests['bert_score_precision'] = P
-        tests['bert_score_recall'] = R
-        tests['bert_score_f1'] = F1
-        out_dict['bert_score_precision'] = tests['bert_score_precision'].mean()
-        out_dict['bert_score_recall'] = tests['bert_score_recall'].mean()
-        out_dict['bert_score_f1'] = tests['bert_score_f1'].mean()
+        
+        # Compute BERTScore precision, recall, and F1 for LLM vs reference
+        P, R, F1 = self.bert_scorer.score(tests['llm_answer'].to_list(), tests['answer'].to_list())
+        tests['bert_score_precision_llm_vs_ref'] = P
+        tests['bert_score_recall_llm_vs_ref'] = R
+        tests['bert_score_f1_llm_vs_ref'] = F1
+        out_dict['bert_score_precision_llm_vs_ref'] = tests['bert_score_precision_llm_vs_ref'].mean()
+        out_dict['bert_score_recall_llm_vs_ref'] = tests['bert_score_recall_llm_vs_ref'].mean()
+        out_dict['bert_score_f1_llm_vs_ref'] = tests['bert_score_f1_llm_vs_ref'].mean()
+
+        # BERTScore for concurring
+        P, R, F1 = self.bert_scorer.score(tests['llm_answer'].to_list(), tests['concurring_recommendation'].to_list())
+        tests['bert_score_precision_llm_vs_concurring'] = P
+        tests['bert_score_recall_llm_vs_concurring'] = R
+        tests['bert_score_f1_llm_vs_concurring'] = F1
+        out_dict['bert_score_precision_llm_vs_concurring'] = tests['bert_score_precision_llm_vs_concurring'].mean()
+        out_dict['bert_score_recall_llm_vs_concurring'] = tests['bert_score_recall_llm_vs_concurring'].mean()
+        out_dict['bert_score_f1_llm_vs_concurring'] = tests['bert_score_f1_llm_vs_concurring'].mean()
+
+        # BERTScore for discordant
+        P, R, F1 = zip(*self.max_bert_scores(tests['llm_answer'].to_list(), tests['incorrect_recommendations'].to_list()))
+        tests['bert_score_precision_llm_vs_concurring'] = P
+        tests['bert_score_recall_llm_vs_concurring'] = R
+        tests['bert_score_f1_llm_vs_concurring'] = F1
+        out_dict['bert_score_precision_llm_vs_concurring'] = tests['bert_score_precision_llm_vs_concurring'].mean()
+        out_dict['bert_score_recall_llm_vs_concurring'] = tests['bert_score_recall_llm_vs_concurring'].mean()
+        out_dict['bert_score_f1_llm_vs_concurring'] = tests['bert_score_f1_llm_vs_concurring'].mean()
+
+        # Embedding distances
         for func_name in self.embedding_funcs:
             func = self.embedding_funcs[func_name]
-            tests[f"{func_name}_ref_vs_llm"] = tests.apply(lambda x: self.embedding_similarity(x["answer"], x["llm_answer"], func), axis = 1)
-            tests[f"{func_name}_ref_vs_concurring"] = tests.apply(lambda x: self.embedding_similarity(x["answer"], x["concurring_recommendation"], func), axis = 1)
-            tests[f"{func_name}_adversarial_vs_llm"] = tests.apply(lambda x: self.mean_similarity_score(x["answer"], x["incorrect_recommendations"], func), axis = 1)
-            tests[f"{func_name}_concurring_vs_llm"] = tests.apply(lambda x: self.embedding_similarity(x["llm_answer"], x["concurring_recommendation"], func), axis = 1)
-            out_dict[f"{func_name}_ref_vs_llm"] = tests[f"{func_name}_ref_vs_llm"].mean()
-            out_dict[f"{func_name}_ref_vs_concurring"] = tests[f"{func_name}_ref_vs_concurring"].mean()
-            out_dict[f"{func_name}_adversarial_vs_llm"] = tests[f"{func_name}_adversarial_vs_llm"].mean()
-            out_dict[f"{func_name}_concurring_vs_llm"] = tests[f"{func_name}_concurring_vs_llm"].mean()
-        tests[f"gpt4_ref_vs_llm"] = tests.progress_apply(lambda x: self.oai_llm_similarity(x["answer"], x["llm_answer"]), axis = 1)
-        out_dict[f"gpt4_ref_vs_llm"] = tests[f"gpt4_ref_vs_llm"].mean()
+            tests[f"{func_name}_llm_vs_ref"] = tests.apply(lambda x: self.embedding_similarity(x["answer"], x["llm_answer"], func), axis = 1)
+            tests[f"{func_name}_llm_vs_concurring"] = tests.apply(lambda x: self.embedding_similarity(x["llm_answer"], x["concurring_recommendation"], func), axis = 1)
+            tests[f"{func_name}_llm_vs_counterfactual"] = tests.apply(lambda x: self.max_similarity_score(x["answer"], x["incorrect_recommendations"], func), axis = 1)
+            out_dict[f"{func_name}_llm_vs_ref"] = tests[f"{func_name}_llm_vs_ref"].mean()
+            out_dict[f"{func_name}_llm_vs_concurring"] = tests[f"{func_name}_llm_vs_concurring"].mean()
+            out_dict[f"{func_name}_llm_vs_counterfactual"] = tests[f"{func_name}_llm_vs_counterfactual"].mean()
+        tests[f"gpt4_llm_vs_ref"] = tests.progress_apply(lambda x: self.oai_llm_similarity(x["answer"], x["llm_answer"]), axis = 1)
+        out_dict[f"gpt4_llm_vs_ref"] = tests[f"gpt4_llm_vs_ref"].mean()
 
         print(tests[list(out_dict.keys())].corr())
 
