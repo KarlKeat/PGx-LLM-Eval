@@ -40,12 +40,13 @@ test_runners = TestRunner.__subclasses__()
 # test_runners = [PhenoToGuidelineTestRunner]
 
 def run_tests(model_name, client):
-    print(f"# {model_name}\n")
+    display_name = model_name.split('/')[-1] if ('/' in model_name) else model_name
+    print(f"# {display_name}\n")
     for runner_class in test_runners:
         test_name = runner_class.__name__.replace("TestRunner","")
         runner = runner_class(client, model_name, SYSTEM_PROMPT)
         input_path = input_paths[test_name]
-        output_path = f"../../results/{test_name}_{model_name}_results.txt"
+        output_path = f"../../results/{test_name}_{display_name}_results.txt"
         result = runner.run_tests(input_path, output_path)
         print(f"## {test_name}\n")
         for score_category in result:
@@ -55,3 +56,4 @@ run_tests("gpt-3.5-turbo", gpt_client)
 run_tests("gpt-4-turbo", gpt_client)
 run_tests("gpt-4o", gpt_client)
 run_tests("gemini-pro", gemini_client)
+run_tests("meta-llama/Meta-Llama-3-70B-Instruct", llama_client)
