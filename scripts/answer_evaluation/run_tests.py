@@ -10,7 +10,7 @@ SYSTEM_PROMPT = "You are an AI assistant that provides evidence-based responses 
 gpt_client = openai.OpenAI(
     organization=os.environ.get("KIMLAB_OAI_ID"),
     api_key=os.environ.get("OPENAI_API_KEY"),
-    base_url="https://oai.hconeai.com/v1",
+    base_url="https://oai.helicone.ai/v1",
     default_headers={
         "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
         "Helicone-Cache-Enabled": "true",
@@ -28,8 +28,8 @@ input_dir = "../../test_queries/subsets"
 input_paths = {
     'AlleleDefinition': f"{input_dir}/allele_def_subset.txt",
     'AlleleFrequency': f"{input_dir}/allele_freq_subset.txt",
-    'AlleleFunction': f"{input_dir}/allele_function_subset.txt", 
-    'DiplotypeToPhenotype': f"{input_dir}/diplotype_to_phenotype_subset.txt", 
+    'AlleleFunction': f"{input_dir}/allele_function_subset.txt",
+    'DiplotypeToPhenotype': f"{input_dir}/diplotype_to_phenotype_subset.txt",
     'DrugToGenes': f"{input_dir}/drug_to_genes_subset.txt",
     'GeneToDrugs': f"{input_dir}/gene_to_drugs_subset.txt",
     'PhenoToCategory': f"{input_dir}/recommendation_category_for_pheno_subset.txt",
@@ -37,6 +37,7 @@ input_paths = {
 }
 
 test_runners = TestRunner.__subclasses__()
+# test_runners = [PhenoToGuidelineTestRunner]
 
 def run_tests(model_name, client):
     print(f"# {model_name}\n")

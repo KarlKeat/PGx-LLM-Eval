@@ -3,10 +3,14 @@ import re
 import os
 import openai
 import itertools
+from tqdm import tqdm
 from numpy import dot, mean
 from numpy.linalg import norm
+from bert_score import BERTScorer
 from text_embeddings import *
 from gemini_client import GeminiClient
+
+tqdm.pandas()
 
 # Superclass (All test runner classes are subclasses of this)
 class TestRunner:
@@ -44,10 +48,7 @@ class TestRunner:
 class AlleleDefinitionTestRunner(TestRunner):
     def __init__(self, llm_client, model_name, system_prompt):
         super().__init__(llm_client, model_name, system_prompt)
-    
-    def query_llm(self, llm_prompt):
-        return super().query_llm(llm_prompt)
-    
+
     # Regex search for valid rsIDs in a given string
     @staticmethod
     def extract_rsids(llm_answer):
@@ -61,7 +62,7 @@ class AlleleDefinitionTestRunner(TestRunner):
         recall = 0
 
         ref_list = list(set(ref_answer.split(";"))) # Convert the ';'-delimited reference string into a list object
-        
+
         for rsid in llm_rsids:
             if rsid in ref_list:
                 precision += 1
@@ -71,9 +72,9 @@ class AlleleDefinitionTestRunner(TestRunner):
             if rsid in llm_rsids:
                 recall += 1
         recall = recall / len(ref_list)
-        
+
         return precision, recall
-    
+
     def run_tests(self, in_path, out_path):
         tests = pd.read_csv(in_path, sep="\t", header=0)
 
@@ -81,7 +82,7 @@ class AlleleDefinitionTestRunner(TestRunner):
         tests["llm_rsids"] = tests["llm_answer"].apply(self.extract_rsids)
 
         tests[["precision","recall"]] = tests.apply(lambda x: self.score_response(llm_rsids=x["llm_rsids"], ref_answer=x["answer"]), axis=1, result_type="expand")
-        
+
         tests.to_csv(out_path, sep="\t", index=False)
         return {"Mean precision": tests['precision'].mean(),
                 "Mean recall": tests['recall'].mean()}
@@ -90,10 +91,7 @@ class AlleleDefinitionTestRunner(TestRunner):
 class AlleleFrequencyTestRunner(TestRunner):
     def __init__(self, llm_client, model_name, system_prompt):
         super().__init__(llm_client, model_name, system_prompt)
-    
-    def query_llm(self, llm_prompt):
-        return super().query_llm(llm_prompt)
-    
+
     # Search the answer for numbers and return the difference between the LLM answer and the true answer
     @staticmethod
     def score_response(llm_answer, ref_answer):
@@ -102,9 +100,9 @@ class AlleleFrequencyTestRunner(TestRunner):
             return 0.5
         else:
             llm_freq = round(float(search_result.group(0)), 4)
-        
+
         return abs(ref_answer - llm_freq)
-    
+
     def run_tests(self, in_path, out_path):
         tests = pd.read_csv(in_path, sep="\t", header=0)
         tests["llm_answer"] = tests["question"].apply(self.query_llm)
@@ -116,10 +114,7 @@ class AlleleFrequencyTestRunner(TestRunner):
 class AlleleFunctionTestRunner(TestRunner):
     def __init__(self, llm_client, model_name, system_prompt):
         super().__init__(llm_client, model_name, system_prompt)
-    
-    def query_llm(self, llm_prompt):
-        return super().query_llm(llm_prompt)
-    
+
     def run_tests(self, in_path, out_path):
         tests = pd.read_csv(in_path, sep="\t", header=0)
 
@@ -133,10 +128,7 @@ class AlleleFunctionTestRunner(TestRunner):
 class DiplotypeToPhenotypeTestRunner(TestRunner):
     def __init__(self, llm_client, model_name, system_prompt):
         super().__init__(llm_client, model_name, system_prompt)
-    
-    def query_llm(self, llm_prompt):
-        return super().query_llm(llm_prompt)
-    
+
     def run_tests(self, in_path, out_path):
         tests = pd.read_csv(in_path, sep="\t", header=0)
 
@@ -145,20 +137,17 @@ class DiplotypeToPhenotypeTestRunner(TestRunner):
 
         tests.to_csv(out_path, sep="\t", index=False)
         return {"Accuracy": tests['score'].mean()}
-    
+
 # For a given drug, what CPIC genes have pharmacogenetic associations
 class DrugToGenesTestRunner(TestRunner):
     def __init__(self, llm_client, model_name, system_prompt):
         super().__init__(llm_client, model_name, system_prompt)
-    
-    def query_llm(self, llm_prompt):
-        return super().query_llm(llm_prompt)
-    
+
     # Take the answer and extract the genes
     @staticmethod
     def extract_genes(llm_answer):
         return [x.strip() for x in llm_answer.split(";")]
-    
+
     # Calculate precision and recall
     @staticmethod
     def score_response(llm_genes, ref_answer):
@@ -166,7 +155,7 @@ class DrugToGenesTestRunner(TestRunner):
         recall = 0
 
         ref_list = list(set(ref_answer.split(";")))
-        
+
         for gene in llm_genes:
             if gene in ref_list:
                 precision += 1
@@ -176,9 +165,9 @@ class DrugToGenesTestRunner(TestRunner):
             if gene in llm_genes:
                 recall += 1
         recall = recall / len(ref_list)
-        
+
         return precision, recall
-    
+
     def run_tests(self, in_path, out_path):
         tests = pd.read_csv(in_path, sep="\t", header=0)
 
@@ -189,15 +178,12 @@ class DrugToGenesTestRunner(TestRunner):
         tests.to_csv(out_path, sep="\t", index=False)
         return {"Mean precision": tests['precision'].mean(),
                 "Mean recall": tests['recall'].mean()}
-    
+
 # For a given CPIC gene, what drugs have guidelines including it?
 class GeneToDrugsTestRunner(TestRunner):
     def __init__(self, llm_client, model_name, system_prompt):
         super().__init__(llm_client, model_name, system_prompt)
-    
-    def query_llm(self, llm_prompt):
-        return super().query_llm(llm_prompt)
-    
+
     # Calculate precision and recall
     @staticmethod
     def score_response(llm_drugs, ref_answer):
@@ -205,7 +191,7 @@ class GeneToDrugsTestRunner(TestRunner):
         recall = 0
 
         ref_list = list(set(ref_answer.split(";")))
-        
+
         for drug in llm_drugs:
             if drug in ref_list:
                 precision += 1
@@ -215,13 +201,13 @@ class GeneToDrugsTestRunner(TestRunner):
             if drug in llm_drugs:
                 recall += 1
         recall = recall / len(ref_list)
-        
+
         return precision, recall
-    
+
     @staticmethod
     def extract_drugs(llm_answer):
         return [x.strip().lower() for x in llm_answer.split(";")]
-    
+
     def run_tests(self, in_path, out_path):
         tests = pd.read_csv(in_path, sep="\t", header=0)
 
@@ -239,10 +225,7 @@ class GeneToDrugsTestRunner(TestRunner):
 class PhenoToCategoryTestRunner(TestRunner):
     def __init__(self, llm_client, model_name, system_prompt):
         super().__init__(llm_client, model_name, system_prompt)
-    
-    def query_llm(self, llm_prompt):
-        return super().query_llm(llm_prompt)
-    
+
     def run_tests(self, in_path, out_path):
         tests = pd.read_csv(in_path, sep="\t", header=0, keep_default_na=False)
 
@@ -264,15 +247,18 @@ class PhenoToGuidelineTestRunner(TestRunner):
             'roberta': roberta,
             'gte': gte,
         }
-    
-    def query_llm(self, llm_prompt):
-        return super().query_llm(llm_prompt)
+        self.bert_scorer = BERTScorer(
+            model_type='microsoft/deberta-xlarge-mnli',
+            lang='en',
+            rescale_with_baseline=True,
+            device='mps',
+        )
 
     # calculate cosine similarity between two vectors
     @staticmethod
     def cosine_sim(vector1, vector2):
         return dot(vector1, vector2)/(norm(vector1)*norm(vector2))
-    
+
     # computes embeddings for all strings and adds them to embedding cache
     def precompute_embeddings(self, strings):
         queries = sorted(list(set(strings)))
@@ -281,17 +267,17 @@ class PhenoToGuidelineTestRunner(TestRunner):
 
             if func not in self.embedding_cache:
                 self.embedding_cache[func] = {}
-            
+
             embeddings = func(queries)
             self.embedding_cache[func] = self.embedding_cache[func] | dict(zip(queries, embeddings))
-    
+
     # Calls an embedding function and returns the cosine similarity between two strings in a specific embedding space
     def embedding_similarity(self, ref_answer, comparison_answer, embedding_func):
         ref_embedding = self.embedding_cache[embedding_func][ref_answer]
         comparison_embedding = self.embedding_cache[embedding_func][comparison_answer]
 
         return self.cosine_sim(ref_embedding, comparison_embedding)
-    
+
     # Returns the mean similarity between a string and a set of other strings
     def mean_similarity_score(self, ref_answer, comparison_answers, embedding_func):
         comparisons = []
@@ -299,13 +285,13 @@ class PhenoToGuidelineTestRunner(TestRunner):
             comparisons.append(self.embedding_similarity(ref_answer, answer, embedding_func))
 
         return mean(comparisons)
-    
+
     # Similarity metric based on LLM prompting
     def oai_llm_similarity(self, sentence1, sentence2, model="gpt-4o"):
         gpt_client = openai.OpenAI(
             organization=os.environ.get("KIMLAB_OAI_ID"),
             api_key=os.environ.get("OPENAI_API_KEY"),
-            base_url="https://oai.hconeai.com/v1",
+            base_url="https://oai.helicone.ai/v1",
             default_headers={
                 "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
                 "Helicone-Cache-Enabled": "true",
@@ -330,18 +316,26 @@ class PhenoToGuidelineTestRunner(TestRunner):
     def run_tests(self, in_path, out_path):
         tests = pd.read_csv(in_path, sep="\t", header=0, keep_default_na=False)
 
-        tests["question"] = tests["question"].apply(lambda x: x + " Give a 2-3 sentence summary.")
-        tests["llm_answer"] = tests["question"].apply(self.query_llm)
-        tests["incorrect_recommendations"] = tests["incorrect_recommendations"].apply(lambda x: x.split("|"))
+        tests["question"] = tests["question"].progress_apply(lambda x: x + " Give a 2-3 sentence summary.")
+        tests["llm_answer"] = tests["question"].progress_apply(self.query_llm)
+        tests["incorrect_recommendations"] = tests["incorrect_recommendations"].progress_apply(lambda x: x.split("|"))
 
-        
         # Precompute embeddings for all strings
         self.precompute_embeddings(tests["answer"])
         self.precompute_embeddings(tests["llm_answer"])
         self.precompute_embeddings(tests["concurring_recommendation"])
         self.precompute_embeddings(itertools.chain.from_iterable(tests["incorrect_recommendations"]))
 
+        # Compute BERTScore precision, recall, and F1
+        P, R, F1 = self.bert_scorer.score(tests['llm_answer'], tests['answer'])
+
         out_dict = {} # store output in a dictionary
+        tests['bert_score_precision'] = P
+        tests['bert_score_recall'] = R
+        tests['bert_score_f1'] = F1
+        out_dict['bert_score_precision'] = tests['bert_score_precision'].mean()
+        out_dict['bert_score_recall'] = tests['bert_score_recall'].mean()
+        out_dict['bert_score_f1'] = tests['bert_score_f1'].mean()
         for func_name in self.embedding_funcs:
             func = self.embedding_funcs[func_name]
             tests[f"{func_name}_ref_vs_llm"] = tests.apply(lambda x: self.embedding_similarity(x["answer"], x["llm_answer"], func), axis = 1)
@@ -352,7 +346,7 @@ class PhenoToGuidelineTestRunner(TestRunner):
             out_dict[f"{func_name}_ref_vs_concurring"] = tests[f"{func_name}_ref_vs_concurring"].mean()
             out_dict[f"{func_name}_adversarial_vs_llm"] = tests[f"{func_name}_adversarial_vs_llm"].mean()
             out_dict[f"{func_name}_concurring_vs_llm"] = tests[f"{func_name}_concurring_vs_llm"].mean()
-        tests[f"gpt4_ref_vs_llm"] = tests.apply(lambda x: self.oai_llm_similarity(x["answer"], x["llm_answer"]), axis = 1)
+        tests[f"gpt4_ref_vs_llm"] = tests.progress_apply(lambda x: self.oai_llm_similarity(x["answer"], x["llm_answer"]), axis = 1)
         out_dict[f"gpt4_ref_vs_llm"] = tests[f"gpt4_ref_vs_llm"].mean()
 
         print(tests[list(out_dict.keys())].corr())
