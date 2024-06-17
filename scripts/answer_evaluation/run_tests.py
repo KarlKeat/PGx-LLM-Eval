@@ -10,7 +10,7 @@ SYSTEM_PROMPT = "You are an AI assistant that provides evidence-based responses 
 gpt_client = openai.OpenAI(
     organization=os.environ.get("KIMLAB_OAI_ID"),
     api_key=os.environ.get("OPENAI_API_KEY"),
-    base_url="https://oai.helicone.ai/v1",
+    base_url="https://oai.hconeai.com/v1",
     default_headers={
         "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
         "Helicone-Cache-Enabled": "true",

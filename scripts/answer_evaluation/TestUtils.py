@@ -248,10 +248,10 @@ class PhenoToGuidelineTestRunner(TestRunner):
             'gte': gte,
         }
         self.bert_scorer = BERTScorer(
-            model_type='microsoft/deberta-xlarge-mnli',
-            lang='en',
+            model_type='allenai/scibert_scivocab_uncased',
+            lang='en-sci',
             rescale_with_baseline=True,
-            device='mps',
+            device='cuda:1',
         )
 
     # calculate cosine similarity between two vectors
@@ -291,10 +291,11 @@ class PhenoToGuidelineTestRunner(TestRunner):
         gpt_client = openai.OpenAI(
             organization=os.environ.get("KIMLAB_OAI_ID"),
             api_key=os.environ.get("OPENAI_API_KEY"),
-            base_url="https://oai.helicone.ai/v1",
+            base_url="https://oai.hconeai.com/v1",
             default_headers={
                 "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
                 "Helicone-Cache-Enabled": "true",
+                "Cache-Control": "max-age=2592000", # Set cache to 30 days
             },
         )
 
