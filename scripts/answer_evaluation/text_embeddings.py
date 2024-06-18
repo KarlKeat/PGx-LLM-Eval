@@ -35,7 +35,7 @@ using partial functions around the st_model_similarity function
 def negbleurt_model_similarity(sentence1, sentence2):
 
     model_name = 'tum-nlp/NegBLEURT'
-    pipe = pipeline("text-classification", model=model_name, function_to_apply="none") 
+    pipe = pipeline("text-classification", model=model_name, function_to_apply="none")
 
     pairwise_input = [[[sentence1, sentence2]]]
 
@@ -45,11 +45,11 @@ def oai_embedding(sentences, model="text-embedding-3-small"):
         client = openai.OpenAI(
             organization=os.environ.get("KIMLAB_OAI_ID"),
             api_key=os.environ.get("OPENAI_API_KEY"),
-            base_url="https://oai.hconeai.com/v1",
+            base_url="https://oai.helicone.ai/v1",
             default_headers={
                 "Helicone-Auth": f"Bearer {os.environ.get('HELICONE_API_KEY')}",
                 "Helicone-Cache-Enabled": "true",
             },
         )
-        
+
         return [client.embeddings.create(input=sentence,model=model).data[0].embedding for sentence in sentences]
