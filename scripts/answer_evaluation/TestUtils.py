@@ -277,7 +277,7 @@ class PhenoToGuidelineTestRunner(TestRunner):
             model_type=bert_score_model,
             lang='en-sci' if bert_score_model == 'allenai/scibert_scivocab_uncased' else 'en',
             rescale_with_baseline=True,
-            device='cuda',
+            device='cuda:3',
         )
 
     # calculate cosine similarity between two vectors
@@ -396,7 +396,7 @@ class PhenoToGuidelineTestRunner(TestRunner):
             func = self.embedding_funcs[func_name]
             tests[f"{func_name}_llm_vs_ref"] = tests.apply(lambda x: self.embedding_similarity(x["answer"], x["llm_answer"], func), axis = 1)
             tests[f"{func_name}_llm_vs_concurring"] = tests.apply(lambda x: self.embedding_similarity(x["llm_answer"], x["concurring_recommendation"], func), axis = 1)
-            tests[f"{func_name}_llm_vs_discordant"] = tests.apply(lambda x: self.max_similarity_score(x["answer"], x["incorrect_recommendations"], func), axis = 1)
+            tests[f"{func_name}_llm_vs_discordant"] = tests.apply(lambda x: self.max_similarity_score(x["llm_answer"], x["incorrect_recommendations"], func), axis = 1)
             out_dict[f"{func_name}_llm_vs_ref"] = tests[f"{func_name}_llm_vs_ref"].mean()
             out_dict[f"{func_name}_llm_vs_concurring"] = tests[f"{func_name}_llm_vs_concurring"].mean()
             out_dict[f"{func_name}_llm_vs_discordant"] = tests[f"{func_name}_llm_vs_discordant"].mean()

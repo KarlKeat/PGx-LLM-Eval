@@ -38,7 +38,7 @@ input_paths = {
 }
 
 # test_runners = TestRunner.__subclasses__()
-test_runners = [RefusalTestRunner]
+test_runners = [PhenoToGuidelineTestRunner]
 
 def run_tests(model_name, client):
     display_name = model_name.split('/')[-1] if ('/' in model_name) else model_name
