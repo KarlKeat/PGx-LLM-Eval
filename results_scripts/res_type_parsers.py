@@ -50,7 +50,7 @@ def parse_p2g(res_df):
         metric_res = parse_from_col(res_df, metric_col)
         metric_dfs.append(metric_res)
 
-    return pd.concat(metric_dfs)
+    return pd.concat(metric_dfs, axis=1)
 
 
 def parse_score(res_df):
