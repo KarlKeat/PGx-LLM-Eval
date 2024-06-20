@@ -263,7 +263,7 @@ class PhenoToCategoryTestRunner(TestRunner):
 
 # For a given pharmacogenetic phenotype and drug, what is the guideline? (short answer)
 class PhenoToGuidelineTestRunner(TestRunner):
-    def __init__(self, llm_client, model_name, system_prompt):
+    def __init__(self, llm_client, model_name, system_prompt, bert_score_model='microsoft/deberta-xlarge-mnli'):
         super().__init__(llm_client, model_name, system_prompt)
         self.embedding_cache = {} # precompute embeddings to prevent redundancy
         self.embedding_funcs = { # embedding functions from text_embeddings.py
@@ -274,10 +274,10 @@ class PhenoToGuidelineTestRunner(TestRunner):
             'gte': gte,
         }
         self.bert_scorer = BERTScorer(
-            model_type='allenai/scibert_scivocab_uncased',
-            lang='en-sci',
+            model_type=bert_score_model,
+            lang='en-sci' if bert_score_model == 'allenai/scibert_scivocab_uncased' else 'en',
             rescale_with_baseline=True,
-            device='cuda:1',
+            device='cuda',
         )
 
     # calculate cosine similarity between two vectors
