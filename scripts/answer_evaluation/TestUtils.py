@@ -298,7 +298,7 @@ class PhenoToGuidelineTestRunner(TestRunner):
         out = []
         for ref, comparisons in zip(ref_answers, comparison_answers):
             P, R, F1 = self.bert_scorer.score([ref for _ in comparisons], comparisons)
-            out.append((max(P), max(R), max(F1)))
+            out.append((max(P).item(), max(R).item(), max(F1).item()))
         return out
 
     # Similarity metric based on LLM prompting
@@ -329,13 +329,7 @@ class PhenoToGuidelineTestRunner(TestRunner):
         else:
             raise Exception
 
-    def run_tests(self, in_path, out_path):
-        tests = pd.read_csv(in_path, sep="\t", header=0, keep_default_na=False)
-
-        tests["question"] = tests["question"].progress_apply(lambda x: x + " Give a 2-3 sentence summary.")
-        tests["llm_answer"] = tests["question"].progress_apply(self.query_llm)
-        tests["incorrect_recommendations"] = tests["incorrect_recommendations"].progress_apply(lambda x: x.split("|"))
-
+    def score_answers(self, tests):
         # Precompute embeddings for all strings
         self.precompute_embeddings(tests["answer"])
         self.precompute_embeddings(tests["llm_answer"])
@@ -364,26 +358,37 @@ class PhenoToGuidelineTestRunner(TestRunner):
 
         # BERTScore for discordant
         P, R, F1 = zip(*self.max_bert_scores(tests['llm_answer'].to_list(), tests['incorrect_recommendations'].to_list()))
-        tests['bert_score_precision_llm_vs_concurring'] = P
-        tests['bert_score_recall_llm_vs_concurring'] = R
-        tests['bert_score_f1_llm_vs_concurring'] = F1
-        out_dict['bert_score_precision_llm_vs_concurring'] = tests['bert_score_precision_llm_vs_concurring'].mean()
-        out_dict['bert_score_recall_llm_vs_concurring'] = tests['bert_score_recall_llm_vs_concurring'].mean()
-        out_dict['bert_score_f1_llm_vs_concurring'] = tests['bert_score_f1_llm_vs_concurring'].mean()
+        tests['bert_score_precision_llm_vs_discordant'] = P
+        tests['bert_score_recall_llm_vs_discordant'] = R
+        tests['bert_score_f1_llm_vs_discordant'] = F1
+        out_dict['bert_score_precision_llm_vs_discordant'] = tests['bert_score_precision_llm_vs_discordant'].mean()
+        out_dict['bert_score_recall_llm_vs_discordant'] = tests['bert_score_recall_llm_vs_discordant'].mean()
+        out_dict['bert_score_f1_llm_vs_discordant'] = tests['bert_score_f1_llm_vs_discordant'].mean()
 
         # Embedding distances
         for func_name in self.embedding_funcs:
             func = self.embedding_funcs[func_name]
             tests[f"{func_name}_llm_vs_ref"] = tests.apply(lambda x: self.embedding_similarity(x["answer"], x["llm_answer"], func), axis = 1)
             tests[f"{func_name}_llm_vs_concurring"] = tests.apply(lambda x: self.embedding_similarity(x["llm_answer"], x["concurring_recommendation"], func), axis = 1)
-            tests[f"{func_name}_llm_vs_counterfactual"] = tests.apply(lambda x: self.max_similarity_score(x["answer"], x["incorrect_recommendations"], func), axis = 1)
+            tests[f"{func_name}_llm_vs_discordant"] = tests.apply(lambda x: self.max_similarity_score(x["answer"], x["incorrect_recommendations"], func), axis = 1)
             out_dict[f"{func_name}_llm_vs_ref"] = tests[f"{func_name}_llm_vs_ref"].mean()
             out_dict[f"{func_name}_llm_vs_concurring"] = tests[f"{func_name}_llm_vs_concurring"].mean()
-            out_dict[f"{func_name}_llm_vs_counterfactual"] = tests[f"{func_name}_llm_vs_counterfactual"].mean()
+            out_dict[f"{func_name}_llm_vs_discordant"] = tests[f"{func_name}_llm_vs_discordant"].mean()
         tests[f"gpt4_llm_vs_ref"] = tests.progress_apply(lambda x: self.oai_llm_similarity(x["answer"], x["llm_answer"]), axis = 1)
         out_dict[f"gpt4_llm_vs_ref"] = tests[f"gpt4_llm_vs_ref"].mean()
 
         print(tests[list(out_dict.keys())].corr())
+
+        return tests, out_dict
+
+    def run_tests(self, in_path, out_path):
+        tests = pd.read_csv(in_path, sep="\t", header=0, keep_default_na=False)
+
+        tests["question"] = tests["question"].progress_apply(lambda x: x + " Give a 2-3 sentence summary.")
+        tests["llm_answer"] = tests["question"].progress_apply(self.query_llm)
+        tests["incorrect_recommendations"] = tests["incorrect_recommendations"].progress_apply(lambda x: x.split("|"))
+        
+        tests, out_dict = self.score_answers(tests)
 
         tests.to_csv(out_path, sep="\t", index=False)
         return out_dict
