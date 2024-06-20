@@ -87,6 +87,32 @@ class AlleleDefinitionTestRunner(TestRunner):
         return {"Mean precision": tests['precision'].mean(),
                 "Mean recall": tests['recall'].mean()}
 
+# Prompt LLM with intentionally misspecified questions (eg frequency of a non-existant allele) to see how often it refuses
+class RefusalTestRunner(TestRunner):
+    @staticmethod
+    def detect_refusal(llm_answer):
+        # Return True if LLM refused to answer the question (including "idk" responses)
+        refusal_words = ['unknown', 'unable']
+        return any([w in llm_answer.lower() for w in refusal_words])
+
+    def score_answers(self, tests):
+        tests["refused"] = tests.apply(lambda x: self.detect_refusal(x['llm_answer']), axis=1)
+        tests["refused_no_opt_out"] = tests.apply(lambda x: self.detect_refusal(x['llm_answer_no_opt_out']), axis=1)
+        return tests
+
+    def run_tests(self, in_path, out_path):
+        tests = pd.read_csv(in_path, sep="\t", header=0)
+
+        tests["llm_answer"] = tests["question"].apply(self.query_llm)
+        tests["llm_answer_no_opt_out"] = tests['question'].str.replace(' or answer UNKNOWN if unknown.', '').apply(self.query_llm)
+
+        tests = self.score_answers(tests)
+        tests.to_csv(out_path, sep="\t", index=False)
+
+        return {'Refusal rate for misspecified': tests.loc[tests['is_misspecified'], 'refused'].mean(),
+                'Refusal rate for well-specified': tests.loc[~tests['is_misspecified'], 'refused'].mean()}
+    
+
 # How frequent is a specific allele in a specific population?
 class AlleleFrequencyTestRunner(TestRunner):
     def __init__(self, llm_client, model_name, system_prompt):

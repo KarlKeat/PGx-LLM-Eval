@@ -33,11 +33,12 @@ input_paths = {
     'DrugToGenes': f"{input_dir}/drug_to_genes_subset.txt",
     'GeneToDrugs': f"{input_dir}/gene_to_drugs_subset.txt",
     'PhenoToCategory': f"{input_dir}/recommendation_category_for_pheno_subset.txt",
-    'PhenoToGuideline': f"{input_dir}/drug_guidelines_for_pheno_subset.txt"
+    'PhenoToGuideline': f"{input_dir}/drug_guidelines_for_pheno_subset.txt",
+    'Refusal': f"{input_dir}/refusal_subset.txt",
 }
 
-test_runners = TestRunner.__subclasses__()
-# test_runners = [PhenoToGuidelineTestRunner]
+# test_runners = TestRunner.__subclasses__()
+test_runners = [RefusalTestRunner]
 
 def run_tests(model_name, client):
     display_name = model_name.split('/')[-1] if ('/' in model_name) else model_name
