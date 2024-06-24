@@ -12,19 +12,6 @@ res_files = glob.glob(os.path.join(results_dir, '*.txt'))
 output_dir = '../results/parsed_results/'
 os.makedirs(output_dir, exist_ok=True)
 
-
-# Define columns that represent the metrics for each result type
-out_type_metric_cols = {
-    'PhenoToGuideline': ['precision', 'recall', 'f1', 'support'],
-    'DiplotypeToPhenotype': ['precision', 'recall', 'f1', 'support'],
-    'GeneToDrugs': ['precision', 'recall', 'f1', 'support'],
-    'AlleleFunction': ['precision', 'recall', 'f1', 'support'],
-    'AlleleFrequency': ['precision', 'recall', 'f1', 'support'],
-    'DrugToGenes': ['precision', 'recall', 'f1', 'support'],
-    'PhenoToCategory': ['precision', 'recall', 'f1', 'support'],
-    'AlleleDefinition': ['precision', 'recall', 'f1', 'support'],
-}
-
 # Get unique result types by parsing the file names
 # All file names have the format:
 # <result_type>_<model_name>_<result_type>.txt
