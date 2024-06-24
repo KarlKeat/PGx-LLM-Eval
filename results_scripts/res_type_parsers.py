@@ -40,9 +40,9 @@ def parse_p2g(res_df):
     metric_cols = [col for col in res_df.columns if 'vs' in col.lower()]
 
     # TODO: remove this hack to short-circuit the tensor bug temporarily
-    metric_cols = [col for col in metric_cols if res_df[col].dtype != 'object']
-    import warnings
-    warnings.warn(Warning("The tensor bug for P2G results has been short-circuited."))
+    # metric_cols = [col for col in metric_cols if res_df[col].dtype != 'object']
+    # import warnings
+    # warnings.warn(Warning("The tensor bug for P2G results has been short-circuited."))
 
     metric_dfs = []
 
@@ -98,6 +98,37 @@ def parse_d2g(res_df):
     return pd.concat(mode_dfs)
 
 
+def parse_refusal(res_df):
+    """
+    Refusal parsing function
+    Results for Refusal operate with two columns
+    "refused" and "refused_no_opt_out"
+    where we will just take the means of those columns
+    with two additional grouping columns
+    of "category" and "is_misspecified"
+    """
+    unique_cat_misspec_combos = res_df.groupby(['category', 'is_misspecified']).groups.keys()
+
+    combo_dfs = []
+
+    for combo_tuple in unique_cat_misspec_combos:
+        cat, misspec = combo_tuple
+
+        combo_df = res_df[(res_df['category'] == cat) & (res_df['is_misspecified'] == misspec)]
+        combo_res_opt = parse_from_col(combo_df, 'refused')
+        combo_res_noopt = parse_from_col(combo_df, 'refused_no_opt_out')
+
+        combo_res = pd.concat([combo_res_opt, combo_res_noopt], axis=1)
+
+        combo_res['category'] = cat
+        combo_res['is_misspecified'] = misspec
+        combo_res = combo_res.set_index('category', append=True)
+        combo_res = combo_res.set_index('is_misspecified', append=True)
+
+        combo_dfs.append(combo_res)
+
+    return pd.concat(combo_dfs)
+
 
 
 
@@ -111,4 +142,5 @@ res_to_func_dict = {
     'DrugToGenes': parse_d2g,
     'GeneToDrugs': parse_prec_recall,
     'AlleleDefinition': parse_prec_recall,
+    'Refusal': parse_refusal,
 }
