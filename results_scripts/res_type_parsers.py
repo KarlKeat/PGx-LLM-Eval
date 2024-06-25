@@ -32,11 +32,8 @@ def parse_p2g(res_df):
     scoring methods (BERTScore, BLEU, etc.) comparing the 
     LLM answer to concurring, reference, and incorrect recommendations
     """
-    # TODO: figure out how we're supposed to make use of this triangular
-    # setup for columns/scores in the results
-    # For now, just take the average of all of the columns 
-    # (hacky way of iding columns for now)
-
+    # Average of all the columns
+    # (useful since this is what we want for GPT4 at least)
     metric_cols = [col for col in res_df.columns if 'vs' in col.lower()]
 
     metric_dfs = []
@@ -45,7 +42,42 @@ def parse_p2g(res_df):
         metric_res = parse_from_col(res_df, metric_col)
         metric_dfs.append(metric_res)
 
-    return pd.concat(metric_dfs, axis=1)
+    all_metric_df = pd.concat(metric_dfs, axis=1)
+
+
+    # Add in approach for parsing P2G results
+    # by finding the "win rate" - aka
+    # how often the LLM's answer was more similar to the reference
+    # than to the discordant answer
+
+    # Get unique scoring aproaches in metrics columns
+    unique_scorers = [mname.split('_llm_')[0] for mname in metric_cols]
+    unique_scorers = sorted(list(set(unique_scorers)))
+
+    # Hack - remove the gpt4 scorer since it's not a standard scorer
+    # and what we'd want to do is covered in its "mean" function
+    unique_scorers = [scorer for scorer in unique_scorers if 'gpt4' not in scorer]
+
+
+    # Function to compute the win rate for a given scorer
+    # grouped by modelname and out_type
+    def calc_win_rate(scorer_name, results_df, col_1="llm_vs_ref", col_2="llm_vs_discordant"):
+        results_df_gb = results_df.groupby(['modelname', 'out_type'])
+
+        def win_rate_func(group, scorer_name=scorer_name, col_1=col_1, col_2=col_2):
+            wins = (group[f"{scorer_name}_{col_1}"] >= group[f"{scorer_name}_{col_2}"])
+            return pd.Series({f'{scorer_name}_winrate_mean': wins.mean(), 
+                              f'{scorer_name}_winrate_std': wins.std()})
+
+        llm_winrates = results_df_gb.apply(win_rate_func)
+
+        return llm_winrates
+    
+    # Calculate win rates for each scorer
+    winrate_dfs = [calc_win_rate(scorer, res_df) for scorer in unique_scorers]
+    winrate_dfs = pd.concat(winrate_dfs, axis=1)
+
+    return pd.concat([winrate_dfs, all_metric_df], axis=1)
 
 
 def parse_score(res_df):
