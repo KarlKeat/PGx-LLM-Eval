@@ -39,11 +39,6 @@ def parse_p2g(res_df):
 
     metric_cols = [col for col in res_df.columns if 'vs' in col.lower()]
 
-    # TODO: remove this hack to short-circuit the tensor bug temporarily
-    # metric_cols = [col for col in metric_cols if res_df[col].dtype != 'object']
-    # import warnings
-    # warnings.warn(Warning("The tensor bug for P2G results has been short-circuited."))
-
     metric_dfs = []
 
     for metric_col in metric_cols:
