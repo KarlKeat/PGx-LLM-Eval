@@ -134,22 +134,44 @@ def parse_refusal(res_df):
     with two additional grouping columns
     of "category" and "is_misspecified"
     """
-    unique_cat_misspec_combos = res_df.groupby(['category', 'is_misspecified']).groups.keys()
+    # Below is the old code that grouped by category and is_misspecified
+
+    # unique_cat_misspec_combos = res_df.groupby(['category', 'is_misspecified']).groups.keys()
+
+    # combo_dfs = []
+
+    # for combo_tuple in unique_cat_misspec_combos:
+    #     cat, misspec = combo_tuple
+
+    #     combo_df = res_df[(res_df['category'] == cat) & (res_df['is_misspecified'] == misspec)]
+    #     combo_res_opt = parse_from_col(combo_df, 'refused')
+    #     combo_res_noopt = parse_from_col(combo_df, 'refused_no_opt_out')
+
+    #     combo_res = pd.concat([combo_res_opt, combo_res_noopt], axis=1)
+
+    #     combo_res['category'] = cat
+    #     combo_res['is_misspecified'] = misspec
+    #     combo_res = combo_res.set_index('category', append=True)
+    #     combo_res = combo_res.set_index('is_misspecified', append=True)
+
+    #     combo_dfs.append(combo_res)
+
+
+    # Below is the modified code that groups by only is_misspecified
+    # since we don't care about the category (or rather, we want to aggregate)
+    # across all categories
+    unique_misspec = res_df['is_misspecified'].unique()
 
     combo_dfs = []
 
-    for combo_tuple in unique_cat_misspec_combos:
-        cat, misspec = combo_tuple
-
-        combo_df = res_df[(res_df['category'] == cat) & (res_df['is_misspecified'] == misspec)]
+    for misspec in unique_misspec:
+        combo_df = res_df[res_df['is_misspecified'] == misspec]
         combo_res_opt = parse_from_col(combo_df, 'refused')
         combo_res_noopt = parse_from_col(combo_df, 'refused_no_opt_out')
 
         combo_res = pd.concat([combo_res_opt, combo_res_noopt], axis=1)
 
-        combo_res['category'] = cat
         combo_res['is_misspecified'] = misspec
-        combo_res = combo_res.set_index('category', append=True)
         combo_res = combo_res.set_index('is_misspecified', append=True)
 
         combo_dfs.append(combo_res)
