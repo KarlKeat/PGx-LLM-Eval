@@ -1,0 +1,832 @@
+"document","cand 0","cand 1","cand 2","cand 3","cand 4","cand 5","None of the above"
+"$llm_answer:
+For individuals who test negative for the HLA-B*57:01 allele, abacavir can be prescribed without a high risk of hypersensitivity reactions. This genetic marker is used to identify those at significant risk for developing abacavir hypersensitivity syndrome; thus, a negative result suggests that the patient is unlikely to experience this adverse reaction, making abacavir a suitable option for treatment. Regular clinical monitoring should still be maintained as per standard practice.
+
+$cand_0:
+Avoid abacavir. Take an alternate therapy.
+$cand_1:
+Take abacavir with a reduced dose.
+$cand_2:
+Take abacavir with an increased dose.
+$cand_3:
+Use abacavir per standard dosing guidelines","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals who have a genetic variant in the MT-RNR1 gene indicating an increased risk of aminoglycoside-induced hearing loss, the clinical guidance would typically recommend avoiding the use of amikacin and other aminoglycosides if alternative antibiotics are available. If aminoglycosides must be used, careful monitoring of hearing function and drug levels is necessary to mitigate the risk.
+
+$cand_0:
+Proceed taking amikacin as normal. There is no recommendation.
+$cand_1:
+Take amikacin with a reduced dose.
+$cand_2:
+Take amikacin with an increased dose.
+$cand_3:
+Avoid aminoglycoside anitbiotics unless the high risk of permanent hearing loss is outweighed by the severity of infection and lack of safe or effective alternative therapies.","0","0","0","1","0","0","0"
+"$llm_answer:
+Clinical guidance for an individual with an indeterminate G6PD status regarding the use of aminosalicylic acid would be to proceed with caution. Since G6PD deficiency can lead to hemolytic anemia when exposed to oxidative drugs, assessing the patient's specific risk through additional diagnostic testing is recommended before administration. Close monitoring for signs of hemolysis is also advised if the drug is deemed necessary.
+
+$cand_0:
+Avoid aminosalicylic acid. Take an alternate therapy.
+$cand_1:
+Take aminosalicylic acid with a reduced dose.
+$cand_2:
+Take aminosalicylic acid with an increased dose.
+$cand_3:
+To ascertain G6PD status, enzyme activity must be measured. Drug use should be guided per the recommendations based on the activity-based phenotype.","0","0","0","1","0","0","0"
+"$llm_answer:
+In individuals with an indeterminate G6PD status, there is insufficient information to predict their risk of hemolytic anemia when exposed to oxidative drugs like aspirin. Clinicians are generally advised to exercise caution, especially at high doses, and consider alternative therapies or confirm G6PD status through further testing. Monitoring for signs of hemolysis if aspirin is used is advisable.
+
+$cand_0:
+Avoid aspirin. Take an alternate therapy.
+$cand_1:
+Take aspirin with a reduced dose.
+$cand_2:
+Take aspirin with an increased dose.
+$cand_3:
+To ascertain G6PD status, enzyme activity must be measured. Drug use should be guided per the recommendations based on the activity-based phenotype.","0","0","0","1","0","0","0"
+"$llm_answer:
+For a patient identified as a CYP2D6 ultrarapid metabolizer with an activity score of ≥3.75, standard doses of atomoxetine may not achieve therapeutic levels due to increased metabolism, potentially leading to reduced efficacy. Clinical guidance suggests careful monitoring of the patient's response and considering alternative treatments or dose adjustments based on therapeutic drug monitoring and clinical judgment.
+
+$cand_0:
+Proceed taking atomoxetine as normal. There is no recommendation.
+$cand_1:
+Avoid atomoxetine. Take an alternate therapy.
+$cand_2:
+Initiate with a dose of 40 mg/day and increase to 80 mg/day after 3 days. If no clinical response and in the absence of adverse events after 2 weeks, consider increasing dose to 100 mg/day. If no clinical response observed after 2 weeks, consider obtaining a peak plasma concentration (1 to 2 hours after dose administered). If <200 ng/mL, consider a proportional increase in dose to approach 400 ng/mL. Dosages greater than 100 mg/day may be needed to achieve target concentrations.","0","0","0","0","0","0","1"
+"$llm_answer:
+For a patient who has an indeterminate SLCO1B1 genotype, clinical guidance would suggest monitoring for signs of statin-associated muscle symptoms or myopathy when taking atorvastatin. While definitive genotype-based adjustments cannot be made, practitioners should consider regular clinical evaluations and patient history to individualize statin therapy effectively.
+
+$cand_0:
+Avoid atorvastatin. Take an alternate therapy.
+$cand_1:
+Take atorvastatin with a reduced dose.
+$cand_2:
+Take atorvastatin with an increased dose.
+$cand_3:
+No recommendation","0","0","0","0","0","0","1"
+"$llm_answer:
+For an individual who is a Possible Intermediate Metabolizer (IM) for TPMT and a Normal Metabolizer (NM) for NUDT15, the clinical guidance for taking azathioprine generally involves considering a reduced dose. Close monitoring for myelosuppression and other adverse effects is recommended, as intermediate TPMT metabolizers can have an increased risk for toxicity at standard doses. Adjustments should be based on therapeutic response and tolerance.
+
+$cand_0:
+Proceed taking azathioprine as normal. There is no recommendation.
+$cand_1:
+Avoid azathioprine. Take an alternate therapy.
+$cand_2:
+Start with reduced starting doses (30%-80% of normal dose) if normal starting dose is 2-3 mg/kg/day (e.g., 0.6 – 2.4 mg/kg/day), and adjust doses of azathioprine based on degree of myelosuppression and disease-specific guidelines. Allow 2-4 weeks to reach steady-state after each dose adjustment (PMID 20354201, 11302950, 15606506, 16530532).","0","0","1","0","0","0","0"
+"$llm_answer:
+Patients who are classified as Poor Metabolizers (activity score = 0.0) for the DPYD gene are at a significantly increased risk of severe, potentially life-threatening toxicity when treated with capecitabine. Clinical guidelines recommend avoiding the use of capecitabine in these patients and considering alternative chemotherapeutic agents that are not metabolized by the DPD enzyme.
+
+$cand_0:
+Proceed taking capecitabine as normal. There is no recommendation.
+$cand_1:
+Take capecitabine with a reduced dose.
+$cand_2:
+Take capecitabine with an increased dose.
+$cand_3:
+Avoid use of 5-fluorouracil or 5-fluorouracil prodrug-based regimens.","0","0","0","1","0","0","0"
+"$llm_answer:
+For a patient who is a normal metabolizer (CYP2C9 activity score 2.0), standard dosing of celecoxib is generally recommended. This patient would metabolize the drug at a typical rate, thus standard celecoxib dosing guidelines can be followed without the need for adjustments. It is important to monitor for efficacy and adverse effects as with any medication.
+
+$cand_0:
+Avoid celecoxib. Take an alternate therapy.
+$cand_1:
+Take celecoxib with a reduced dose.
+$cand_2:
+Take celecoxib with an increased dose.
+$cand_3:
+Initiate therapy with recommended starting dose. In accordance with the prescribing information, use the lowest effective dosage for shortest duration consistent with individual patient treatment goals.","0","0","0","1","0","0","0"
+"$llm_answer:
+For patients who are classified as Indeterminate for the CYP2C9 metabolizer status, the clinical guidance is to follow standard dosing recommendations for celecoxib. However, clinicians should remain vigilant for potential adverse effects or lack of efficacy, as the indeterminate status suggests uncertainty about the patient's metabolic capacity for processing the drug. Regular monitoring and possibly adjusting the dose based on clinical response and tolerance may be advised.
+
+$cand_0:
+Avoid celecoxib. Take an alternate therapy.
+$cand_1:
+Take celecoxib with a reduced dose.
+$cand_2:
+Take celecoxib with an increased dose.
+$cand_3:
+No recommendation","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual with normal G6PD (glucose-6-phosphate dehydrogenase) enzyme activity, chloroquine can be prescribed without a heightened risk of hemolysis, which is a concern in G6PD deficiency. Clinicians can follow standard dosing guidelines for chloroquine in treating conditions such as malaria or autoimmune diseases, as the patient does not have an increased risk of drug-induced hemolytic anemia.
+
+$cand_0:
+Avoid chloroquine. Take an alternate therapy.
+$cand_1:
+Take chloroquine with a reduced dose.
+$cand_2:
+Take chloroquine with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals with G6PD deficiency, the use of ciprofloxacin poses an increased risk of hemolytic anemia and is generally contraindicated. It is recommended to avoid prescribing ciprofloxacin to these patients; alternative antibiotics that do not carry a similar risk should be considered instead.
+
+$cand_0:
+Avoid ciprofloxacin. Take an alternate therapy.
+$cand_1:
+Take ciprofloxacin with a reduced dose.
+$cand_2:
+Take ciprofloxacin with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status at standard doses","1","0","0","0","0","0","0"
+"$llm_answer:
+For a patient with no result for CYP2D6 and an activity score indicating no result, alongside being identified as a rapid metabolizer for CYP2C19, specific clinical guidance is limited due to missing CYP2D6 data. Typically, CYP2D6 is a crucial enzyme for metabolizing clomipramine, so obtaining this information would be essential. Given the patient's rapid metabolizer status for CYP2C19, increased metabolism could affect the drug's efficacy and side effect profile, suggesting the need for close monitoring and potentially adjusting the dosing under the supervision of a healthcare professional.
+
+$cand_0:
+Proceed taking clomipramine as normal. There is no recommendation.
+$cand_1:
+Take clomipramine with a reduced dose.
+$cand_2:
+Take clomipramine with an increased dose.
+$cand_3:
+Avoid tertiary amine use due to potential for sub-optimal response. Consider alternative drug not metabolized by CYP2C19. TCAs without major CYP2C19 metabolism include the secondary amines nortriptyline and desipramine. If a tertiary amine is warranted, utilize therapeutic drug monitoring to guide dose adjustments.","1","0","0","0","0","0","0"
+"$llm_answer:
+For individuals identified as Cytochrome P450 2C19 (CYP2C19) ultrarapid metabolizers, clinical guidance typically recommends standard dosing of clopidogrel. Ultrarapid metabolizers generally exhibit enhanced conversion of clopidogrel to its active metabolite, potentially leading to an increased risk of bleeding. Therefore, careful monitoring is advised to balance the drug's efficacy with the risk of adverse effects.
+
+$cand_0:
+Avoid clopidogrel. Take an alternate therapy.
+$cand_1:
+Take clopidogrel with a reduced dose.
+$cand_2:
+Take clopidogrel with an increased dose.
+$cand_3:
+If considering clopidogrel, use at standard dose (75 mg/day)","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual who is an ultrarapid metabolizer with an activity score of ≥5.0 for the CYP2D6 enzyme, clinical guidance typically recommends avoiding the use of codeine. This is due to the increased risk of rapid and extensive conversion of codeine to morphine, which can lead to potentially toxic levels of morphine and an increased risk of serious side effects, including respiratory depression. Alternative analgesics that do not rely on CYP2D6 metabolism should be considered.
+
+$cand_0:
+Proceed taking codeine as normal. There is no recommendation.
+$cand_1:
+Take codeine with a reduced dose.
+$cand_2:
+Take codeine with an increased dose.
+$cand_3:
+Avoid codeine use because of potential for serious toxicity. If opioid use is warranted, consider a non-tramadol opioid.","0","0","0","1","0","0","0"
+"$llm_answer:
+Individuals who have a normal glucose-6-phosphate dehydrogenase (G6PD) enzyme level typically do not face an increased risk of hemolysis when taking dapsone. Therefore, they can be prescribed this medication without the need for special precautions related to G6PD deficiency. However, routine clinical monitoring for other potential adverse effects of dapsone is still recommended.
+
+$cand_0:
+Avoid dapsone. Take an alternate therapy.
+$cand_1:
+Take dapsone with a reduced dose.
+$cand_2:
+Take dapsone with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status","0","0","0","1","0","0","0"
+"$llm_answer:
+Clinical guidance for someone with Malignant Hyperthermia (MH) Susceptibility linked to RYR1 and Uncertain Susceptibility for CACNA1S would typically advise avoiding desflurane. Desflurane is a known trigger for MH, particularly in individuals with RYR1 mutations, and caution is warranted given the uncertain status with CACNA1S. Alternative anesthetic agents that do not trigger MH should be considered for such patients.
+
+$cand_0:
+Proceed taking desflurane as normal. There is no recommendation.
+$cand_1:
+Take desflurane with a reduced dose.
+$cand_2:
+Take desflurane with an increased dose.
+$cand_3:
+Halogenated volatile anesthetics or the depolarizing muscle relaxant succinylcholine are relatively contraindicated in persons with malignant hyperthermia susceptibility (MHS). They should not be used, except in extraordinary circumstances where the benefits outweigh the risks. In general, alternative anesthetics are widely available and effective in patients with MHS.","0","0","0","0","0","0","1"
+"$llm_answer:
+For an individual who is an Ultrarapid Metabolizer (UM) with a CYP2D6 activity score of ≥6.0, it is generally recommended to avoid the use of desipramine due to the risk of significantly reduced drug efficacy and potential therapeutic failure. Alternative treatments not metabolized by CYP2D6 should be considered to ensure effective management of the patient's condition.
+
+$cand_0:
+Proceed taking desipramine as normal. There is no recommendation.
+$cand_1:
+Take desipramine with a reduced dose.
+$cand_2:
+Take desipramine with an increased dose.
+$cand_3:
+Avoid tricyclic use due to potential lack of efficacy. Consider alternative drug not metabolized by CYP2D6. If a TCA is warranted, consider titrating to a higher target dose (compared to normal metabolizers). Titrate dose to observed clinical response with symptom improvement and minimal (if any) side effects. Utilize therapeutic drug monitoring to guide dose adjustments.","0","0","0","2","0","0","0"
+"$llm_answer:
+For individuals at increased risk of aminoglycoside-induced hearing loss due to MT-RNR1 genetic variants, alternative antibiotics should be considered to avoid the associated ototoxicity. Since dibekacin is an aminoglycoside, it is advisable to avoid its use in these patients to prevent potential hearing loss. It's crucial to consult with a healthcare professional for appropriate antibiotic selection and management.
+
+$cand_0:
+Proceed taking dibekacin as normal. There is no recommendation.
+$cand_1:
+Take dibekacin with a reduced dose.
+$cand_2:
+Take dibekacin with an increased dose.
+$cand_3:
+Avoid aminoglycoside anitbiotics unless the high risk of permanent hearing loss is outweighed by the severity of infection and lack of safe or effective alternative therapies.","0","0","0","1","0","0","0"
+"$llm_answer:
+For a patient with normal G6PD levels, the clinical guidance indicates that dimercaprol can be administered without heightened risk of hemolysis related to G6PD deficiency. This is because the normal G6PD activity ensures adequate protection of red blood cells against oxidative stress induced by dimercaprol. However, monitoring for general side effects and overall patient response is still recommended.
+
+$cand_0:
+Avoid dimercaprol. Take an alternate therapy.
+$cand_1:
+Take dimercaprol with a reduced dose.
+$cand_2:
+Take dimercaprol with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status","0","0","0","2","0","0","0"
+"$llm_answer:
+For a patient with indeterminate G6PD status, use of dimercaprol should be approached with caution. G6PD deficiency can increase the risk of hemolysis when exposed to oxidative agents such as dimercaprol. Hence, it's advisable to confirm G6PD status before administration and consider alternative treatments if possible.
+
+$cand_0:
+Avoid dimercaprol. Take an alternate therapy.
+$cand_1:
+Take dimercaprol with a reduced dose.
+$cand_2:
+Take dimercaprol with an increased dose.
+$cand_3:
+To ascertain G6PD status, enzyme activity must be measured. Drug use should be guided per the recommendations based on the activity-based phenotype.","0","0","0","0","0","0","1"
+"$llm_answer:
+For an individual who is an intermediate metabolizer with an activity score of 0.75 for CYP2D6 and a normal metabolizer for CYP2C19, caution is advised when prescribing doxepin. Doxepin is primarily metabolized by CYP2D6, so reduced CYP2D6 activity could lead to higher plasma concentrations and an increased risk of side effects. A lower initial dose and careful titration may be needed, with close monitoring for efficacy and adverse effects.
+
+$cand_0:
+Proceed taking doxepin as normal. There is no recommendation.
+$cand_1:
+Avoid doxepin. Take an alternate therapy.
+$cand_2:
+Consider a 25% reduction of recommended starting dose. Utilize therapeutic drug monitoring to guide dose adjustments.","0","0","0","0","0","0","1"
+"$llm_answer:
+For a patient with ""No Result"" for the RYR1 gene and ""Uncertain Susceptibility"" for the CACNA1S gene, clinical guidance regarding enflurane use is cautious. Enflurane is a known trigger for malignant hyperthermia, a potentially life-threatening condition that can be associated with mutations in these genes. Because of the uncertainty in genetic results, it is generally advisable to avoid enflurane and other potent volatile anesthetics, opting for non-triggering anesthetic agents to mitigate any risk.
+
+$cand_0:
+Avoid enflurane. Take an alternate therapy.
+$cand_1:
+Take enflurane with a reduced dose.
+$cand_2:
+Take enflurane with an increased dose.
+$cand_3:
+No RYR1 genotype is available. Based on CACNA1S status, clinical findings, family history, further genetic testing and other laboratory data should guide use of halogenated volatile anesthetics or depolarizing muscle relaxants.","1","0","0","0","0","0","0"
+"$llm_answer:
+For a patient identified as a Poor Metabolizer with an activity score of 0.0 for the DPYD gene, it is strongly recommended to avoid the use of fluorouracil due to the high risk of severe or potentially life-threatening toxicity. Alternative chemotherapy agents that do not rely on DPYD metabolism should be considered to ensure patient safety.
+
+$cand_0:
+Proceed taking fluorouracil as normal. There is no recommendation.
+$cand_1:
+Take fluorouracil with a reduced dose.
+$cand_2:
+Take fluorouracil with an increased dose.
+$cand_3:
+Avoid use of 5-fluorouracil or 5-fluorouracil prodrug-based regimens.","0","0","0","1","0","0","0"
+"$llm_answer:
+Given the indeterminate status for CYP2C9 and possible decreased function for SLCO1B1, it is advisable to start fluvastatin therapy at a lower dose and monitor the patient closely for adverse effects, particularly muscle-related symptoms. These genetic variations may affect drug metabolism and transport, potentially increasing the risk for drug toxicity. Adjustments should be made based on therapeutic response and tolerance.
+
+$cand_0:
+Avoid fluvastatin. Take an alternate therapy.
+$cand_1:
+Take fluvastatin with a reduced dose.
+$cand_2:
+Take fluvastatin with an increased dose.
+$cand_3:
+Based on SLCO1B1 status, prescribe desired starting dose and adjust doses of fluvastatin based on disease-specific guidelines. Prescriber should be aware of possible increased risk for myopathy especially for doses >40mg per day. CYP2C9 phenotype could not be assigned based on genotyping.","0","1","0","0","0","0","0"
+"$llm_answer:
+Intermediate metabolizers with a CYP2D6 activity score of 0.5 typically have reduced enzyme activity, leading to slower metabolism of fluvoxamine. This can result in higher plasma concentrations of the drug. Clinicians may consider starting at a lower dose and monitoring for potential adverse effects or toxicity, adjusting the dose accordingly based on the patient's response and tolerance.
+
+$cand_0:
+Avoid fluvoxamine. Take an alternate therapy.
+$cand_1:
+Take fluvoxamine with a reduced dose.
+$cand_2:
+Take fluvoxamine with an increased dose.
+$cand_3:
+Initiate therapy with recommended starting dose.","0","1","0","0","0","0","0"
+"$llm_answer:
+For individuals identified as CYP2D6 ultrarapid metabolizers with an activity score of ≥3.75, caution is advised when prescribing fluvoxamine, a selective serotonin reuptake inhibitor (SSRI). Due to the rapid metabolism, fluvoxamine levels may be subtherapeutic, leading to reduced efficacy. Consider alternative medications not primarily metabolized by CYP2D6 or consult a clinical pharmacologist for potential dosage adjustments.    
+
+$cand_0:
+Avoid fluvoxamine. Take an alternate therapy.
+$cand_1:
+Take fluvoxamine with a reduced dose.
+$cand_2:
+Take fluvoxamine with an increased dose.
+$cand_3:
+No recommendation due to lack of evidence","0","0","0","0","0","0","1"
+"$llm_answer:
+Individuals who test positive for the HLA-B*15:02 allele should avoid using fosphenytoin due to a significantly increased risk of severe cutaneous adverse reactions, such as Stevens-Johnson syndrome and toxic epidermal necrolysis. Alternative anticonvulsant medications that do not carry this risk should be considered for these patients.
+
+$cand_0:
+Avoid fosphenytoin. Take an alternate therapy.
+$cand_1:
+Take fosphenytoin with a reduced dose.
+$cand_2:
+Take fosphenytoin with an increased dose.
+$cand_3:
+If the patient has previously used phenytoin continuously for longer than three months without incidence of cutaneous adverse reactions, cautiously consider use of phenytoin in the future. The latency period for drug-induced SJS/TEN is short with continuous dosing and adherence to therapy (4-28 days), and cases usually occur within three months of dosing.","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals with glucose-6-phosphate dehydrogenase (G6PD) deficiency, caution is advised when prescribing glyburide due to the risk of hemolytic anemia, which can be exacerbated by this condition. It may be prudent for healthcare providers to consider alternative antidiabetic medications with a safer profile for G6PD-deficient patients.
+
+$cand_0:
+Avoid glyburide. Take an alternate therapy.
+$cand_1:
+Take glyburide with a reduced dose.
+$cand_2:
+Take glyburide with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status at standard doses","0","0","0","0","0","0","1"
+"$llm_answer:
+For an individual who is normal for G6PD (glucose-6-phosphate dehydrogenase), there are generally no specific precautions needed when taking glyburide. G6PD deficiency primarily impacts red blood cell stability, and glyburide, a sulfonylurea used for diabetes management, does not typically affect G6PD function. However, standard monitoring for glyburide's hypoglycemic effects and other side effects remains important.
+
+$cand_0:
+Avoid glyburide. Take an alternate therapy.
+$cand_1:
+Take glyburide with a reduced dose.
+$cand_2:
+Take glyburide with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual who tests negative for RYR1 and has no evidence of Malignant Hyperthermia Susceptibility (MHS) related to CACNA1S, the risk of developing malignant hyperthermia (MH) when exposed to halothane is significantly reduced but not eliminated since MH can be influenced by other genetic factors. Clinical guidance generally suggests exercising caution with halothane use, monitoring the patient closely during anesthesia, and having dantrolene readily available as a precautionary measure.
+
+$cand_0:
+Proceed taking halothane as normal. There is no recommendation.
+$cand_1:
+Take halothane with a reduced dose.
+$cand_2:
+Take halothane with an increased dose.
+$cand_3:
+Based on CACNA1S status, halogenated volatile anesthetics or the depolarizing muscle relaxant succinylcholine are relatively contraindicated in persons with malignant hyperthermia susceptibility (MHS). They should not be used, except in extraordinary circumstances where the benefits outweigh the risks. In general, alternative anesthetics are widely available and effective in patients with MHS.","1","0","0","0","0","0","0"
+"$llm_answer:
+For a patient who is an Ultrarapid Metabolizer with a CYP2D6 activity score of 2.5, clinical guidelines suggest caution with hydrocodone use. This metabolizer status could lead to a rapid and possibly excessive conversion of hydrocodone to hydromorphone, increasing the risk of opioid-related toxicity and adverse effects. It is often recommended to consider alternative pain medications that are not significantly metabolized by CYP2D6.
+
+$cand_0:
+Avoid hydrocodone. Take an alternate therapy.
+$cand_1:
+Take hydrocodone with a reduced dose.
+$cand_2:
+Take hydrocodone with an increased dose.
+$cand_3:
+No recommendation for hydrocodone therapy because of minimal evidence regarding adverse events or analgesia.","1","0","0","0","0","0","0"
+"$llm_answer:
+For individuals with normal G6PD (glucose-6-phosphate dehydrogenase) enzyme levels, there is no increased risk of hemolytic anemia when taking hydroxychloroquine. Therefore, hydroxychloroquine can generally be administered without specific additional precautions related to G6PD deficiency in this population. However, standard prescribing guidelines and monitoring for other potential side effects of hydroxychloroquine should still be followed.
+
+$cand_0:
+Avoid hydroxychloroquine. Take an alternate therapy.
+$cand_1:
+Take hydroxychloroquine with a reduced dose.
+$cand_2:
+Take hydroxychloroquine with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual who is a normal metabolizer with an activity score of 2.0 for the CYP2C9 enzyme, standard dosing recommendations for ibuprofen apply. Since they efficiently metabolize drugs processed by CYP2C9, no dose adjustments or special monitoring is typically necessary. However, as always, clinical decisions should also consider other patient-specific factors and overall health status.
+
+$cand_0:
+Avoid ibuprofen. Take an alternate therapy.
+$cand_1:
+Take ibuprofen with a reduced dose.
+$cand_2:
+Take ibuprofen with an increased dose.
+$cand_3:
+Initiate therapy with recommended starting dose. In accordance with the prescribing information, use the lowest effective dosage for shortest duration consistent with individual patient treatment goals.","0","0","0","1","0","0","0"
+"$llm_answer:
+For a patient who is an ultrarapid metabolizer (activity score ≥4.0) for CYP2D6 and has no result for CYP2C19, clinical guidance would recommend avoiding imipramine due to the likelihood of subtherapeutic drug levels and reduced efficacy. Alternative medications that are not primarily metabolized by CYP2D6 should be considered.
+
+$cand_0:
+Proceed taking imipramine as normal. There is no recommendation.
+$cand_1:
+Take imipramine with a reduced dose.
+$cand_2:
+Take imipramine with an increased dose.
+$cand_3:
+Avoid tricyclic use due to potential lack of efficacy. Consider alternative drug not metabolized by CYP2D6. If a TCA is warranted, consider titrating to a higher target dose (compared to normal metabolizers). Utilize therapeutic drug monitoring to guide dose adjustments. Titrate dose to observed clinical response with symptom improvement and minimal (if any) side effects.","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual with Malignant Hyperthermia Susceptibility due to RYR1 variants, the use of isoflurane is contraindicated as it can trigger a potentially fatal hypermetabolic reaction. Even with uncertain susceptibility for CACNA1S, it is prudent to avoid isoflurane and similar agents, and seek alternative anesthesia strategies to mitigate the risk of malignant hyperthermia.
+
+$cand_0:
+Proceed taking isoflurane as normal. There is no recommendation.
+$cand_1:
+Take isoflurane with a reduced dose.
+$cand_2:
+Take isoflurane with an increased dose.
+$cand_3:
+Halogenated volatile anesthetics or the depolarizing muscle relaxant succinylcholine are relatively contraindicated in persons with malignant hyperthermia susceptibility (MHS). They should not be used, except in extraordinary circumstances where the benefits outweigh the risks. In general, alternative anesthetics are widely available and effective in patients with MHS.","0","0","0","1","0","0","0"
+"$llm_answer:
+Individuals with specific variants in the MT-RNR1 gene are at an increased risk of aminoglycoside-induced hearing loss. For patients with these genetic variants, the clinical guidance would typically recommend avoiding the use of kanamycin and considering alternative antibiotics to prevent ototoxicity. Genetic testing for MT-RNR1 variants can help identify at-risk patients to guide appropriate antibiotic selection.
+
+$cand_0:
+Proceed taking kanamycin as normal. There is no recommendation.
+$cand_1:
+Take kanamycin with a reduced dose.
+$cand_2:
+Take kanamycin with an increased dose.
+$cand_3:
+Avoid aminoglycoside anitbiotics unless the high risk of permanent hearing loss is outweighed by the severity of infection and lack of safe or effective alternative therapies.","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals identified as rapid metabolizers of CYP2C19, clinical guidance generally suggests increasing the standard dose of lansoprazole as rapid metabolism can lead to reduced drug efficacy due to lower plasma concentrations. Alternatively, a different proton pump inhibitor (PPI) less affected by CYP2C19 metabolism, such as rabeprazole, may be considered to achieve the desired therapeutic effect.
+
+$cand_0:
+Proceed taking lansoprazole as normal. There is no recommendation.
+$cand_1:
+Avoid lansoprazole. Take an alternate therapy.
+$cand_2:
+Initiate standard starting daily dose. Consider increasing dose by 50-100% for the treatment of H. pylori infection and erosive esophagitis. Daily dose may be given in divided doses.Monitor for efficacy.","0","0","1","0","0","0","0"
+"$llm_answer:
+For individuals identified as likely poor metabolizers for CYP2C19, standard doses of lansoprazole may result in higher plasma concentrations compared to normal metabolizers, potentially leading to enhanced therapeutic effects and a greater likelihood of adverse effects. Clinical guidance typically suggests considering a dose reduction of lansoprazole or close monitoring for adverse reactions to ensure safety and efficacy. It's advisable to consult a healthcare provider for personalized dosing recommendations.
+
+$cand_0:
+Proceed taking lansoprazole as normal. There is no recommendation.
+$cand_1:
+Avoid lansoprazole. Take an alternate therapy.
+$cand_2:
+Initiate standard starting daily dose. For chronic therapy (>12 weeks) and efficacy achieved, consider 50% reduction in daily dose and monitor for continued efficacy.","0","0","0","0","0","0","1"
+"$llm_answer:
+For a patient identified as a CYP2C9 normal metabolizer with an activity score of 2.0, standard dosing of lornoxicam is appropriate. Normal metabolizers typically exhibit expected drug metabolism rates, meaning they should experience the intended therapeutic effects and side effect profile without unusual risk of adverse reactions due to altered drug clearance. Always consider individual patient factors and clinical judgment in conjunction with pharmacogenomic data when prescribing.
+
+$cand_0:
+Avoid lornoxicam. Take an alternate therapy.
+$cand_1:
+Take lornoxicam with a reduced dose.
+$cand_2:
+Take lornoxicam with an increased dose.
+$cand_3:
+Initiate therapy with recommended starting dose. In accordance with the prescribing information, use the lowest effective dosage for shortest duration consistent with individual patient treatment goals.","0","0","0","1","0","0","0"
+"$llm_answer:
+For a person who is a normal metabolizer with an activity score of 2.0 for the CYP2C9 enzyme, the clinical guidance for taking meloxicam typically involves using standard dosing regimens. Such individuals are expected to metabolize the drug at normal rates, minimizing the risk of adverse effects or subtherapeutic responses. Regular monitoring and clinical judgment should still be employed to ensure optimal therapeutic outcomes.
+
+$cand_0:
+Avoid meloxicam. Take an alternate therapy.
+$cand_1:
+Take meloxicam with a reduced dose.
+$cand_2:
+Take meloxicam with an increased dose.
+$cand_3:
+Initiate therapy with recommended starting dose. In accordance with the prescribing information, use the lowest effective dosage for shortest duration consistent with individual patient treatment goals.","0","0","0","1","0","0","0"
+"$llm_answer:
+Individuals with uncertain susceptibility for RYR1 and confirmed malignant hyperthermia susceptibility for CACNA1S should avoid the use of methoxyflurane. Methoxyflurane is a potent trigger for malignant hyperthermia, a life-threatening condition, and thus poses a significant risk to these patients. Alternative anesthetics that do not trigger malignant hyperthermia should be used instead.
+
+$cand_0:
+Proceed taking methoxyflurane as normal. There is no recommendation.
+$cand_1:
+Take methoxyflurane with a reduced dose.
+$cand_2:
+Take methoxyflurane with an increased dose.
+$cand_3:
+Halogenated volatile anesthetics or the depolarizing muscle relaxant succinylcholine are relatively contraindicated in persons with malignant hyperthermia susceptibility (MHS). They should not be used, except in extraordinary circumstances where the benefits outweigh the risks. In general, alternative anesthetics are widely available and effective in patients with MHS.","0","0","0","1","0","0","0"
+"$llm_answer:
+For a patient with no results for RYR1 and uncertain susceptibility for CACNA1S, the use of methoxyflurane should be approached with caution. Both RYR1 and CACNA1S genetic variants are associated with an increased risk of malignant hyperthermia, a potential life-threatening reaction to certain anesthetics, including methoxyflurane. In the absence of clear genetic results, consider alternative medications and consult with a genetic or anesthetic specialist to evaluate the risk further.
+
+$cand_0:
+Avoid methoxyflurane. Take an alternate therapy.
+$cand_1:
+Take methoxyflurane with a reduced dose.
+$cand_2:
+Take methoxyflurane with an increased dose.
+$cand_3:
+No RYR1 genotype is available. Based on CACNA1S status, clinical findings, family history, further genetic testing and other laboratory data should guide use of halogenated volatile anesthetics or depolarizing muscle relaxants.","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals with an indeterminate G6PD status, it is generally advisable to avoid using methylene blue due to the risk of hemolytic anemia, which can occur in G6PD-deficient individuals. Consultation with a healthcare provider for alternative treatments and further diagnostic testing to clarify G6PD status is recommended before considering methylene blue.
+
+$cand_0:
+Avoid methylene blue. Take an alternate therapy.
+$cand_1:
+Take methylene blue with a reduced dose.
+$cand_2:
+Take methylene blue with an increased dose.
+$cand_3:
+To ascertain G6PD status, enzyme activity must be measured. Drug use should be guided per the recommendations based on the activity-based phenotype.","1","0","0","0","0","0","0"
+"$llm_answer:
+Individuals who are deficient in glucose-6-phosphate dehydrogenase (G6PD) and have chronic non-spherocytic hemolytic anemia (CNSHA) should avoid taking ofloxacin. G6PD deficiency increases the risk of hemolytic anemia when exposed to certain medications, including ofloxacin. Clinicians typically recommend alternative antibiotics to prevent hemolytic events in these patients.
+
+$cand_0:
+Avoid ofloxacin. Take an alternate therapy.
+$cand_1:
+Take ofloxacin with a reduced dose.
+$cand_2:
+Take ofloxacin with an increased dose.
+$cand_3:
+Use drug cautiously; if used, close monitoring for acute exacerbation of chronic hemolysis is recommended","1","0","0","0","0","0","0"
+"$llm_answer:
+For an individual with normal glucose-6-phosphate dehydrogenase (G6PD) levels, ofloxacin can generally be prescribed without special precautions related to G6PD deficiency. There is no increased risk of hemolytic anemia associated with ofloxacin for patients who have normal G6PD enzyme activity. However, as with any medication, the patient should be monitored for any adverse reactions.
+
+$cand_0:
+Avoid ofloxacin. Take an alternate therapy.
+$cand_1:
+Take ofloxacin with a reduced dose.
+$cand_2:
+Take ofloxacin with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals identified as likely poor metabolizers of CYP2C19, the clinical guidance for taking omeprazole often includes maintaining the standard dose. Poor metabolizers have higher plasma concentrations of omeprazole, enhancing the drug's efficacy. Therefore, dose adjustments are generally not necessary and can result in improved therapeutic outcomes, such as increased gastric acid suppression.
+
+$cand_0:
+Proceed taking omeprazole as normal. There is no recommendation.
+$cand_1:
+Avoid omeprazole. Take an alternate therapy.
+$cand_2:
+Initiate standard starting daily dose. For chronic therapy (>12 weeks) and efficacy achieved, consider 50% reduction in daily dose and monitor for continued efficacy.","1","0","0","0","0","0","0"
+"$llm_answer:
+For a patient who is a normal metabolizer with an activity score of 1.75 for CYP2D6, standard dosing of ondansetron is generally appropriate. CYP2D6 normal metabolizers typically do not require alterations in drug dosing, as they metabolize the drug at a rate that leads to the expected therapeutic effects and minimal risk of adverse reactions. It is always recommended to monitor the patient for efficacy and tolerability.
+
+$cand_0:
+Avoid ondansetron. Take an alternate therapy.
+$cand_1:
+Take ondansetron with a reduced dose.
+$cand_2:
+Take ondansetron with an increased dose.
+$cand_3:
+Initiate therapy with recommended starting dose.","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals who are HLA-B*15:02 positive, using oxcarbazepine is contraindicated due to a significantly increased risk of developing severe cutaneous adverse reactions (SCARs), such as Stevens-Johnson syndrome (SJS) and toxic epidermal necrolysis (TEN). Clinical guidelines recommend avoiding oxcarbazepine in these patients and considering alternative medications that do not carry the same genetic risk.
+
+$cand_0:
+Avoid oxcarbazepine. Take an alternate therapy.
+$cand_1:
+Take oxcarbazepine with a reduced dose.
+$cand_2:
+Take oxcarbazepine with an increased dose.
+$cand_3:
+The latency period for drug-induced SJS/TEN is short with continuous dosing and adherence to therapy (~4-28 days), and cases usually occur within three months of dosing; therefore, if the patient has previously used oxcarbazepine consistently for longer than three months without incidence of cutaneous adverse reactions, cautiously consider use of oxcarbazepine in the future.","1","0","0","0","0","0","0"
+"$llm_answer:
+For individuals who are HLA-B*15:02 negative, the risk of developing serious adverse reactions such as Stevens-Johnson syndrome (SJS) or toxic epidermal necrolysis (TEN) when taking oxcarbazepine is significantly lower compared to those who are positive for this allele. Therefore, oxcarbazepine can be considered a suitable treatment option for them without additional specific genetic contraindications related to HLA-B*15:02. However, standard clinical monitoring for other potential side effects of oxcarbazepine should still be observed.
+
+$cand_0:
+Avoid oxcarbazepine. Take an alternate therapy.
+$cand_1:
+Take oxcarbazepine with a reduced dose.
+$cand_2:
+Take oxcarbazepine with an increased dose.
+$cand_3:
+Use oxcarbazepine per standard dosing guidelines.","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals who are deficient in glucose-6-phosphate dehydrogenase (G6PD), the use of pegloticase is contraindicated due to the significant risk of hemolysis and methemoglobinemia. Clinical guidance would advise against prescribing pegloticase to G6PD-deficient patients and recommend alternative treatments for conditions such as chronic gout.
+
+$cand_0:
+Proceed taking pegloticase as normal. There is no recommendation.
+$cand_1:
+Take pegloticase with a reduced dose.
+$cand_2:
+Take pegloticase with an increased dose.
+$cand_3:
+Avoid use","0","0","0","1","0","0","0"
+"$llm_answer:
+If an individual's HLA-B genotype result is not available, clinical guidance generally suggests proceeding with caution when prescribing phenytoin due to the risk of severe adverse reactions, such as Stevens-Johnson syndrome (SJS) and toxic epidermal necrolysis (TEN), particularly in populations with higher prevalence of the HLA-B*15:02 allele, like those of Asian ancestry. Close monitoring, an alternative medication, or genotyping might be recommended to mitigate risk.
+
+$cand_0:
+Proceed taking phenytoin as normal. There is no recommendation.
+$cand_1:
+Avoid phenytoin. Take an alternate therapy.
+$cand_2:
+For first dose, use typical initial or loading dose. For subsequent doses use approximately 50% less than typical maintenance dose. Subsequent doses should be adjusted according to therapeutic drug monitoring, response, and side effects. An HLA-B*15:02 negative test does not eliminate the risk of phenytoin-induced SJS/TEN, and patients should be carefully monitored according to a usual standard.","1","0","0","0","0","0","0"
+"$llm_answer:
+For a patient identified as an intermediate metabolizer with a CYP2C9 activity score of 1.0, clinical guidance suggests considering alternative NSAIDs to piroxicam when possible. This is because intermediate metabolizers may have an increased risk of adverse effects due to slower metabolism of piroxicam, potentially leading to higher plasma levels of the drug. If piroxicam is used, close monitoring and potentially lower dosages should be considered to reduce the risk of toxicity.
+
+$cand_0:
+Proceed taking piroxicam as normal. There is no recommendation.
+$cand_1:
+Take piroxicam with a reduced dose.
+$cand_2:
+Take piroxicam with an increased dose.
+$cand_3:
+Choose an alternative therapy not metabolized by CYP2C9 or not significantly impacted by CYP2C9 genetic variants in vivo or choose an NSAID metabolized by CYP2C9 but with a shorter half-life (see CPIC THERAPEUTIC RECOMMENDATIONS FOR CELECOXIB, FLURBIPROFEN, LORNOXICAM, AND IBUPROFEN BASED ON CYP2C9 PHENOTYPE).","0","0","0","1","0","0","0"
+"$llm_answer:
+Individuals with an increased function variant of the SLCO1B1 gene generally have enhanced hepatic uptake of statins, including pitavastatin. This genetic profile may lead to higher efficacy of pitavastatin at standard doses without an increased risk of side effects such as myopathy. However, ongoing monitoring for efficacy and side effects is still recommended, as individual responses can vary.
+
+$cand_0:
+Avoid pitavastatin. Take an alternate therapy.
+$cand_1:
+Take pitavastatin with a reduced dose.
+$cand_2:
+Take pitavastatin with an increased dose.
+$cand_3:
+Prescribe desired starting dose and adjust doses based on disease-specific guidelines.","0","0","0","1","0","0","0"
+"$llm_answer:
+For patients with an indeterminate G6PD status, it is crucial to perform a confirmatory G6PD diagnostic test prior to initiating primaquine therapy, as G6PD deficiency can lead to hemolytic anemia when exposed to primaquine. If G6PD testing is not immediately available, alternative prophylactic or therapeutic options should be considered until a definitive G6PD status is determined to avoid potential adverse effects.
+
+$cand_0:
+Avoid primaquine. Take an alternate therapy.
+$cand_1:
+Take primaquine with a reduced dose.
+$cand_2:
+Take primaquine with an increased dose.
+$cand_3:
+To ascertain G6PD status, enzyme activity must be measured. Drug use should be guided per the recommendations based on the activity-based phenotype.","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals with glucose-6-phosphate dehydrogenase (G6PD) deficiency, particularly those with chronic nonspherocytic hemolytic anemia (CNSHA), it is generally recommended to avoid the use of primaquine due to the high risk of hemolysis. If primaquine is essential, it should be administered under strict medical supervision with close monitoring of hemoglobin levels and other signs of hemolytic anemia.
+
+$cand_0:
+Proceed taking primaquine as normal. There is no recommendation.
+$cand_1:
+Take primaquine with a reduced dose.
+$cand_2:
+Take primaquine with an increased dose.
+$cand_3:
+Avoid primaquine","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual who has a normal glucose-6-phosphate dehydrogenase (G6PD) enzyme level, primaquine can generally be prescribed without increased risk of hemolysis. Clinicians should still monitor the patient for any potential side effects, but the absence of G6PD deficiency indicates a lower risk of experiencing the severe hemolytic anemia that can be triggered by the drug in deficient individuals.
+
+$cand_0:
+Avoid primaquine. Take an alternate therapy.
+$cand_1:
+Take primaquine with a reduced dose.
+$cand_2:
+Take primaquine with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status","0","0","0","1","0","0","0"
+"$llm_answer:
+For individuals with a normal G6PD enzyme level, there are generally no increased risks of hemolytic anemia when taking quinine, a drug that can cause oxidative stress in those with G6PD deficiency. Thus, these individuals can use quinine for appropriate indications, such as the treatment of malaria or nocturnal leg cramps, according to standard clinical guidelines. Always consider consulting with a healthcare provider for personalized advice and to ensure there are no other contraindications or drug interactions.
+
+$cand_0:
+Avoid quinine. Take an alternate therapy.
+$cand_1:
+Take quinine with a reduced dose.
+$cand_2:
+Take quinine with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual with normal function of the ABCG2 gene and decreased function of the SLCO1B1 gene, starting rosuvastatin at a lower dose may be advisable to mitigate the risk of increased drug exposure and potential muscle toxicity associated with reduced SLCO1B1 function. Monitoring for any adverse effects and adjusting the dose based on clinical response and tolerance is recommended.
+
+$cand_0:
+Avoid rosuvastatin. Take an alternate therapy.
+$cand_1:
+Take rosuvastatin with a reduced dose.
+$cand_2:
+Take rosuvastatin with an increased dose.
+$cand_3:
+Prescribe desired starting dose and adjust doses of rosuvastatin based on disease-specific and specific population guidelines. Prescriber should be aware of possible increased risk for myopathy especially for doses >20mg.","0","1","0","0","0","0","0"
+"$llm_answer:
+For individuals who are classified as indeterminate for G6PD (glucose-6-phosphate dehydrogenase) deficiency, caution is advised when prescribing sulfadiazine. It is important to monitor for signs of hemolysis, especially after initiation of the drug, and consider alternative treatments if possible. Consultation with a healthcare provider specializing in pharmacogenomics or hematology may also be warranted to ensure safe management.
+
+$cand_0:
+Avoid sulfadiazine. Take an alternate therapy.
+$cand_1:
+Take sulfadiazine with a reduced dose.
+$cand_2:
+Take sulfadiazine with an increased dose.
+$cand_3:
+To ascertain G6PD status, enzyme activity must be measured. Drug use should be guided per the recommendations based on the activity-based phenotype.","0","0","0","0","0","0","1"
+"$llm_answer:
+For a patient with an indeterminate G6PD status, sulfasalazine should be used with caution. Given the risk of hemolytic anemia in G6PD-deficient individuals, it is advisable to monitor for signs of hemolysis and consider alternative treatments if there is any indication of hemolysis or if G6PD deficiency is confirmed through further testing.
+
+$cand_0:
+Avoid sulfasalazine. Take an alternate therapy.
+$cand_1:
+Take sulfasalazine with a reduced dose.
+$cand_2:
+Take sulfasalazine with an increased dose.
+$cand_3:
+To ascertain G6PD status, enzyme activity must be measured. Drug use should be guided per the recommendations based on the activity-based phenotype.","0","0","0","0","0","0","1"
+"$llm_answer:
+For individuals who have normal glucose-6-phosphate dehydrogenase (G6PD) activity, tafenoquine can be prescribed for the prevention and treatment of malaria. It is crucial to confirm normal G6PD activity through diagnostic testing before starting tafenoquine, as the drug can cause hemolytic anemia in patients with G6PD deficiency. Always follow specific dosage recommendations and monitor for side effects as advised by healthcare providers.
+
+$cand_0:
+Avoid tafenoquine. Take an alternate therapy.
+$cand_1:
+Take tafenoquine with a reduced dose.
+$cand_2:
+Take tafenoquine with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status","0","0","0","1","0","0","0"
+"$llm_answer:
+For a patient who is a Normal Metabolizer for TPMT but a Poor Metabolizer for NUDT15, the dosing of thioguanine should be approached with caution. Specifically, a significant dose reduction is recommended starting with a reduced dose by 30-80%, and close monitoring of the patient for hematologic toxicity is essential. This guidance aims to reduce the risk of severe myelosuppression, which patients with NUDT15 poor metabolizer status are particularly susceptible to.
+
+$cand_0:
+Proceed taking thioguanine as normal. There is no recommendation.
+$cand_1:
+Avoid thioguanine. Take an alternate therapy.
+$cand_2:
+Reduce starting doses to 25% of normal dose and adjust doses of thioguanine based on degree of myelosuppression and disease-specific guidelines. Allow 4-6 weeks to reach steady-state after each dose adjustment. In setting of myelosuppression, emphasis should be on reducing thioguanine over other agents. For non-malignant conditions, consider alternative non-thiopurine immunosuppressant therapy (PMID 20354201).","0","0","2","0","0","0","0"
+"$llm_answer:
+For individuals deficient in glucose-6-phosphate dehydrogenase (G6PD), it is generally recommended to avoid the use of tolbutamide due to the increased risk of hemolytic anemia. Alternative medications that do not pose this risk should be considered. Always consult with a healthcare provider for tailored medical advice.
+
+$cand_0:
+Avoid tolbutamide. Take an alternate therapy.
+$cand_1:
+Take tolbutamide with a reduced dose.
+$cand_2:
+Take tolbutamide with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status at standard doses","1","0","0","0","0","0","0"
+"$llm_answer:
+For individuals with glucose-6-phosphate dehydrogenase (G6PD) deficiency, especially those with chronic nonspherocytic hemolytic anemia (CNSHA), the use of toluidine blue is contraindicated. This dye, used diagnostically and therapeutically, can induce hemolysis in G6PD-deficient patients, leading to severe anemia and other related complications. Clinical guidance would strongly recommend avoiding toluidine blue and considering alternative diagnostic or therapeutic options.
+
+$cand_0:
+Proceed taking toluidine blue as normal. There is no recommendation.
+$cand_1:
+Take toluidine blue with a reduced dose.
+$cand_2:
+Take toluidine blue with an increased dose.
+$cand_3:
+Avoid use","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual who is a normal metabolizer with a CYP2D6 activity score of 2.25, tramadol can typically be prescribed at standard dosing. This is because normal metabolizers efficiently convert tramadol into its active metabolite, which helps achieve adequate pain relief without an increased risk of adverse effects. Regular monitoring and follow-up are still recommended to ensure optimal therapeutic outcomes and to manage any potential side effects.
+
+$cand_0:
+Avoid tramadol. Take an alternate therapy.
+$cand_1:
+Take tramadol with a reduced dose.
+$cand_2:
+Take tramadol with an increased dose.
+$cand_3:
+Use tramadol label recommended age- or weight-specific dosing.","0","0","0","2","0","0","0"
+"$llm_answer:
+For an individual who is an ultrarapid metabolizer (UM) with an activity score of 2.75 for CYP2D6, it is generally recommended to avoid using tramadol. This is because ultrarapid metabolizers convert tramadol to its active metabolite, O-desmethyltramadol (M1), more quickly and extensively, which can lead to an increased risk of serious side effects such as respiratory depression and potentially fatal overdose. Alternative analgesics that do not rely on CYP2D6 metabolism should be considered.
+
+$cand_0:
+Proceed taking tramadol as normal. There is no recommendation.
+$cand_1:
+Take tramadol with a reduced dose.
+$cand_2:
+Take tramadol with an increased dose.
+$cand_3:
+Avoid tramadol use because of potential for toxicity. If opioid use is warranted, consider a non-codeine opioid.","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual with ""No Result"" and an activity score of ""No Result"" for CYP2D6 and identified as a Rapid Metabolizer for CYP2C19, there is insufficient genetic information to provide specific clinical guidance regarding trimipramine use. Generally, trimipramine's metabolism is significantly influenced by CYP2D6 activity, so obtaining accurate CYP2D6 genotyping results or considering alternative medications less dependent on CYP2D6 metabolism may be prudent. It is advisable to consult a healthcare professional to evaluate other factors and decide on the best course of action.
+
+$cand_0:
+Proceed taking trimipramine as normal. There is no recommendation.
+$cand_1:
+Take trimipramine with a reduced dose.
+$cand_2:
+Take trimipramine with an increased dose.
+$cand_3:
+Avoid tertiary amine use due to potential for sub-optimal response. Consider alternative drug not metabolized by CYP2C19. TCAs without major CYP2C19 metabolism include the secondary amines nortriptyline and desipramine. If a tertiary amine is warranted, utilize therapeutic drug monitoring to guide dose adjustments.","0","0","0","0","0","0","1"
+"$llm_answer:
+For a patient who is a normal metabolizer (activity score = 1.5) of CYP2D6 with no result for CYP2C19, standard dosing of trimipramine is generally appropriate. CYP2D6 plays a significant role in the metabolism of trimipramine, and an activity score of 1.5 indicates that the patient metabolizes trimipramine at a normal rate. However, the lack of CYP2C19 results suggests that potential interactions or genetic variants affecting this pathway cannot be ruled out, so monitoring for efficacy and side effects is still essential.
+
+$cand_0:
+Avoid trimipramine. Take an alternate therapy.
+$cand_1:
+Take trimipramine with a reduced dose.
+$cand_2:
+Take trimipramine with an increased dose.
+$cand_3:
+Initiate therapy with recommended starting dose.","0","0","0","1","0","0","0"
+"$llm_answer:
+For an individual identified as a Normal Metabolizer with an activity score of 1.75 for CYP2D6, the clinical guidance for taking tropisetron typically indicates that standard dosing can be used. Normal Metabolizers usually exhibit expected drug metabolism, leading to typical drug efficacy and toxicity profiles. Therefore, this patient is likely to respond well to the usual therapeutic doses of tropisetron without the need for dose adjustments.    Reference:  - Caudle, K. E., Sangkuhl, K., Whirl-Carrillo, M., Swen, J. J., Haidar, C. E., Klein, T. E., & Gammal, R. S. El (2020). Standardizing CYP2D6 genotype to phenotype translation: Consensus recommendations from the Clinical Pharmacogenetics Implementation Consortium and Dutch Pharmacogenetics Working Group. Clinical and Translational Science, 13(1), 116-124.
+
+$cand_0:
+Avoid tropisetron. Take an alternate therapy.
+$cand_1:
+Take tropisetron with a reduced dose.
+$cand_2:
+Take tropisetron with an increased dose.
+$cand_3:
+Initiate therapy with recommended starting dose.","0","0","0","1","0","0","0"
+"$llm_answer:
+Individuals who are deficient in G6PD (Glucose-6-Phosphate Dehydrogenase) should use caution when taking high doses of vitamin C, as it can potentially trigger hemolytic anemia in some cases. While typical dietary amounts of vitamin C are generally considered safe, it's essential for those with G6PD deficiency to consult with their healthcare provider before using supplements or high-dose vitamin C.
+
+$cand_0:
+Avoid vitamin c. Take an alternate therapy.
+$cand_1:
+Take vitamin c with a reduced dose.
+$cand_2:
+Take vitamin c with an increased dose.
+$cand_3:
+No reason to avoid based on G6PD status at standard doses","0","0","0","0","0","0","1"
+"$llm_answer:
+For individuals with glucose-6-phosphate dehydrogenase (G6PD) deficiency and chronic non-spherocytic hemolytic anemia (CNSHA), there is no specific contraindication for the use of vitamin K. However, it is important to monitor these patients closely for any signs of hemolysis or other adverse reactions when administering vitamin K, due to their underlying condition that affects red blood cell stability. Clinical decisions should always be personalized and carried out in consultation with a healthcare provider knowledgeable about the patient's medical history and specific needs.
+
+$cand_0:
+Avoid vitamin k. Take an alternate therapy.
+$cand_1:
+Take vitamin k with a reduced dose.
+$cand_2:
+Take vitamin k with an increased dose.
+$cand_3:
+Use drug cautiously; if used, close monitoring for acute exacerbation of chronic hemolysis is recommended","0","0","0","1","0","0","0"
+"$llm_answer:
+For a patient with an indeterminate CYP2C19 genotype taking voriconazole, clinical guidelines recommend careful monitoring of voriconazole plasma levels due to the uncertainty in how they will metabolize the drug. Adjustments to dosing may be necessary based on therapeutic drug monitoring to achieve the desired antifungal effect while minimizing potential toxicity.
+
+$cand_0:
+Avoid voriconazole. Take an alternate therapy.
+$cand_1:
+Take voriconazole with a reduced dose.
+$cand_2:
+Take voriconazole with an increased dose.
+$cand_3:
+No recommendation","0","0","0","0","0","0","1"
+"$llm_answer:
+For someone identified as an Ultrarapid Metabolizer (UM) of CYP2C19, clinical guidelines generally recommend avoiding the use of voriconazole due to significantly decreased plasma concentrations that would likely lead to subtherapeutic levels and reduced efficacy. Alternative antifungal agents that do not rely on CYP2C19 for metabolism should be considered.
+
+$cand_0:
+Proceed taking voriconazole as normal. There is no recommendation.
+$cand_1:
+Take voriconazole with a reduced dose.
+$cand_2:
+Take voriconazole with an increased dose.
+$cand_3:
+Choose an alternative agent that is not dependent on CYP2C19 metabolism as primary therapy in lieu of voriconazole. Such agents include liposomal amphotericin B and posaconazole.","0","0","0","1","0","0","0"
+"$llm_answer:
+For an intermediate metabolizer (CYP2C19*1/*2, *1/*3) taking voriconazole, clinical guidelines suggest considering an alternative antifungal agent due to potential for suboptimal efficacy and increased risk of adverse effects. If voriconazole use is necessary, therapeutic drug monitoring is recommended to ensure appropriate plasma concentrations and adjust dosing as needed.
+
+$cand_0:
+Avoid voriconazole. Take an alternate therapy.
+$cand_1:
+Take voriconazole with a reduced dose.
+$cand_2:
+Take voriconazole with an increased dose.
+$cand_3:
+Initiate therapy with recommended standard of care dosing","1","0","0","0","0","0","0"
+"$llm_answer:
+For an individual who is an ultrarapid metabolizer with a CYP2D6 activity score of ≥3.0, the clinical guidance would be to initiate vortioxetine therapy with the standard recommended dose. However, due to the increased metabolism, these patients may have lower plasma concentrations of the drug, potentially reducing efficacy. Therefore, close monitoring for therapeutic response and side effects is advised, with dose adjustments as needed to achieve optimal clinical outcomes.
+
+$cand_0:
+Proceed taking vortioxetine as normal. There is no recommendation.
+$cand_1:
+Take vortioxetine with a reduced dose.
+$cand_2:
+Take vortioxetine with an increased dose.
+$cand_3:
+Select alternative drug not predominantly metabolized by CYP2D6. If vortioxetine use is warranted, initiate therapy at standard starting dose and titrate to maintenance dose based on efficacy and side effects. Increasing the target maintenance dose by 50% or more may be needed for efficacy.","1","0","0","0","0","0","0"
+"$llm_answer:
+For individuals who are Intermediate Metabolizers (activity score = 1.0) of CYP2D6, clinical guidance suggests that standard dosing of vortioxetine can typically be maintained. However, these patients may experience higher plasma concentrations of the drug, so careful monitoring for potential side effects is recommended. Adjustments may be needed based on clinical response and tolerability.
+
+$cand_0:
+Avoid vortioxetine. Take an alternate therapy.
+$cand_1:
+Take vortioxetine with a reduced dose.
+$cand_2:
+Take vortioxetine with an increased dose.
+$cand_3:
+Initiate therapy with recommended starting dose.","0","0","0","1","0","0","0"
