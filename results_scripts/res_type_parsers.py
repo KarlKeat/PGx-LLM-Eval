@@ -32,17 +32,9 @@ def parse_p2g(res_df):
     scoring methods (BERTScore, BLEU, etc.) comparing the 
     LLM answer to concurring, reference, and incorrect recommendations
     """
-    # TODO: figure out how we're supposed to make use of this triangular
-    # setup for columns/scores in the results
-    # For now, just take the average of all of the columns 
-    # (hacky way of iding columns for now)
-
+    # Average of all the columns
+    # (useful since this is what we want for GPT4 at least)
     metric_cols = [col for col in res_df.columns if 'vs' in col.lower()]
-
-    # TODO: remove this hack to short-circuit the tensor bug temporarily
-    metric_cols = [col for col in metric_cols if res_df[col].dtype != 'object']
-    import warnings
-    warnings.warn(Warning("The tensor bug for P2G results has been short-circuited."))
 
     metric_dfs = []
 
@@ -50,7 +42,42 @@ def parse_p2g(res_df):
         metric_res = parse_from_col(res_df, metric_col)
         metric_dfs.append(metric_res)
 
-    return pd.concat(metric_dfs, axis=1)
+    all_metric_df = pd.concat(metric_dfs, axis=1)
+
+
+    # Add in approach for parsing P2G results
+    # by finding the "win rate" - aka
+    # how often the LLM's answer was more similar to the reference
+    # than to the discordant answer
+
+    # Get unique scoring aproaches in metrics columns
+    unique_scorers = [mname.split('_llm_')[0] for mname in metric_cols]
+    unique_scorers = sorted(list(set(unique_scorers)))
+
+    # Hack - remove the gpt4 scorer since it's not a standard scorer
+    # and what we'd want to do is covered in its "mean" function
+    unique_scorers = [scorer for scorer in unique_scorers if 'gpt4' not in scorer]
+
+
+    # Function to compute the win rate for a given scorer
+    # grouped by modelname and out_type
+    def calc_win_rate(scorer_name, results_df, col_1="llm_vs_ref", col_2="llm_vs_discordant"):
+        results_df_gb = results_df.groupby(['modelname', 'out_type'])
+
+        def win_rate_func(group, scorer_name=scorer_name, col_1=col_1, col_2=col_2):
+            wins = (group[f"{scorer_name}_{col_1}"] >= group[f"{scorer_name}_{col_2}"])
+            return pd.Series({f'{scorer_name}_winrate_mean': wins.mean(), 
+                              f'{scorer_name}_winrate_std': wins.std()})
+
+        llm_winrates = results_df_gb.apply(win_rate_func)
+
+        return llm_winrates
+    
+    # Calculate win rates for each scorer
+    winrate_dfs = [calc_win_rate(scorer, res_df) for scorer in unique_scorers]
+    winrate_dfs = pd.concat(winrate_dfs, axis=1)
+
+    return pd.concat([winrate_dfs, all_metric_df], axis=1)
 
 
 def parse_score(res_df):
@@ -98,6 +125,59 @@ def parse_d2g(res_df):
     return pd.concat(mode_dfs)
 
 
+def parse_refusal(res_df):
+    """
+    Refusal parsing function
+    Results for Refusal operate with two columns
+    "refused" and "refused_no_opt_out"
+    where we will just take the means of those columns
+    with two additional grouping columns
+    of "category" and "is_misspecified"
+    """
+    # Below is the old code that grouped by category and is_misspecified
+
+    # unique_cat_misspec_combos = res_df.groupby(['category', 'is_misspecified']).groups.keys()
+
+    # combo_dfs = []
+
+    # for combo_tuple in unique_cat_misspec_combos:
+    #     cat, misspec = combo_tuple
+
+    #     combo_df = res_df[(res_df['category'] == cat) & (res_df['is_misspecified'] == misspec)]
+    #     combo_res_opt = parse_from_col(combo_df, 'refused')
+    #     combo_res_noopt = parse_from_col(combo_df, 'refused_no_opt_out')
+
+    #     combo_res = pd.concat([combo_res_opt, combo_res_noopt], axis=1)
+
+    #     combo_res['category'] = cat
+    #     combo_res['is_misspecified'] = misspec
+    #     combo_res = combo_res.set_index('category', append=True)
+    #     combo_res = combo_res.set_index('is_misspecified', append=True)
+
+    #     combo_dfs.append(combo_res)
+
+
+    # Below is the modified code that groups by only is_misspecified
+    # since we don't care about the category (or rather, we want to aggregate)
+    # across all categories
+    unique_misspec = res_df['is_misspecified'].unique()
+
+    combo_dfs = []
+
+    for misspec in unique_misspec:
+        combo_df = res_df[res_df['is_misspecified'] == misspec]
+        combo_res_opt = parse_from_col(combo_df, 'refused')
+        combo_res_noopt = parse_from_col(combo_df, 'refused_no_opt_out')
+
+        combo_res = pd.concat([combo_res_opt, combo_res_noopt], axis=1)
+
+        combo_res['is_misspecified'] = misspec
+        combo_res = combo_res.set_index('is_misspecified', append=True)
+
+        combo_dfs.append(combo_res)
+
+    return pd.concat(combo_dfs)
+
 
 
 
@@ -111,4 +191,5 @@ res_to_func_dict = {
     'DrugToGenes': parse_d2g,
     'GeneToDrugs': parse_prec_recall,
     'AlleleDefinition': parse_prec_recall,
+    'Refusal': parse_refusal,
 }

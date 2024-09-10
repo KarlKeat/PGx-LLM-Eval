@@ -1,0 +1,11 @@
+modelname	out_type	is_misspecified	refused_mean	refused_std	refused_no_opt_out_mean	refused_no_opt_out_std
+Meta-Llama-3-70B-Instruct	results	True	0.1111111111111111	0.3187276291558383	0.0	0.0
+gemini-pro	results	True	0.08333333333333333	0.280305955290694	0.0	0.0
+gpt-3.5-turbo	results	True	0.3055555555555556	0.46717659215115664	0.0	0.0
+gpt-4-turbo	results	True	0.6944444444444444	0.4671765921511567	0.0	0.0
+gpt-4o	results	True	0.7222222222222222	0.4542567625794978	0.0	0.0
+Meta-Llama-3-70B-Instruct	results	False	0.03	0.1714466079977653	0.0	0.0
+gemini-pro	results	False	0.08	0.2726599243442907	0.0	0.0
+gpt-3.5-turbo	results	False	0.32	0.4688261722621506	0.0	0.0
+gpt-4-turbo	results	False	0.26	0.44084400227680803	0.01	0.09999999999999999
+gpt-4o	results	False	0.27	0.4461960433384737	0.0	0.0
