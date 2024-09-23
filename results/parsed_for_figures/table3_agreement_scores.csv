@@ -1,0 +1,9 @@
+﻿Scorer,Agreement F1
+Base MPNET,0.4938
+BERTScore Precision,0.6275
+BERTScore Recall,0.08
+BERTScore F1,0.5517
+GTE,0.5526
+Negation MPNET,0.5542
+OpenAI Embeddings,0.6067
+Roberta,0.506
